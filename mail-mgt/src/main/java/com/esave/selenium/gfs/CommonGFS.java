@@ -51,7 +51,6 @@ public class CommonGFS {
 
 				System.out.println("Order Guide Export failed");
 				ErrRemedy.ErrScreenshotCapture(driver);
-				;
 				ErrRemedy.ErrReportingMail();
 
 			} else {

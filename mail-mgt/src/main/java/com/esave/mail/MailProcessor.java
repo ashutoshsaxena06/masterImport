@@ -3,9 +3,7 @@ package com.esave.mail;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -20,9 +18,11 @@ import javax.mail.URLName;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.search.SearchTerm;
 
-import com.esave.common.PurveyorRegister;
-import com.esave.common.StartUp;
+import org.apache.commons.lang3.StringUtils;
+
+import com.esave.common.PropertiesManager;
 import com.esave.entities.PurveyorDetails;
+import com.esave.exception.PurveyorNotFoundException;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPSSLStore;
 
@@ -71,8 +71,8 @@ public class MailProcessor {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		Map<String, PurveyorDetails> purveyorRegistor = StartUp.readProperties("purveyor.properties",
-				"credentials.properties");
+		PropertiesManager.purveyorPropertiesFile="purveyor.properties";
+		PropertiesManager.locationPropertiesFile="location.properties";
 
 		MailProcessor mailProcessor = new MailProcessor();
 
@@ -80,7 +80,7 @@ public class MailProcessor {
 		IMAPSSLStore store = mailProcessor.createConnection();
 
 		// process the orders from EMail
-		mailProcessor.processOrdersFromEmail(store, purveyorRegistor);
+		mailProcessor.processOrdersFromEmail(store);
 
 		if (scanner != null) {
 			scanner.close();
@@ -94,9 +94,10 @@ public class MailProcessor {
 	 * @param store
 	 * @param keywordToSearch
 	 * @throws MessagingException
+	 * @throws PurveyorNotFoundException 
 	 */
-	public void processOrdersFromEmail(IMAPSSLStore store, Map<String, PurveyorDetails> register)
-			throws MessagingException {
+	public void processOrdersFromEmail(IMAPSSLStore store)
+			throws MessagingException, PurveyorNotFoundException {
 
 		IMAPFolder folderInbox = null;
 		IMAPFolder folderProcessed = null;
@@ -183,12 +184,9 @@ public class MailProcessor {
 	/**
 	 * Downloads new messages and saves attachments to disk if any.
 	 * 
-	 * @param host
-	 * @param port
-	 * @param userName
-	 * @param password
+	 * @throws PurveyorNotFoundException 
 	 */
-	public boolean downloadEmailAttachmentsAndProcessOrder(Message message) {
+	public boolean downloadEmailAttachmentsAndProcessOrder(Message message) throws PurveyorNotFoundException {
 
 		try {
 
@@ -214,7 +212,7 @@ public class MailProcessor {
 					// this part may be the message content
 					messageContent = part.getContent().toString();
 					scanner = new Scanner(messageContent);
-					processOrder(scanner, messageContent);
+//					processOrder(scanner, messageContent);
 				}
 			}
 
@@ -233,20 +231,31 @@ public class MailProcessor {
 		return false;
 	}
 
-	private void processOrder(Scanner scanner, String messageContent) throws IOException, MessagingException {
+	private void processOrder(Scanner scanner, String messageContent) throws IOException, MessagingException, PurveyorNotFoundException {
 		String purveyorId = null;
+		String locationId = null;
 		PurveyorDetails purveyorDetails = null;
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
 			if (line.startsWith("Purveyor:")) {
-				String purveyorIdRecieved = line.replace("Purveyor:", "");
+				String purveyorIdRecieved = line.substring(line.indexOf("("), line.lastIndexOf(")"));
 				purveyorId = purveyorIdRecieved.trim();
+				String locationIdRecieved = line.substring(line.indexOf("("), line.lastIndexOf(")"));
+				locationId = locationIdRecieved.trim();
 			}
 		}
-		HashMap<String, PurveyorDetails> purveyorRegister = PurveyorRegister.getInstance();
-		if (purveyorRegister.containsKey(purveyorId)) {
-			purveyorDetails = purveyorRegister.get(purveyorId);
-			System.out.println(purveyorDetails);
+		if(StringUtils.isEmpty(purveyorId)||StringUtils.isEmpty(locationId)){
+			throw new PurveyorNotFoundException("Purveyor details not found in the order", 101);
 		}
+		Properties purveyorProperties = PropertiesManager.getPurveyorProperties();
+		String purveyorStoreUrl = purveyorProperties.getProperty(purveyorId);
+		Properties locationProperties = PropertiesManager.getPurveyorProperties();
+		String storeCredentials = locationProperties.getProperty(locationId);
+		String storeUserName = storeCredentials.split("/")[0];
+		String storePassword = storeCredentials.split("/")[1];
+		if(StringUtils.isEmpty(purveyorStoreUrl)||StringUtils.isEmpty(storeUserName)||StringUtils.isEmpty(storePassword)){
+			throw new PurveyorNotFoundException("Purveyor details does not exist in the system", 101);
+		}
+		purveyorDetails = new PurveyorDetails(purveyorStoreUrl, storeUserName, storePassword);
 	}
 }
