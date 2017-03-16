@@ -75,6 +75,8 @@ public class MailProcessor {
 		PropertiesManager.locationPropertiesFile="location.properties";
 
 		MailProcessor mailProcessor = new MailProcessor();
+		
+		mailProcessor.setSaveDirectory("C:\\D\\orders");
 
 		// create an Imap connection with gmail
 		IMAPSSLStore store = mailProcessor.createConnection();
@@ -192,9 +194,6 @@ public class MailProcessor {
 
 			String messageContent = "";
 
-			// store attachment file name, separated by comma
-			String attachFiles = "";
-
 			// content may contain attachments
 			Multipart multiPart;
 
@@ -206,21 +205,15 @@ public class MailProcessor {
 				if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
 					// this part is attachment
 					String fileName = part.getFileName();
-					attachFiles += fileName + ", ";
 					part.saveFile(saveDirectory + File.separator + fileName);
 				} else {
 					// this part may be the message content
-					messageContent = part.getContent().toString();
-					scanner = new Scanner(messageContent);
-//					processOrder(scanner, messageContent);
+					scanner = new Scanner(part.getInputStream());
+					processOrder(scanner, messageContent);
 				}
 			}
-
-			if (attachFiles.length() > 1) {
-				attachFiles = attachFiles.substring(0, attachFiles.length() - 2);
-			}
-
-			System.out.println("\t Attachments: " + attachFiles);
+		} catch (PurveyorNotFoundException e){
+			System.err.println(e);
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -238,9 +231,11 @@ public class MailProcessor {
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
 			if (line.startsWith("Purveyor:")) {
-				String purveyorIdRecieved = line.substring(line.indexOf("("), line.lastIndexOf(")"));
+				String purveyorIdRecieved = line.substring(line.indexOf("(")+1, line.indexOf(")", line.indexOf("(")));
 				purveyorId = purveyorIdRecieved.trim();
-				String locationIdRecieved = line.substring(line.indexOf("("), line.lastIndexOf(")"));
+			}
+			if (line.startsWith("Location:")) {
+				String locationIdRecieved = line.substring(line.indexOf("(")+1, line.indexOf(")", line.indexOf("(")));
 				locationId = locationIdRecieved.trim();
 			}
 		}
@@ -249,13 +244,17 @@ public class MailProcessor {
 		}
 		Properties purveyorProperties = PropertiesManager.getPurveyorProperties();
 		String purveyorStoreUrl = purveyorProperties.getProperty(purveyorId);
-		Properties locationProperties = PropertiesManager.getPurveyorProperties();
+		System.out.println("Purveyor URL is : "+purveyorStoreUrl);
+		Properties locationProperties = PropertiesManager.getLocationProperties();
 		String storeCredentials = locationProperties.getProperty(locationId);
-		String storeUserName = storeCredentials.split("/")[0];
-		String storePassword = storeCredentials.split("/")[1];
-		if(StringUtils.isEmpty(purveyorStoreUrl)||StringUtils.isEmpty(storeUserName)||StringUtils.isEmpty(storePassword)){
-			throw new PurveyorNotFoundException("Purveyor details does not exist in the system", 101);
+		if(StringUtils.isNotEmpty(storeCredentials)){
+			String storeUserName = storeCredentials.split("/")[0];
+			String storePassword = storeCredentials.split("/")[1];
+			if(StringUtils.isEmpty(purveyorStoreUrl)||StringUtils.isEmpty(storeUserName)||StringUtils.isEmpty(storePassword)){
+				throw new PurveyorNotFoundException("Purveyor details does not exist in the system", 101);
+			}
+			purveyorDetails = new PurveyorDetails(purveyorStoreUrl, storeUserName, storePassword);
+			System.out.println(purveyorDetails);
 		}
-		purveyorDetails = new PurveyorDetails(purveyorStoreUrl, storeUserName, storePassword);
 	}
 }
