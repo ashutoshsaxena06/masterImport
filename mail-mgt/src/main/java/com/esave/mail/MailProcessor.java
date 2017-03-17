@@ -28,8 +28,8 @@ import com.sun.mail.imap.IMAPSSLStore;
 
 public class MailProcessor {
 
-	private static final String USER_EMAIL = "user@gmail.com";
-	private static final String USER_PASSWORD = "password";
+	private static final String USER_EMAIL = "importorders.diningedge@gmail.com";
+	private static final String USER_PASSWORD = "edge2016";
 	private String saveDirectory;
 
 	static Scanner scanner = null;
@@ -71,11 +71,11 @@ public class MailProcessor {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		PropertiesManager.purveyorPropertiesFile="purveyor.properties";
-		PropertiesManager.locationPropertiesFile="location.properties";
+		PropertiesManager.purveyorPropertiesFile = "purveyor.properties";
+		PropertiesManager.locationPropertiesFile = "location.properties";
 
 		MailProcessor mailProcessor = new MailProcessor();
-		
+
 		mailProcessor.setSaveDirectory("C:\\D\\orders");
 
 		// create an Imap connection with gmail
@@ -96,10 +96,9 @@ public class MailProcessor {
 	 * @param store
 	 * @param keywordToSearch
 	 * @throws MessagingException
-	 * @throws PurveyorNotFoundException 
+	 * @throws PurveyorNotFoundException
 	 */
-	public void processOrdersFromEmail(IMAPSSLStore store)
-			throws MessagingException, PurveyorNotFoundException {
+	public void processOrdersFromEmail(IMAPSSLStore store) throws MessagingException, PurveyorNotFoundException {
 
 		IMAPFolder folderInbox = null;
 		IMAPFolder folderProcessed = null;
@@ -186,7 +185,7 @@ public class MailProcessor {
 	/**
 	 * Downloads new messages and saves attachments to disk if any.
 	 * 
-	 * @throws PurveyorNotFoundException 
+	 * @throws PurveyorNotFoundException
 	 */
 	public boolean downloadEmailAttachmentsAndProcessOrder(Message message) throws PurveyorNotFoundException {
 
@@ -202,17 +201,18 @@ public class MailProcessor {
 			int numberOfParts = multiPart.getCount();
 			for (int partCount = 0; partCount < numberOfParts; partCount++) {
 				MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(partCount);
-				if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
-					// this part is attachment
-					String fileName = part.getFileName();
-					part.saveFile(saveDirectory + File.separator + fileName);
-				} else {
+				
 					// this part may be the message content
 					scanner = new Scanner(part.getInputStream());
-					processOrder(scanner, messageContent);
+					String fileName = processOrder(scanner, messageContent);
+
+				if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) { 
+					// this part is attachment
+					fileName = part.getFileName();
+					part.saveFile(saveDirectory + File.separator + fileName);
 				}
 			}
-		} catch (PurveyorNotFoundException e){
+		} catch (PurveyorNotFoundException e) {
 			System.err.println(e);
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
@@ -224,37 +224,43 @@ public class MailProcessor {
 		return false;
 	}
 
-	private void processOrder(Scanner scanner, String messageContent) throws IOException, MessagingException, PurveyorNotFoundException {
+	private String processOrder(Scanner scanner, String messageContent)
+			throws IOException, MessagingException, PurveyorNotFoundException {
 		String purveyorId = null;
 		String locationId = null;
 		PurveyorDetails purveyorDetails = null;
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
 			if (line.startsWith("Purveyor:")) {
-				String purveyorIdRecieved = line.substring(line.indexOf("(")+1, line.indexOf(")", line.indexOf("(")));
+				String purveyorIdRecieved = line.substring(line.indexOf("(") + 1, line.indexOf(")", line.indexOf("(")));
 				purveyorId = purveyorIdRecieved.trim();
 			}
 			if (line.startsWith("Location:")) {
-				String locationIdRecieved = line.substring(line.indexOf("(")+1, line.indexOf(")", line.indexOf("(")));
+				String locationIdRecieved = line.substring(line.indexOf("(") + 1, line.indexOf(")", line.indexOf("(")));
 				locationId = locationIdRecieved.trim();
 			}
 		}
-		if(StringUtils.isEmpty(purveyorId)||StringUtils.isEmpty(locationId)){
+		if (StringUtils.isEmpty(purveyorId) || StringUtils.isEmpty(locationId)) {
 			throw new PurveyorNotFoundException("Purveyor details not found in the order", 101);
 		}
 		Properties purveyorProperties = PropertiesManager.getPurveyorProperties();
 		String purveyorStoreUrl = purveyorProperties.getProperty(purveyorId);
-		System.out.println("Purveyor URL is : "+purveyorStoreUrl);
+		System.out.println("Purveyor URL is : " + purveyorStoreUrl);
 		Properties locationProperties = PropertiesManager.getLocationProperties();
 		String storeCredentials = locationProperties.getProperty(locationId);
-		if(StringUtils.isNotEmpty(storeCredentials)){
+		if (StringUtils.isNotEmpty(storeCredentials)) {
 			String storeUserName = storeCredentials.split("/")[0];
 			String storePassword = storeCredentials.split("/")[1];
-			if(StringUtils.isEmpty(purveyorStoreUrl)||StringUtils.isEmpty(storeUserName)||StringUtils.isEmpty(storePassword)){
+			if (StringUtils.isEmpty(purveyorStoreUrl) || StringUtils.isEmpty(storeUserName)
+					|| StringUtils.isEmpty(storePassword)) {
 				throw new PurveyorNotFoundException("Purveyor details does not exist in the system", 101);
 			}
 			purveyorDetails = new PurveyorDetails(purveyorStoreUrl, storeUserName, storePassword);
 			System.out.println(purveyorDetails);
+			Selenium sel = new Selenium();
+			sel.start(purveyorDetails);
+			
 		}
+		return "filename";
 	}
 }
