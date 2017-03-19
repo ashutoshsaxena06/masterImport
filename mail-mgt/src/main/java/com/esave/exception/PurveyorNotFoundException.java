@@ -7,6 +7,10 @@ public class PurveyorNotFoundException extends Exception {
 	private Integer reasonCode;
 
 	private static final String MESSAGE_SEPARATOR = " # ";
+	
+	private String purveyorId;
+	
+	private String orderId;
 
 	/**
 	 * @param detailedMsg
@@ -26,6 +30,11 @@ public class PurveyorNotFoundException extends Exception {
 		super(detailedMsg, t);
 		this.reasonCode = reasonCd;
 	}
+	
+	public PurveyorNotFoundException(String detailedMsg, Integer reasonCd, String purveyorId, String orderId) {
+		super(detailedMsg);
+		this.reasonCode = reasonCd;
+	}
 
 	public Integer getReasonCode() {
 		if (this.reasonCode == null)
@@ -35,6 +44,22 @@ public class PurveyorNotFoundException extends Exception {
 
 	public String getDetailedMessage() {
 		return super.getMessage();
+	}
+
+	public String getPurveyorId() {
+		return purveyorId;
+	}
+
+	public void setPurveyorId(String purveyorId) {
+		this.purveyorId = purveyorId;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
 
 	@Override

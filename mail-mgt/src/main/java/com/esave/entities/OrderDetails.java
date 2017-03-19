@@ -1,18 +1,21 @@
 package com.esave.entities;
 
-public class PurveyorDetails {
+public class OrderDetails {
 
 	private String purveyorURL;
 
 	private String userName;
 
 	private String password;
+	
+	private String orderId;
 
-	public PurveyorDetails(String purveyorURL, String userName, String password) {
+	public OrderDetails(String purveyorURL, String userName, String password, String orderId) {
 		super();
 		this.purveyorURL = purveyorURL;
 		this.userName = userName;
 		this.password = password;
+		this.orderId = orderId;
 	}
 
 	public String getUserName() {
@@ -37,6 +40,14 @@ public class PurveyorDetails {
 
 	public void setPurveyorURL(String purveyorURL) {
 		this.purveyorURL = purveyorURL;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
 
 	@Override

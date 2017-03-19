@@ -7,13 +7,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class Util {
+public class Utils {
 
 	private static final String NOTIFICATION_API_URL = "http://user.diningedge.com/confirm-order?orderId=%s&purveyorId=%s&success=%d";
 
 	private static final String USER_AGENT = "Mozilla/5.0";
 
-	public static void sendNotification(String orderId, String purveyorId, NotificationEvent event) throws IOException {
+	public void sendNotification(String orderId, String purveyorId, NotificationEvent event) throws IOException {
 		String notficationUrl = NOTIFICATION_API_URL;
 
 		if (NotificationEvent.SUCCESS.equals(event)) {
@@ -32,30 +32,22 @@ public class Util {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		connection.setRequestProperty("User-Agent", USER_AGENT);
-		int responseCode = connection.getResponseCode();
-		System.out.println("Notification Response Code :: " + responseCode);
-		if (responseCode == HttpURLConnection.HTTP_OK) { // success
-			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-			}
-			in.close();
-			// print result
-			System.out.println(response.toString());
-		} else {
-			System.out.println("Failure while sending notification");
-		}
-	}
-
-	public static void main(String[] args) {
-		try {
-			sendNotification(null, null, NotificationEvent.SUCCESS);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		int responseCode = connection.getResponseCode();
+//		System.out.println("Notification Response Code :: " + responseCode);
+//		if (responseCode == HttpURLConnection.HTTP_OK) { // success
+//			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//			String inputLine;
+//			StringBuffer response = new StringBuffer();
+//
+//			while ((inputLine = in.readLine()) != null) {
+//				response.append(inputLine);
+//			}
+//			in.close();
+//			// print result
+//			System.out.println(response.toString());
+//		} else {
+//			System.out.println("Notification Response Code is other than 200_OK so failed to send notification");
+//		}
 	}
 
 }

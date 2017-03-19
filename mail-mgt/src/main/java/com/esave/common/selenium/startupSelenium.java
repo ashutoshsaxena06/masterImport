@@ -2,7 +2,7 @@ package com.esave.common.selenium;
 
 import java.util.HashMap;
 
-import com.esave.entities.PurveyorDetails;
+import com.esave.entities.OrderDetails;
 
 public interface startupSelenium {
 	
