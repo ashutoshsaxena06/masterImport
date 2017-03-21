@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.esave.common.NotificationEvent;
 import com.esave.common.PropertiesManager;
 import com.esave.common.Utils;
+import com.esave.common.selenium.SeleniumItradeIO;
 import com.esave.entities.OrderDetails;
 import com.esave.exception.PurveyorNotFoundException;
 import com.sun.mail.imap.IMAPFolder;
@@ -183,7 +184,7 @@ public class MailProcessor {
 												e.printStackTrace();
 											}
 											if (orderDetails != null) {
-												Selenium sel = new Selenium();
+												SeleniumItradeIO sel = new SeleniumItradeIO();
 												sel.start(orderDetails);
 											}
 										}
@@ -294,33 +295,52 @@ public class MailProcessor {
 	 * @throws PurveyorNotFoundException
 	 *             the purveyor not found exception
 	 */
-	/*
-	 * private String processOrder(Scanner scanner, String messageContent)
-	 * throws MessagingException, PurveyorNotFoundException { String purveyorId
-	 * = null; String locationId = null; String orderId = null; while
-	 * (scanner.hasNextLine()) { String line = scanner.nextLine(); if
-	 * (line.startsWith("Purveyor:")) { String purveyorIdRecieved =
-	 * line.substring(line.indexOf("(") + 1, line.indexOf(")",
-	 * line.indexOf("("))); purveyorId = purveyorIdRecieved.trim(); } if
-	 * (line.startsWith("Location:")) { String locationIdRecieved =
-	 * line.substring(line.indexOf("(") + 1, line.indexOf(")",
-	 * line.indexOf("("))); locationId = locationIdRecieved.trim(); } if
-	 * (line.startsWith("Order #:")) { orderId = line.trim(); } } if
-	 * (StringUtils.isEmpty(purveyorId)) { if (StringUtils.isEmpty(locationId))
-	 * { throw new PurveyorNotFoundException(
-	 * "Location details not found in the order email", 101, purveyorId,
-	 * orderId); } // Need to consult DEFAULT_PURVEYOR_ID throw new
-	 * PurveyorNotFoundException("Purveyor details not found in the order email"
-	 * , 101, DEFAULT_PURVEYOR_ID, orderId); } PurveyorDetails purveyorDetails =
-	 * null; try { purveyorDetails = fetchPurveyorDetailsFromSystem(purveyorId,
-	 * locationId, orderId); if (purveyorDetails != null) { try {
-	 * Utils.sendNotification(purveyorId, orderId, NotificationEvent.SUCCESS); }
-	 * catch (IOException e1) { System.out.println(
-	 * "Communication failure occured while sending success notification");
-	 * e1.printStackTrace(); } } } catch (IOException e) { e.printStackTrace();
-	 * } Selenium sel = new Selenium(); sel.start(purveyorDetails); return
-	 * orderId; }
-	 */
+
+//	private String processOrder(Scanner scanner, String messageContent)
+//			throws MessagingException, PurveyorNotFoundException {
+//		String purveyorId = null;
+//		String locationId = null;
+//		String orderId = null;
+//		while (scanner.hasNextLine()) {
+//			String line = scanner.nextLine();
+//			if (line.startsWith("Purveyor:")) {
+//				String purveyorIdRecieved = line.substring(line.indexOf("(") + 1, line.indexOf(")", line.indexOf("(")));
+//				purveyorId = purveyorIdRecieved.trim();
+//			}
+//			if (line.startsWith("Location:")) {
+//				String locationIdRecieved = line.substring(line.indexOf("(") + 1, line.indexOf(")", line.indexOf("(")));
+//				locationId = locationIdRecieved.trim();
+//			}
+//			if (line.startsWith("Order #:")) {
+//				orderId = line.trim();
+//			}
+//		}
+//		if (StringUtils.isEmpty(purveyorId)) {
+//			if (StringUtils.isEmpty(locationId)) {
+//				throw new PurveyorNotFoundException("Location details not found in the order email", 101, purveyorId,
+//						orderId);
+//			} // Need to consult DEFAULT_PURVEYOR_ID throw new
+//			PurveyorNotFoundException("Purveyor details not found in the order email", 101, DEFAULT_PURVEYOR_ID,
+//					orderId);
+//		}
+//		PurveyorDetails purveyorDetails = null;
+//		try {
+//			purveyorDetails = fetchPurveyorDetailsFromSystem(purveyorId, locationId, orderId);
+//			if (purveyorDetails != null) {
+//				try {
+//					Utils.sendNotification(purveyorId, orderId, NotificationEvent.SUCCESS);
+//				} catch (IOException e1) {
+//					System.out.println("Communication failure occured while sending success notification");
+//					e1.printStackTrace();
+//				}
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		Selenium sel = new Selenium();
+//		sel.start(purveyorDetails);
+//		return orderId;
+//	}
 
 	private OrderDetails processOrder(String messageContent) throws MessagingException, PurveyorNotFoundException {
 		String purveyorId = null;
