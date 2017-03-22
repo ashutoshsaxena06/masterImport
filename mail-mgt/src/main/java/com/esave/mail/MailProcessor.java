@@ -78,22 +78,32 @@ public class MailProcessor {
 
 		PropertiesManager.purveyorPropertiesFile = DEFAULT_PURVEYOR_PROPERTIES;
 		PropertiesManager.locationPropertiesFile = DEFAULT_LOCATION_PROPERTIES;
-
-		MailProcessor mailProcessor = new MailProcessor();
-
-		mailProcessor.setSaveDirectory(DEFAUT_ATTACHMET_DIR);
-
-		// create an Imap connection with gmail
-		IMAPSSLStore store = null;
+		
 		try {
-			store = mailProcessor.createConnection();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
+			
+			MailProcessor mailProcessor = new MailProcessor();
+
+			mailProcessor.setSaveDirectory(DEFAUT_ATTACHMET_DIR);
+
+			// create an Imap connection with gmail
+			IMAPSSLStore store = null;
+			try {
+				store = mailProcessor.createConnection();
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// process the orders from EMail
+			mailProcessor.processOrdersFromEmail(store);
+			
+		} catch (Exception e) {
 			e.printStackTrace();
+			System.err.println("Unknown error occured please contact developer");
+			main(args);
 		}
 
-		// process the orders from EMail
-		mailProcessor.processOrdersFromEmail(store);
+		
 	}
 
 	/**
