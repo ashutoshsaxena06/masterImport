@@ -2,12 +2,12 @@
 <testng-results skipped="0" failed="0" total="1" passed="1">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="45385" started-at="2017-03-22T11:30:59Z" finished-at="2017-03-22T11:31:44Z">
+  <suite name="Default suite" duration-ms="53562" started-at="2017-03-22T16:44:26Z" finished-at="2017-03-22T16:45:20Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="45385" started-at="2017-03-22T11:30:59Z" finished-at="2017-03-22T11:31:44Z">
+    <test name="Default test" duration-ms="53562" started-at="2017-03-22T16:44:26Z" finished-at="2017-03-22T16:45:20Z">
       <class name="com.esave.common.selenium.SeleniumItradeIO">
-        <test-method status="PASS" signature="startUp()[pri:0, instance:com.esave.common.selenium.SeleniumItradeIO@ae45eb6]" name="startUp" duration-ms="45361" started-at="2017-03-22T17:00:59Z" finished-at="2017-03-22T17:01:44Z">
+        <test-method status="PASS" signature="startUp()[pri:0, instance:com.esave.common.selenium.SeleniumItradeIO@ae45eb6]" name="startUp" duration-ms="53539" started-at="2017-03-22T22:14:26Z" finished-at="2017-03-22T22:15:20Z">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- startUp -->
