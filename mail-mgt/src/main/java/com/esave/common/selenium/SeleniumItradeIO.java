@@ -12,9 +12,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.esave.entities.OrderDetails;
-import com.esave.exception.ImportOrderException;
-
-import junit.framework.Assert;
 
 public class SeleniumItradeIO extends CommonCheneyIO {
 
@@ -26,7 +23,6 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		String userName = orderDetails.getUserName();
 		String password = orderDetails.getPassword();
 		String orderID = orderDetails.getOrderId();
-
 		System.out.println(userName + " : " + password + " and " + orderID);
 		try {
 			// Launch setProperty for chrome, Launch, Implicit wait & maximize
@@ -34,35 +30,28 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			driver = Preconditions();
 
 			// Enter username, pwd and Return successful
-			try {
-				if (LoginCheney(driver, userName, password) == false) {
-					throw new ImportOrderException("Account login failure -", 202);
-				} else {
-					System.out.println("login success");
-
-				}
-			} catch (ImportOrderException e) {
-				System.out.println("Account login failure -" + e.getMessage());
-
-			}
+			LoginCheney(driver, userName, password);
 
 			// RandomAction.isFramePresent(driver);
-			try {
-				OrderPushSteps(driver, orderID);
-			} catch (ImportOrderException e) {
-				Thread.sleep(2000);
-				OrderPushSteps(driver, orderID);
-				System.out.println("Exception while calling OrderPushSteps " + e.getMessage());
-			}
+			Thread.sleep(2000);
+			OrderPushSteps(driver, orderID);
+
 		} catch (InterruptedException e) {
 			System.out.println("Failed !!!!" + e.getMessage());
 		} catch (WebDriverException e) {
 			System.out.println("Failed !!!!" + e.getMessage());
 		} finally {
-
+			// driver.switchTo().parentFrame();
+			// Choose Logout option
+			WebElement lnk_Logout = wait.until(
+					ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//a[contains(.,'Logout')]"))));
+			lnk_Logout.click();
+			driver.close();
 		}
 
 	}
+
+	// Order push Steps
 
 	public void OrderPushSteps(WebDriver driver, String orderNo) throws InterruptedException {
 
@@ -102,7 +91,8 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				By.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[1]"))).click()
 				.build().perform();
 
-		Assert.assertEquals(uploadFile(ss), true);
+		uploadFile(ss);
+
 		System.out.println("OrderFile uploaded");
 
 		// Update cart- Checkout1
@@ -126,7 +116,5 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		validateOrderStatus(driver);
 
 	}
-
-
 
 }
