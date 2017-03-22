@@ -17,9 +17,10 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class RandomAction {
-	
+
 	public static File WaitForNewFile(Path folder, String extension, int timeout_sec)
 			throws InterruptedException, IOException {
 		long end_time = System.currentTimeMillis() + timeout_sec * 1000;
@@ -36,8 +37,8 @@ public class RandomAction {
 		}
 		return null;
 	}
-	
-	public static  void DownloadOG(Robot robot) {
+
+	public static void DownloadOG(Robot robot) {
 
 		try {
 			robot = new Robot();
@@ -66,13 +67,13 @@ public class RandomAction {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static boolean isFramePresent(WebDriver driver) throws InterruptedException {
 		//
 		// driver.findElement(By.xpath("//html/body/table/tbody/tr[2]/td[1]/div/div[2]/table/tbody/tr[1]/td/input")).click();
 		Thread.sleep(3000);
 		// List to get & store frame
-		List<WebElement> ele = driver.findElements(By.tagName("frame"));
+		List<WebElement> ele = driver.findElements(By.tagName("iframe"));
 		System.out.println("Number of frames in a page :" + ele.size()); // ele.size
 																			// -
 																			// size
@@ -96,7 +97,16 @@ public class RandomAction {
 		}
 
 	}
-	
-	
+
+	public void checkAllCheckBoxes(WebDriver driver) {
+
+		List<WebElement> chk_ItemList = driver.findElements(By.xpath("//input[@class='CheckBox']"));
+		for (WebElement chk_CurrentItem : chk_ItemList) {
+			if (!chk_CurrentItem.isSelected()) {
+				chk_CurrentItem.click();
+			}
+		}
+
+	}
 
 }

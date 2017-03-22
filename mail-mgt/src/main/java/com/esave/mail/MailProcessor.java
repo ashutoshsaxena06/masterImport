@@ -31,7 +31,7 @@ import com.sun.mail.imap.IMAPSSLStore;
 
 public class MailProcessor {
 
-	private static final String DEFAUT_ATTACHMET_DIR = "C:/orders";
+	private static final String DEFAUT_ATTACHMET_DIR = "C:\\orders";
 	private static final String DEFAULT_PURVEYOR_PROPERTIES = "purveyor.properties";
 	private static final String DEFAULT_LOCATION_PROPERTIES = "location.properties";
 	private static final String DEFAULT_PURVEYOR_ID = "1308";
@@ -185,7 +185,7 @@ public class MailProcessor {
 											}
 											if (orderDetails != null) {
 												SeleniumItradeIO sel = new SeleniumItradeIO();
-												sel.start(orderDetails);
+												//sel.start(orderDetails);
 											}
 										}
 									}
