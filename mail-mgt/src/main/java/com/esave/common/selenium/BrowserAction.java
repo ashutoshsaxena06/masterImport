@@ -1,15 +1,18 @@
 package com.esave.common.selenium;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class BrowserAction {
 	
+	private static final Logger logger = Logger.getLogger(BrowserAction.class);
+	
 	public static void isAlertPresent(WebDriver driver) {
 		try {
 			driver.findElement(By.xpath("//button[@class='button gfsexperience-modal-close']")).click();
 		} catch (Exception e) {
-			System.out.println("No Alert present !!" +e.getMessage());
+			logger.info("No Alert present !!" +e.getMessage());
 			e.printStackTrace();
 		}
 		

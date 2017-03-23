@@ -2,11 +2,14 @@ package com.esave.common.selenium;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class RandomAction {
+	
+	private static final Logger logger = Logger.getLogger(RandomAction.class);
 
 //	public static File WaitForNewFile(Path folder, String extension, int timeout_sec)
 //			throws InterruptedException, IOException {
@@ -44,7 +47,7 @@ public class RandomAction {
 //			Thread.sleep(2000);
 //			robot.keyPress(KeyEvent.VK_ENTER);
 //			// press enter key of keyboard to perform above selected action
-//			System.out.println("File is downloaded");
+//			logger.info("File is downloaded");
 //
 //		} catch (AWTException e) {
 //			ErrRemedy.ErrReportingMail();
@@ -61,7 +64,7 @@ public class RandomAction {
 		Thread.sleep(3000);
 		// List to get & store frame
 		List<WebElement> ele = driver.findElements(By.tagName("iframe"));
-		System.out.println("Number of frames in a page :" + ele.size()); // ele.size
+		logger.info("Number of frames in a page :" + ele.size()); // ele.size
 																			// -
 																			// size
 																			// of
@@ -69,16 +72,16 @@ public class RandomAction {
 																			// list
 
 		if (ele.size() == 0) {
-			System.out.println("No iframes on this page");
+			logger.info("No iframes on this page");
 			return false; // No frames
 		} else {
-			System.out.println("iFrames present on this page, Below are the details -");
+			logger.info("iFrames present on this page, Below are the details -");
 
 			for (WebElement el : ele) {
 				// Returns the Id of a frame
-				System.out.println("iFrame Id :" + el.getAttribute("id"));
+				logger.info("iFrame Id :" + el.getAttribute("id"));
 				// Returns the Name of a frame.
-			//	System.out.println("iFrame name :" + el.getAttribute("name"));
+			//	logger.info("iFrame name :" + el.getAttribute("name"));
 			}
 			return true; // frames present
 		}

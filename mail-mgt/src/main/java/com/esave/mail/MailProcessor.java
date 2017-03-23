@@ -19,6 +19,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.search.SearchTerm;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.esave.common.NotificationEvent;
 import com.esave.common.PropertiesManager;
@@ -37,6 +38,9 @@ public class MailProcessor {
 	private static final String DEFAULT_PURVEYOR_ID = "1308";
 	private static final String USER_EMAIL = "importorders.diningedge@gmail.com";
 	private static final String USER_PASSWORD = "edge2016";
+	
+	private static final Logger logger = Logger.getLogger(MailProcessor.class);
+	
 	private String saveDirectory;
 
 	/**
@@ -59,12 +63,12 @@ public class MailProcessor {
 
 		// TODO: All sysout statements are used for testing, have to remove them
 		// while implementation
-		System.out.println("Connecting to gmail...");
+		logger.info("Connecting to gmail...");
 
 		// Connect to GMail, enter user name and password here
 		store.connect("imap.gmail.com", USER_EMAIL, USER_PASSWORD);
 
-		System.out.println("Connected to - " + store);
+		logger.info("Connected to - " + store);
 		return store;
 	}
 
@@ -127,11 +131,11 @@ public class MailProcessor {
 				folderInbox = (IMAPFolder) store.getFolder("INBOX");
 				folderProcessed = (IMAPFolder) store.getFolder("processed");
 				folderUnprocessed = (IMAPFolder) store.getFolder("unprocessed");
-				System.out.println("Total mails in inbox are = " + folderInbox.getMessageCount());
+				logger.info("Total mails in inbox are = " + folderInbox.getMessageCount());
 
 				if (folderInbox != null) {
 
-					System.out.println("Searching started....");
+					logger.info("Searching started....");
 
 					// Create GMail raw search term and use it to search in
 					// folder
@@ -154,18 +158,18 @@ public class MailProcessor {
 					};
 					Message[] messagesFound = folderInbox.search(rawTerm);
 
-					System.out.println("Total messages found for keyword are = " + messagesFound.length);
-					System.out.println("Messages found are:");
+					logger.info("Total messages found for keyword are = " + messagesFound.length);
+					logger.info("Messages found are:");
 
 					List<Message> tempSuccessList = new ArrayList<>();
 					List<Message> tempFailureList = new ArrayList<>();
 					// Process the messages found in search
-					System.out.println("--------------------------------------------");
+					logger.info("--------------------------------------------");
 					String contentType;
 					String messageContent = null;
 					for (Message message : messagesFound) {
 						contentType = message.getContentType();
-						System.out.println("# " + message.getSubject());
+						logger.info("# " + message.getSubject());
 						OrderDetails orderDetails = null;
 						try {
 							/*
@@ -218,7 +222,7 @@ public class MailProcessor {
 								new Utils().sendNotification(e.getPurveyorId(), e.getOrderId(),
 										NotificationEvent.FAILURE);
 							} catch (IOException e1) {
-								System.out.println("Communication failure occured while sending failure notification");
+								logger.info("Communication failure occured while sending failure notification");
 								e1.printStackTrace();
 							}
 							e.printStackTrace();
@@ -235,9 +239,9 @@ public class MailProcessor {
 					Message[] tempFailureMessageArray = tempFailureList.toArray(new Message[tempFailureList.size()]);
 					folderInbox.copyMessages(tempSuccessMessageArray, folderProcessed);
 					folderInbox.copyMessages(tempFailureMessageArray, folderUnprocessed);
-					System.out.println("--------------------------------------------");
+					logger.info("--------------------------------------------");
 					folderInbox.expunge();
-					System.out.println("Searching done!");
+					logger.info("Searching done!");
 				}
 			} finally {
 				if (folderInbox.isOpen()) {
@@ -348,7 +352,7 @@ public class MailProcessor {
 	// try {
 	// Utils.sendNotification(purveyorId, orderId, NotificationEvent.SUCCESS);
 	// } catch (IOException e1) {
-	// System.out.println("Communication failure occured while sending success
+	// logger.info("Communication failure occured while sending success
 	// notification");
 	// e1.printStackTrace();
 	// }
@@ -367,16 +371,16 @@ public class MailProcessor {
 		String orderId = null;
 		OrderDetails orderDetails = null;
 		messageContent = messageContent.replace("\n", "").replace("\r", "");
-		System.out.println(messageContent);
+		logger.info(messageContent);
 		purveyorId = messageContent.substring(messageContent.indexOf("Purveyor:(") + "Purveyor:(".length(),
 				messageContent.indexOf(")", messageContent.indexOf("(")));
-		System.out.println(purveyorId);
+		logger.info(purveyorId);
 		locationId = messageContent.substring(messageContent.indexOf("Location:(") + "Location:(".length(),
 				messageContent.indexOf(")", messageContent.indexOf("Location:(")));
-		System.out.println(locationId);
+		logger.info(locationId);
 		orderId = messageContent.substring(messageContent.indexOf("Order #:") + "Order #:".length(),
 				messageContent.indexOf("Location:(") - 1);
-		System.out.println(orderId);
+		logger.info(orderId);
 		if (StringUtils.isNotEmpty(purveyorId)) {
 			if (StringUtils.isNotEmpty(locationId)) {
 				if (StringUtils.isNotEmpty(orderId)) {
@@ -415,7 +419,7 @@ public class MailProcessor {
 		OrderDetails orderDetails = null;
 		Properties purveyorProperties = PropertiesManager.getPurveyorProperties();
 		String purveyorStoreUrl = purveyorProperties.getProperty(purveyorId);
-		System.out.println("Purveyor URL is : " + purveyorStoreUrl);
+		logger.info("Purveyor URL is : " + purveyorStoreUrl);
 		Properties locationProperties = PropertiesManager.getLocationProperties();
 		String storeCredentials = locationProperties.getProperty(locationId);
 		if (StringUtils.isNotEmpty(storeCredentials)) {
@@ -430,7 +434,7 @@ public class MailProcessor {
 						orderId);
 			}
 			orderDetails = new OrderDetails(purveyorStoreUrl, storeUserName, storePassword, orderId, purveyorId);
-			System.out.println(orderDetails);
+			logger.info(orderDetails);
 		}
 
 		return orderDetails;

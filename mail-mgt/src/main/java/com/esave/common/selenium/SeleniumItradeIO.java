@@ -4,6 +4,7 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -17,6 +18,8 @@ import com.esave.common.Utils;
 import com.esave.entities.OrderDetails;
 
 public class SeleniumItradeIO extends CommonCheneyIO {
+	
+	private static final Logger logger = Logger.getLogger(SeleniumItradeIO.class);
 
 	private WebDriverWait wait;
 	private WebDriver driver;
@@ -30,7 +33,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		// Actual File path ##
 		String filename = filepath + orderID + ".csv";
 
-		System.out.println(userName + " : " + password + " and " + filename);
+		logger.info(userName + " : " + password + " and " + filename);
 		try {
 			// Launch setProperty for chrome, Launch, Implicit wait & maximize
 			// Browser
@@ -50,14 +53,14 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// **** Order Products / Entry ***
 			List<WebElement> allElements = wait.until(ExpectedConditions.visibilityOfAllElements(driver
 					.findElements(By.xpath("//a[contains(.,'Ordering')]/following-sibling::div/ul/li/*/*/div/a"))));
-			System.out.println(allElements.size());
+			logger.info(allElements.size());
 
 			for (WebElement element : allElements) {
 
 				if (element.getText().equalsIgnoreCase("Order Products / Entry")) {
 					String OG_text = element.getText();
 					element.click();
-					System.out.println("Clicked on link - " + OG_text);
+					logger.info("Clicked on link - " + OG_text);
 					break;
 				}
 
@@ -67,7 +70,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// Upload btn click
 			Actions act = new Actions(driver);
 
-			System.out.println(filename);
+			logger.info(filename);
 			StringSelection ss = new StringSelection(filename);
 
 			act.moveToElement(driver.findElement(
@@ -76,7 +79,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			uploadFile(ss);
 
-			System.out.println("OrderFile uploaded");
+			logger.info("OrderFile uploaded");
 
 			// Update cart- Checkout1
 			updateCart(driver);
@@ -103,43 +106,43 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.SUCCESS);
 				} catch (IOException e1) {
-					System.out.println("Communication failure occured while sending success notification");
+					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
 				}
 			}
 
 		} catch (InterruptedException e) {
 
-			System.out.println("Failed !!!!" + e.getMessage());
+			logger.info("Failed !!!!" + e.getMessage());
 			if (orderDetails != null) {
 				try {
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
 				} catch (IOException e1) {
-					System.out.println("Communication failure occured while sending success notification");
+					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
 				}
 			}
 
 		} catch (WebDriverException e) {
-			System.out.println("Failed !!!!" + e.getMessage());
+			logger.info("Failed !!!!" + e.getMessage());
 			if (orderDetails != null) {
 				try {
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
 				} catch (IOException e1) {
-					System.out.println("Communication failure occured while sending success notification");
+					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
 				}
 			}
 
 		} catch (Exception ex) {
-			System.out.println("Failed !!!!" + ex.getMessage());
+			logger.info("Failed !!!!" + ex.getMessage());
 			try {
 				new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 						NotificationEvent.FAILURE);
 			} catch (IOException e1) {
-				System.out.println("Communication failure occured while sending success notification");
+				logger.info("Communication failure occured while sending success notification");
 				e1.printStackTrace();
 			}
 
