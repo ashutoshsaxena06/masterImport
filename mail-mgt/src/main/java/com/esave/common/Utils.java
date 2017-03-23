@@ -1,6 +1,8 @@
 package com.esave.common;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,22 +32,22 @@ public class Utils {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		connection.setRequestProperty("User-Agent", USER_AGENT);
-//		int responseCode = connection.getResponseCode();
-//		System.out.println("Notification Response Code :: " + responseCode);
-//		if (responseCode == HttpURLConnection.HTTP_OK) { // success
-//			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//			String inputLine;
-//			StringBuffer response = new StringBuffer();
-//
-//			while ((inputLine = in.readLine()) != null) {
-//				response.append(inputLine);
-//			}
-//			in.close();
-//			// print result
-//			System.out.println(response.toString());
-//		} else {
-//			System.out.println("Notification Response Code is other than 200_OK so failed to send notification");
-//		}
+		int responseCode = connection.getResponseCode();
+		System.out.println("Notification Response Code :: " + responseCode);
+		if (responseCode == HttpURLConnection.HTTP_OK) { // success
+			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+			// print result
+			System.out.println(response.toString());
+		} else {
+			System.out.println("Notification Response Code is other than 200_OK so failed to send notification");
+		}
 	}
 
 }

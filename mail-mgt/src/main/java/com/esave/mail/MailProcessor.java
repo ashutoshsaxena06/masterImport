@@ -64,7 +64,7 @@ public class MailProcessor {
 		// Connect to GMail, enter user name and password here
 		store.connect("imap.gmail.com", USER_EMAIL, USER_PASSWORD);
 
-		System.out.println("Conected to - " + store);
+		System.out.println("Connected to - " + store);
 		return store;
 	}
 
@@ -78,9 +78,9 @@ public class MailProcessor {
 
 		PropertiesManager.purveyorPropertiesFile = DEFAULT_PURVEYOR_PROPERTIES;
 		PropertiesManager.locationPropertiesFile = DEFAULT_LOCATION_PROPERTIES;
-		
+
 		try {
-			
+
 			MailProcessor mailProcessor = new MailProcessor();
 
 			mailProcessor.setSaveDirectory(DEFAUT_ATTACHMET_DIR);
@@ -96,14 +96,12 @@ public class MailProcessor {
 
 			// process the orders from EMail
 			mailProcessor.processOrdersFromEmail(store);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Unknown error occured please contact developer");
-			main(args);
 		}
 
-		
 	}
 
 	/**
@@ -170,14 +168,14 @@ public class MailProcessor {
 						System.out.println("# " + message.getSubject());
 						OrderDetails orderDetails = null;
 						try {
-							if (contentType.contains("text/plain") || contentType.contains("text/html")) {
+							/*if (contentType.contains("text/plain") || contentType.contains("text/html")) {
 								Object content = message.getContent();
 								if (content != null) {
 									messageContent = content.toString();
 									processOrder(messageContent);
 									isProcessed = true;
 								}
-							}
+							}*/
 							if (contentType.contains("multipart")) {
 								Multipart multiPart = (Multipart) message.getContent();
 								int numberOfParts = multiPart.getCount();
@@ -194,8 +192,12 @@ public class MailProcessor {
 												e.printStackTrace();
 											}
 											if (orderDetails != null) {
-												SeleniumItradeIO sel = new SeleniumItradeIO();
-												sel.start(orderDetails);
+												try {
+													SeleniumItradeIO sel = new SeleniumItradeIO();
+													sel.start(orderDetails);
+												} catch (Exception e) {
+													e.printStackTrace();
+												}
 											}
 										}
 									}
@@ -306,51 +308,57 @@ public class MailProcessor {
 	 *             the purveyor not found exception
 	 */
 
-//	private String processOrder(Scanner scanner, String messageContent)
-//			throws MessagingException, PurveyorNotFoundException {
-//		String purveyorId = null;
-//		String locationId = null;
-//		String orderId = null;
-//		while (scanner.hasNextLine()) {
-//			String line = scanner.nextLine();
-//			if (line.startsWith("Purveyor:")) {
-//				String purveyorIdRecieved = line.substring(line.indexOf("(") + 1, line.indexOf(")", line.indexOf("(")));
-//				purveyorId = purveyorIdRecieved.trim();
-//			}
-//			if (line.startsWith("Location:")) {
-//				String locationIdRecieved = line.substring(line.indexOf("(") + 1, line.indexOf(")", line.indexOf("(")));
-//				locationId = locationIdRecieved.trim();
-//			}
-//			if (line.startsWith("Order #:")) {
-//				orderId = line.trim();
-//			}
-//		}
-//		if (StringUtils.isEmpty(purveyorId)) {
-//			if (StringUtils.isEmpty(locationId)) {
-//				throw new PurveyorNotFoundException("Location details not found in the order email", 101, purveyorId,
-//						orderId);
-//			} // Need to consult DEFAULT_PURVEYOR_ID throw new
-//			PurveyorNotFoundException("Purveyor details not found in the order email", 101, DEFAULT_PURVEYOR_ID,
-//					orderId);
-//		}
-//		PurveyorDetails purveyorDetails = null;
-//		try {
-//			purveyorDetails = fetchPurveyorDetailsFromSystem(purveyorId, locationId, orderId);
-//			if (purveyorDetails != null) {
-//				try {
-//					Utils.sendNotification(purveyorId, orderId, NotificationEvent.SUCCESS);
-//				} catch (IOException e1) {
-//					System.out.println("Communication failure occured while sending success notification");
-//					e1.printStackTrace();
-//				}
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		Selenium sel = new Selenium();
-//		sel.start(purveyorDetails);
-//		return orderId;
-//	}
+	// private String processOrder(Scanner scanner, String messageContent)
+	// throws MessagingException, PurveyorNotFoundException {
+	// String purveyorId = null;
+	// String locationId = null;
+	// String orderId = null;
+	// while (scanner.hasNextLine()) {
+	// String line = scanner.nextLine();
+	// if (line.startsWith("Purveyor:")) {
+	// String purveyorIdRecieved = line.substring(line.indexOf("(") + 1,
+	// line.indexOf(")", line.indexOf("(")));
+	// purveyorId = purveyorIdRecieved.trim();
+	// }
+	// if (line.startsWith("Location:")) {
+	// String locationIdRecieved = line.substring(line.indexOf("(") + 1,
+	// line.indexOf(")", line.indexOf("(")));
+	// locationId = locationIdRecieved.trim();
+	// }
+	// if (line.startsWith("Order #:")) {
+	// orderId = line.trim();
+	// }
+	// }
+	// if (StringUtils.isEmpty(purveyorId)) {
+	// if (StringUtils.isEmpty(locationId)) {
+	// throw new PurveyorNotFoundException("Location details not found in the
+	// order email", 101, purveyorId,
+	// orderId);
+	// } // Need to consult DEFAULT_PURVEYOR_ID throw new
+	// PurveyorNotFoundException("Purveyor details not found in the order
+	// email", 101, DEFAULT_PURVEYOR_ID,
+	// orderId);
+	// }
+	// PurveyorDetails purveyorDetails = null;
+	// try {
+	// purveyorDetails = fetchPurveyorDetailsFromSystem(purveyorId, locationId,
+	// orderId);
+	// if (purveyorDetails != null) {
+	// try {
+	// Utils.sendNotification(purveyorId, orderId, NotificationEvent.SUCCESS);
+	// } catch (IOException e1) {
+	// System.out.println("Communication failure occured while sending success
+	// notification");
+	// e1.printStackTrace();
+	// }
+	// }
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// Selenium sel = new Selenium();
+	// sel.start(purveyorDetails);
+	// return orderId;
+	// }
 
 	private OrderDetails processOrder(String messageContent) throws MessagingException, PurveyorNotFoundException {
 		String purveyorId = null;
@@ -374,14 +382,6 @@ public class MailProcessor {
 					try {
 						orderDetails = fetchPurveyorDetailsFromSystem(purveyorId, locationId, orderId);
 						// Send Success Notification
-						if (orderDetails != null) {
-							try {
-								new Utils().sendNotification(purveyorId, orderId, NotificationEvent.SUCCESS);
-							} catch (IOException e1) {
-								System.out.println("Communication failure occured while sending success notification");
-								e1.printStackTrace();
-							}
-						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -428,7 +428,7 @@ public class MailProcessor {
 				throw new PurveyorNotFoundException("Location details does not exist in the system", 102, purveyorId,
 						orderId);
 			}
-			orderDetails = new OrderDetails(purveyorStoreUrl, storeUserName, storePassword, orderId);
+			orderDetails = new OrderDetails(purveyorStoreUrl, storeUserName, storePassword, orderId, purveyorId);
 			System.out.println(orderDetails);
 		}
 

@@ -9,13 +9,18 @@ public class OrderDetails {
 	private String password;
 	
 	private String orderId;
+	
+	private String purveyorId;
 
-	public OrderDetails(String purveyorURL, String userName, String password, String orderId) {
+	private String purveoyrId;
+
+	public OrderDetails(String purveyorURL, String userName, String password, String orderId, String purveyorId) {
 		super();
 		this.purveyorURL = purveyorURL;
 		this.userName = userName;
 		this.password = password;
 		this.orderId = orderId;
+		this.purveyorId = purveyorId;
 	}
 
 	public String getUserName() {
@@ -48,6 +53,14 @@ public class OrderDetails {
 
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
+	}
+
+	public String getPurveyorId() {
+		return purveyorId;
+	}
+
+	public void setPurveyorId(String purveyorId) {
+		this.purveyorId = purveoyrId;
 	}
 
 	@Override
