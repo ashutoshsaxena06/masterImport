@@ -168,14 +168,14 @@ public class MailProcessor {
 						System.out.println("# " + message.getSubject());
 						OrderDetails orderDetails = null;
 						try {
-							/*if (contentType.contains("text/plain") || contentType.contains("text/html")) {
-								Object content = message.getContent();
-								if (content != null) {
-									messageContent = content.toString();
-									processOrder(messageContent);
-									isProcessed = true;
-								}
-							}*/
+							/*
+							 * if (contentType.contains("text/plain") ||
+							 * contentType.contains("text/html")) { Object
+							 * content = message.getContent(); if (content !=
+							 * null) { messageContent = content.toString();
+							 * processOrder(messageContent); isProcessed = true;
+							 * } }
+							 */
 							if (contentType.contains("multipart")) {
 								Multipart multiPart = (Multipart) message.getContent();
 								int numberOfParts = multiPart.getCount();
@@ -193,6 +193,7 @@ public class MailProcessor {
 											}
 											if (orderDetails != null) {
 												try {
+													// Call Selenium ##
 													SeleniumItradeIO sel = new SeleniumItradeIO();
 													sel.start(orderDetails);
 												} catch (Exception e) {

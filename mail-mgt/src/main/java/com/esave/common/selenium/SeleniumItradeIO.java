@@ -28,7 +28,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		String orderID = orderDetails.getOrderId();
 		String filepath = "C:\\orders\\";
 		// Actual File path ##
-		String filename = filepath + orderID;
+		String filename = filepath + orderID + ".csv";
 
 		System.out.println(userName + " : " + password + " and " + filename);
 		try {
@@ -43,9 +43,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(2000);
 
 			// ordering
-			WebElement lnk_Ordering = wait.until(
-					ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
-			lnk_Ordering.click();
+			// WebElement lnk_Ordering = wait.until(
+			// ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
+			// lnk_Ordering.click();
 
 			// **** Order Products / Entry ***
 			List<WebElement> allElements = wait.until(ExpectedConditions.visibilityOfAllElements(driver
@@ -132,13 +132,29 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					e1.printStackTrace();
 				}
 			}
+
+		} catch (Exception ex) {
+			System.out.println("Failed !!!!" + ex.getMessage());
+			try {
+				new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+						NotificationEvent.FAILURE);
+			} catch (IOException e1) {
+				System.out.println("Communication failure occured while sending success notification");
+				e1.printStackTrace();
+			}
+
 		} finally {
 			// driver.switchTo().parentFrame();
 			// Choose Logout option
-			WebElement lnk_Logout = wait.until(
-					ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//a[contains(.,'Logout')]"))));
-			lnk_Logout.click();
-			driver.quit();
+			try {
+				WebElement lnk_Logout = wait.until(ExpectedConditions
+						.elementToBeClickable(driver.findElement(By.xpath("//a[contains(.,'Logout')]"))));
+				lnk_Logout.click();
+				driver.quit();
+			} catch (WebDriverException e) {
+				driver.quit();
+				e.printStackTrace();
+			}
 		}
 
 	}
