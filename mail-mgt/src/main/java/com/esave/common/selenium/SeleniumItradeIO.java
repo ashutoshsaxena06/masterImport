@@ -50,7 +50,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// Launch setProperty for chrome, Launch, Implicit wait & maximize
 			// Browser
 			System.setProperty("webdriver.chrome.driver",
-					"C:\\Users\\ashsaxen\\Downloads\\chromedriver_win32\\chromedriver.exe");
+					"C:\\Users\\ImportOrder\\Downloads\\chromedriver_win32\\chromedriver.exe");
 			// RandomAction.setDownloadFilePath();
 			driver = new ChromeDriver();
 			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
@@ -287,74 +287,59 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			// Validate/ Submit Order
 			// validateOrder(driver);
-			if (driver.getCurrentUrl()
-					.equalsIgnoreCase("procurement.itradenetwork.com/Platform/Orders/Checkout/SelectSubmit")) {
-				// Submit ---#s
-				// submitOrder(driver);
-				// validate/ Submit btn
-				WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
-						driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
-				System.out.println(btn_SubmitOrder.getText());
-				if (btn_SubmitOrder.getText().equalsIgnoreCase("Validate/Submit")) {
-					btn_SubmitOrder.click();
-				}
 
-			} else {
-				Thread.sleep(2000);
-				// logger.info(driver.getCurrentUrl());
-				// Submit ---#
-				// submitOrder(driver);
-				// validate/ Submit btn
-				WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
-						driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
-				System.out.println(btn_SubmitOrder.getText());
-				if (btn_SubmitOrder.getText().equalsIgnoreCase("Validate/Submit")) {
-					btn_SubmitOrder.click();
-				}
-			}
+			// Submit ---#s
+			// submitOrder(driver);
+			// validate/ Submit btn
+			WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
+					driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
+			logger.info(btn_SubmitOrder.getText());
+			btn_SubmitOrder.click();
+
+			Thread.sleep(2000);
 
 			// Confirm Order Status
 			// validateOrderStatus(driver);
-			if (driver
-					.findElement(By
-							.xpath("//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable']"))
-					.isDisplayed()) {
-				try {
-					RandomAction.isIframePresent(driver);
-					driver.switchTo().frame(driver.findElement(By.xpath(
-							"//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable']/div[1]/iframe")));
-					logger.info("iFrame captured");
-					WebElement orderText = driver.findElement(
-							By.xpath("//div[@id='orderdetails']/div[1]/div[contains(.,'has been processed']"));
-					logger.info(orderText.getText());
-
-					logger.info("#Success");
-
-					if (orderDetails != null) {
-						try {
-							new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-									NotificationEvent.SUCCESS);
-						} catch (IOException e1) {
-							logger.info("Communication failure occured while sending success notification");
-							e1.printStackTrace();
-						}
-					}
-				} catch (Exception e) {
-					if (orderDetails != null) {
-						try {
-							new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-									NotificationEvent.SUCCESS);
-						} catch (IOException e1) {
-							logger.info("Communication failure occured while sending success notification");
-							e1.printStackTrace();
-						}
-					}
-					// TODO Auto-generated catch block
-
-					e.printStackTrace();
-				}
-
-			}
+//			if (driver
+//					.findElement(By
+//							.xpath("//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable']"))
+//					.isDisplayed()) {
+//				try {
+//					RandomAction.isIframePresent(driver);
+//					driver.switchTo().frame(driver.findElement(By.xpath(
+//							"//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable']/div[1]/iframe")));
+//					logger.info("iFrame captured");
+//					WebElement orderText = driver.findElement(
+//							By.xpath("//div[@id='orderdetails']/div[1]/div[contains(.,'has been processed']"));
+//					logger.info(orderText.getText());
+//
+//					logger.info("#Success");
+//
+//					if (orderDetails != null) {
+//						try {
+//							new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+//									NotificationEvent.SUCCESS);
+//						} catch (IOException e1) {
+//							logger.info("Communication failure occured while sending success notification");
+//							e1.printStackTrace();
+//						}
+//					}
+//				} catch (Exception e) {
+//					if (orderDetails != null) {
+//						try {
+//							new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+//									NotificationEvent.SUCCESS);
+//						} catch (IOException e1) {
+//							logger.info("Communication failure occured while sending success notification");
+//							e1.printStackTrace();
+//						}
+//					}
+//					// TODO Auto-generated catch block
+//
+//					e.printStackTrace();
+//				}
+//
+//			}
 
 			if (orderDetails != null) {
 				try {

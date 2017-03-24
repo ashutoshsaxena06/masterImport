@@ -198,13 +198,8 @@ public class MailProcessor {
 												e.printStackTrace();
 											}
 											if (orderDetails != null) {
-												try {
-													// Call Selenium ##
-													SeleniumItradeIO sel = new SeleniumItradeIO();
-													sel.start(orderDetails);
-												} catch (Exception e) {
-													e.printStackTrace();
-												}
+												
+												logger.info("Id's fetched");												
 											}
 										}
 									}
@@ -212,6 +207,13 @@ public class MailProcessor {
 										if (orderDetails != null) {
 											part.saveFile(saveDirectory + File.separator + orderDetails.getOrderId()
 													+ ".csv");
+											try {
+												// Call Selenium ##
+												SeleniumItradeIO sel = new SeleniumItradeIO();
+												sel.start(orderDetails);
+											} catch (Exception e) {
+												e.printStackTrace();
+											}
 										}
 									}
 								}
