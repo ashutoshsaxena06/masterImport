@@ -7,6 +7,8 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
@@ -360,6 +362,12 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
+				} catch (KeyManagementException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NoSuchAlgorithmException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 
@@ -371,6 +379,12 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 							NotificationEvent.FAILURE);
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
+					e1.printStackTrace();
+				} catch (KeyManagementException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NoSuchAlgorithmException e1) {
+					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -384,6 +398,12 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			} catch (IOException e1) {
 				logger.info("Communication failure occured while sending success notification");
 				e1.printStackTrace();
+			} catch (KeyManagementException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 		} finally {

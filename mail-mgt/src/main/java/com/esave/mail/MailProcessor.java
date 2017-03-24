@@ -3,6 +3,8 @@ package com.esave.mail;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -227,6 +229,12 @@ public class MailProcessor {
 										NotificationEvent.FAILURE);
 							} catch (IOException e1) {
 								logger.info("Communication failure occured while sending failure notification");
+								e1.printStackTrace();
+							} catch (KeyManagementException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (NoSuchAlgorithmException e1) {
+								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
 							e.printStackTrace();
