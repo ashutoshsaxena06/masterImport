@@ -4,8 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.log4j.Logger;
 
@@ -17,7 +23,7 @@ public class Utils {
 	
 	private static final Logger logger = Logger.getLogger(Utils.class);
 
-	public void sendNotification(String orderId, String purveyorId, NotificationEvent event) throws IOException {
+	public void sendNotification(String orderId, String purveyorId, NotificationEvent event) throws IOException, NoSuchAlgorithmException, KeyManagementException {
 		String notficationUrl = NOTIFICATION_API_URL;
 
 		if (NotificationEvent.SUCCESS.equals(event)) {
@@ -25,19 +31,30 @@ public class Utils {
 		} else {
 			notficationUrl = String.format(notficationUrl, orderId, purveyorId, 0);
 		}
+		
 		logger.info("Notification URL is :" + notficationUrl);
-		URL url = null;
-		try {
-			url = new URL(notficationUrl);
-		} catch (MalformedURLException e) {
-			logger.info("Incorrect Format of notification url");
-			e.printStackTrace();
-		}
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		URL url = new URL(null, notficationUrl, new sun.net.www.protocol.https.Handler());
+		//do this only if URL is HTTPS
+		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+		connection.setDoOutput(true);
+		connection.setDoInput(true);
 		connection.setRequestMethod("GET");
-		connection.setRequestProperty("User-Agent", USER_AGENT);
+		//Adding timeout parameters
+		
+		// create context	
+		SSLContext context = SSLContext.getInstance("TLS");
+		// initialize the context with trust, key store 
+		context.init(null, null, new SecureRandom());
+		
+		// make connection
+		SSLSocketFactory sockFact = context.getSocketFactory();
+		connection.setSSLSocketFactory(sockFact);
+		
+		//reading output
+		
+		connection.connect();
+		
 		int responseCode = connection.getResponseCode();
-		logger.info("Notification Response Code :: " + responseCode);
 		if (responseCode == HttpURLConnection.HTTP_OK) { // success
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String inputLine;
