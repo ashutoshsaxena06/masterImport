@@ -38,9 +38,9 @@ public class MailProcessor {
 	private static final String DEFAULT_PURVEYOR_ID = "1308";
 	private static final String USER_EMAIL = "importorders.diningedge@gmail.com";
 	private static final String USER_PASSWORD = "edge2016";
-	
+
 	private static final Logger logger = Logger.getLogger(MailProcessor.class);
-	
+
 	private String saveDirectory;
 
 	/**
@@ -172,14 +172,16 @@ public class MailProcessor {
 						logger.info("# " + message.getSubject());
 						OrderDetails orderDetails = null;
 						try {
-							/*
-							 * if (contentType.contains("text/plain") ||
-							 * contentType.contains("text/html")) { Object
-							 * content = message.getContent(); if (content !=
-							 * null) { messageContent = content.toString();
-							 * processOrder(messageContent); isProcessed = true;
-							 * } }
-							 */
+
+							if (contentType.contains("text/plain") || contentType.contains("text/html")) {
+								Object content = message.getContent();
+								if (content != null) {
+									messageContent = content.toString();
+									processOrder(messageContent);
+									isProcessed = true;
+								}
+							}
+
 							if (contentType.contains("multipart")) {
 								Multipart multiPart = (Multipart) message.getContent();
 								int numberOfParts = multiPart.getCount();
@@ -196,13 +198,8 @@ public class MailProcessor {
 												e.printStackTrace();
 											}
 											if (orderDetails != null) {
-												try {
-													// Call Selenium ##
-													SeleniumItradeIO sel = new SeleniumItradeIO();
-													sel.start(orderDetails);
-												} catch (Exception e) {
-													e.printStackTrace();
-												}
+												
+												logger.info("Id's fetched");												
 											}
 										}
 									}
@@ -210,6 +207,13 @@ public class MailProcessor {
 										if (orderDetails != null) {
 											part.saveFile(saveDirectory + File.separator + orderDetails.getOrderId()
 													+ ".csv");
+											try {
+												// Call Selenium ##
+												SeleniumItradeIO sel = new SeleniumItradeIO();
+												sel.start(orderDetails);
+											} catch (Exception e) {
+												e.printStackTrace();
+											}
 										}
 									}
 								}
@@ -379,7 +383,8 @@ public class MailProcessor {
 				messageContent.indexOf(")", messageContent.indexOf("Location:(")));
 		logger.info(locationId);
 		orderId = messageContent.substring(messageContent.indexOf("Order #:") + "Order #:".length(),
-				messageContent.indexOf("Location:(") - 1);
+				messageContent.indexOf("Location:("));
+		orderId= orderId.replaceAll("[^0-9]","");
 		logger.info(orderId);
 		if (StringUtils.isNotEmpty(purveyorId)) {
 			if (StringUtils.isNotEmpty(locationId)) {

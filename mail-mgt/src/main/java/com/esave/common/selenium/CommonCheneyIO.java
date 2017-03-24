@@ -9,7 +9,6 @@ import java.awt.event.KeyEvent;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
@@ -25,8 +24,6 @@ public class CommonCheneyIO {
 	
 	private WebDriverWait wait;
 	private WebDriver driver;
-	
-	private static final Logger logger = Logger.getLogger(CommonCheneyIO.class);
 
 	public void validateOrderStatus(WebDriver driver) throws InterruptedException {
 		// verification
@@ -37,12 +34,12 @@ public class CommonCheneyIO {
 			RandomAction.isIframePresent(driver);
 			driver.switchTo().frame(driver.findElement(By.xpath(
 					"//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable']/div[1]/iframe")));
-			logger.info("iFrame captured");
+			System.out.println("iFrame captured");
 			WebElement orderText = driver
 					.findElement(By.xpath("//div[@id='orderdetails']/div[1]/div[contains(.,'has been processed']"));
-			logger.info(orderText.getText());
+			System.out.println(orderText.getText());
 
-			logger.info("#Success");
+			System.out.println("#Success");
 
 		}
 
@@ -57,7 +54,7 @@ public class CommonCheneyIO {
 
 		} else {
 			Thread.sleep(2000);
-			logger.info(driver.getCurrentUrl());
+			System.out.println(driver.getCurrentUrl());
 			// Submit ---#
 			submitOrder(driver);
 		}
@@ -68,7 +65,7 @@ public class CommonCheneyIO {
 		// validate/ Submit btn
 		WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
 				driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
-		logger.info(btn_SubmitOrder.getText());
+		System.out.println(btn_SubmitOrder.getText());
 		if (btn_SubmitOrder.getText().equalsIgnoreCase("Validate/Submit")) {
 			btn_SubmitOrder.click();
 		}
@@ -82,7 +79,7 @@ public class CommonCheneyIO {
 				.elementToBeClickable(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
 		if (btn_CheckOut.getText().equalsIgnoreCase("Checkout")) {
 			btn_CheckOut.click();
-			logger.info("Final Checkout");
+			System.out.println("Final Checkout");
 		}
 	}
 
@@ -94,7 +91,7 @@ public class CommonCheneyIO {
 			// div[@id='TitleBar']/*/*/div[@id='TitleBarActionNavButtons']/*
 			if (btn_GoToCart.getText().equalsIgnoreCase("Go to Cart")) {
 				btn_GoToCart.click();
-				logger.info("Gotocart");
+				System.out.println("Gotocart");
 			} else {
 				driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]")).click();
 			}
@@ -109,14 +106,14 @@ public class CommonCheneyIO {
 
 			// Check the presence of alert
 			Alert alert = driver.switchTo().alert();
-			logger.info(alert.getText());
+			System.out.println(alert.getText());
 			// if present consume the alert
 			if (alert.getText().equalsIgnoreCase("Add all valid products to your cart?")) {
 				alert.accept();
 				Thread.sleep(3000);
 				return true;
 			} else {
-				logger.info(alert.getText());
+				System.out.println(alert.getText());
 				return false;
 			}
 		} catch (NoAlertPresentException ex) {
@@ -136,19 +133,19 @@ public class CommonCheneyIO {
 			Thread.sleep(5000);
 			// Click _UpdateCart
 			clickUpdatecart();
-			logger.info("lnk_UpdateCart not clicked - NoSuchElementException");
+			System.out.println("lnk_UpdateCart not clicked - NoSuchElementException");
 
 		} catch (TimeoutException te) {
 			Thread.sleep(5000);
 			// Click _UpdateCart
 			clickUpdatecart();
-			logger.info("lnk_UpdateCart not clicked - TimeoutException");
+			System.out.println("lnk_UpdateCart not clicked - TimeoutException");
 
 		} catch (WebDriverException e) {
 			Thread.sleep(5000);
 			// Click _UpdateCart
 			clickUpdatecart();
-			logger.info("lnk_UpdateCart not clicked - WebDriverException");
+			System.out.println("lnk_UpdateCart not clicked - WebDriverException");
 
 		}
 
@@ -158,7 +155,7 @@ public class CommonCheneyIO {
 		// get Link text
 		WebElement lnk_UpdateCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(
 				By.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a"))));
-		logger.info("Link text : " + lnk_UpdateCart.getAttribute("title"));
+		System.out.println("Link text : " + lnk_UpdateCart.getAttribute("title"));
 
 		Thread.sleep(20000);
 		// Click
@@ -166,7 +163,7 @@ public class CommonCheneyIO {
 			WebElement btn_UpdatecCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
 					"//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))));
 			btn_UpdatecCart.click();
-			logger.info("Clicked on Update Cart");
+			System.out.println("Clicked on Update Cart");
 		} else {
 			driver.findElement(
 					By.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))
@@ -189,11 +186,11 @@ public class CommonCheneyIO {
 			robot.keyRelease(KeyEvent.VK_ENTER);
 			return true;
 		} catch (HeadlessException e) {
-			logger.info("Desktop window upload failed");
+			System.out.println("Desktop window upload failed");
 
 			return false;
 		} catch (AWTException e) {
-			logger.info("Desktop window upload failed");
+			System.out.println("Desktop window upload failed");
 			return false;
 		}
 	}
@@ -236,7 +233,7 @@ public class CommonCheneyIO {
 				.elementToBeClickable(driver.findElement(By.xpath("//input[contains(@value,'Login')]"))));
 		btn_Login.click();
 
-		// logger.info("Login Successful");
+		// System.out.println("Login Successful");
 
 		return true;
 
