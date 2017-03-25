@@ -19,7 +19,6 @@ import javax.mail.Session;
 import javax.mail.URLName;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.search.SearchTerm;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -200,8 +199,8 @@ public class MailProcessor {
 												e.printStackTrace();
 											}
 											if (orderDetails != null) {
-												
-												logger.info("Id's fetched");												
+
+												logger.info("Id's fetched");
 											}
 										}
 									}
@@ -392,7 +391,7 @@ public class MailProcessor {
 		logger.info(locationId);
 		orderId = messageContent.substring(messageContent.indexOf("Order #:") + "Order #:".length(),
 				messageContent.indexOf("Location:("));
-		orderId= orderId.replaceAll("[^0-9]","");
+		orderId = orderId.replaceAll("[^0-9]", "");
 		logger.info(orderId);
 		if (StringUtils.isNotEmpty(purveyorId)) {
 			if (StringUtils.isNotEmpty(locationId)) {
@@ -448,6 +447,9 @@ public class MailProcessor {
 			}
 			orderDetails = new OrderDetails(purveyorStoreUrl, storeUserName, storePassword, orderId, purveyorId);
 			logger.info(orderDetails);
+		} else {
+			throw new PurveyorNotFoundException("Location details does not exist in the system", 102, purveyorId,
+					orderId);
 		}
 
 		return orderDetails;

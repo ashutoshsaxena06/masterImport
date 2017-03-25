@@ -2,16 +2,16 @@
 <testng-results skipped="0" failed="0" total="1" passed="1">
   <reporter-output>
   </reporter-output>
-  <suite name="Default suite" duration-ms="53562" started-at="2017-03-22T16:44:26Z" finished-at="2017-03-22T16:45:20Z">
+  <suite name="Default suite" duration-ms="157828" started-at="2017-03-24T20:00:14Z" finished-at="2017-03-24T20:02:51Z">
     <groups>
     </groups>
-    <test name="Default test" duration-ms="53562" started-at="2017-03-22T16:44:26Z" finished-at="2017-03-22T16:45:20Z">
-      <class name="com.esave.common.selenium.SeleniumItradeIO">
-        <test-method status="PASS" signature="startUp()[pri:0, instance:com.esave.common.selenium.SeleniumItradeIO@ae45eb6]" name="startUp" duration-ms="53539" started-at="2017-03-22T22:14:26Z" finished-at="2017-03-22T22:15:20Z">
+    <test name="Default test" duration-ms="157828" started-at="2017-03-24T20:00:14Z" finished-at="2017-03-24T20:02:51Z">
+      <class name="com.esave.mail.NewTest">
+        <test-method status="PASS" signature="f()[pri:0, instance:com.esave.mail.NewTest@4b9e13df]" name="f" duration-ms="157811" started-at="2017-03-25T01:30:14Z" finished-at="2017-03-25T01:32:51Z">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- startUp -->
-      </class> <!-- com.esave.common.selenium.SeleniumItradeIO -->
+        </test-method> <!-- f -->
+      </class> <!-- com.esave.mail.NewTest -->
     </test> <!-- Default test -->
   </suite> <!-- Default suite -->
 </testng-results>
