@@ -224,7 +224,7 @@ public class MailProcessor {
 							e.printStackTrace();
 						} catch (PurveyorNotFoundException e) {
 							try {
-								new Utils().sendNotification(e.getPurveyorId(), e.getOrderId(),
+								new Utils().sendNotification(e.getOrderId(), e.getPurveyorId(),
 										NotificationEvent.FAILURE);
 							} catch (IOException e1) {
 								logger.info("Communication failure occured while sending failure notification");
