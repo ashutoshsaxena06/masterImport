@@ -405,12 +405,10 @@ public class MailProcessor {
 				} else {
 					throw new PurveyorNotFoundException("Order Id not found in the order email", 101, purveyorId, null);
 				}
-
 			} else {
 				throw new PurveyorNotFoundException("Location details not found in the order email", 101, purveyorId,
 						orderId);
 			}
-
 		} else {
 			// Need to consult DEFAULT_PURVEYOR_ID
 			throw new PurveyorNotFoundException("Purveyor details not found in the order email", 101,
