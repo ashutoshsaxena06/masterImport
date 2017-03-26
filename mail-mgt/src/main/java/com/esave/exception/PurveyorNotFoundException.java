@@ -34,6 +34,8 @@ public class PurveyorNotFoundException extends Exception {
 	public PurveyorNotFoundException(String detailedMsg, Integer reasonCd, String purveyorId, String orderId) {
 		super(detailedMsg);
 		this.reasonCode = reasonCd;
+		this.purveyorId = purveyorId;
+		this.orderId = orderId;
 	}
 
 	public Integer getReasonCode() {
