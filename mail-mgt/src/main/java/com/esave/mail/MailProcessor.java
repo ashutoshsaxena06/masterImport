@@ -389,7 +389,7 @@ public class MailProcessor {
 		locationId = messageContent.substring(messageContent.indexOf("Location:(") + "Location:(".length(),
 				messageContent.indexOf(")", messageContent.indexOf("Location:(")));
 		logger.info(locationId);
-		orderId = messageContent.substring(messageContent.indexOf("Order #:") + "Order #:".length(),
+		orderId = messageContent.substring(messageContent.indexOf("rder #:") + "rder #:".length(),
 				messageContent.indexOf("Location:("));
 		orderId = orderId.replaceAll("[^0-9]", "");
 		logger.info(orderId);
