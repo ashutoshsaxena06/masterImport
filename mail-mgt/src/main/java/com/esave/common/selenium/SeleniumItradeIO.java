@@ -55,7 +55,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					"C:\\Users\\ImportOrder\\Downloads\\chromedriver_win32\\chromedriver.exe");
 			// RandomAction.setDownloadFilePath();
 			driver = new ChromeDriver();
-			driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 			// BrowserAction.ClearBrowserCache(driver);
 			driver.manage().window().maximize();
 
@@ -245,6 +245,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			try {
 
 				// Check the presence of alert
+				Thread.sleep(2000);
 				Alert alert = driver.switchTo().alert();
 				System.out.println(alert.getText());
 				// if present consume the alert
