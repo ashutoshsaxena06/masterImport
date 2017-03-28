@@ -262,6 +262,10 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				}
 			} catch (NoAlertPresentException ex) {
 				// Alert not present
+				Robot robot = new Robot();
+				Thread.sleep(2000);
+				robot.keyPress(KeyEvent.VK_ENTER);
+				robot.keyRelease(KeyEvent.VK_ENTER);
 				
 				ex.printStackTrace();
 			}
@@ -352,15 +356,15 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 //
 //			}
 
-//			if (orderDetails != null) {
-//				try {
-//					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-//							NotificationEvent.SUCCESS);
-//				} catch (IOException e1) {
-//					logger.info("Communication failure occured while sending success notification");
-//					e1.printStackTrace();
-//				}
-//			}
+			if (orderDetails != null) {
+				try {
+					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+							NotificationEvent.SUCCESS);
+				} catch (IOException e1) {
+					logger.info("Communication failure occured while sending success notification");
+					e1.printStackTrace();
+				}
+			}
 		} catch (InterruptedException e) {
 
 			logger.info("Failed !!!!" + e.getMessage());
