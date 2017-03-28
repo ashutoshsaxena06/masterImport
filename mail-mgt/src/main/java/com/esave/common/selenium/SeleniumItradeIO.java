@@ -6,6 +6,7 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -13,10 +14,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -52,7 +56,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// Launch setProperty for chrome, Launch, Implicit wait & maximize
 			// Browser
 			System.setProperty("webdriver.chrome.driver",
-					"C:\\Users\\ImportOrder\\Downloads\\chromedriver_win32\\chromedriver.exe");
+					"C:\\Users\\ashsaxen\\Downloads\\chromedriver_win32\\chromedriver.exe");
 			// RandomAction.setDownloadFilePath();
 			driver = new ChromeDriver();
 			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -258,9 +262,12 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				}
 			} catch (NoAlertPresentException ex) {
 				// Alert not present
+				
 				ex.printStackTrace();
 			}
 
+			Thread.sleep(2000);
+			
 			WebElement btn_GoToCart = wait.until(ExpectedConditions
 					.elementToBeClickable(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
 			// div[@id='TitleBar']/*/*/div[@id='TitleBarActionNavButtons']/*
@@ -345,15 +352,15 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 //
 //			}
 
-			if (orderDetails != null) {
-				try {
-					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-							NotificationEvent.SUCCESS);
-				} catch (IOException e1) {
-					logger.info("Communication failure occured while sending success notification");
-					e1.printStackTrace();
-				}
-			}
+//			if (orderDetails != null) {
+//				try {
+//					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+//							NotificationEvent.SUCCESS);
+//				} catch (IOException e1) {
+//					logger.info("Communication failure occured while sending success notification");
+//					e1.printStackTrace();
+//				}
+//			}
 		} catch (InterruptedException e) {
 
 			logger.info("Failed !!!!" + e.getMessage());
@@ -361,6 +368,8 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				try {
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
+					// Screenshot
+					errorScreenshot(driver, orderID);
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -379,6 +388,8 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				try {
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
+					// Screenshot
+					errorScreenshot(driver, orderID);
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -397,6 +408,8 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			try {
 				new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 						NotificationEvent.FAILURE);
+				// Screenshot
+				errorScreenshot(driver, orderID);
 			} catch (IOException e1) {
 				logger.info("Communication failure occured while sending success notification");
 				e1.printStackTrace();
@@ -413,6 +426,21 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// Choose Logout option
 			driver.close();
 		}
+	}
+	
+	void errorScreenshot(WebDriver driver, String orderID){
+	// Take screenshot and store as a file format
+	File src= ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+	try {
+	 // now copy the  screenshot to desired location using copyFile //method
+	FileUtils.copyFile(src, new File("C:\\errorScreenshot\\"+ orderID +".png"));
+	}
+	 
+	catch (IOException e)
+	 {
+	  System.out.println(e.getMessage());
+	 
+	 }
 	}
 
 }
