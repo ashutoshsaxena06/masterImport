@@ -381,7 +381,8 @@ public class MailProcessor {
 		String locationId = null;
 		String orderId = null;
 		OrderDetails orderDetails = null;
-		messageContent = messageContent.replace("\n", "").replace("\r", "");
+		messageContent = messageContent.replace("\n", "").replace("\r", "").replace("=", "");
+		
 		logger.info(messageContent);
 		purveyorId = messageContent.substring(messageContent.indexOf("Purveyor:(") + "Purveyor:(".length(),
 				messageContent.indexOf(")", messageContent.indexOf("(")));
@@ -389,7 +390,7 @@ public class MailProcessor {
 		locationId = messageContent.substring(messageContent.indexOf("Location:(") + "Location:(".length(),
 				messageContent.indexOf(")", messageContent.indexOf("Location:(")));
 		logger.info(locationId);
-		orderId = messageContent.substring(messageContent.indexOf("rder #:") + "rder #:".length(),
+		orderId = messageContent.substring(messageContent.indexOf("Order #:") + "Order #:".length(),
 				messageContent.indexOf("Location:("));
 		orderId = orderId.replaceAll("[^0-9]", "");
 		logger.info(orderId);
