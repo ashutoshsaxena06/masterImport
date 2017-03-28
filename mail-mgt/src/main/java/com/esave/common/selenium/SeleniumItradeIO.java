@@ -149,11 +149,12 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				// Click _UpdateCart
 				// clickUpdatecart();
 				// get Link text
+				Thread.sleep(20000);
+				
 				WebElement lnk_UpdateCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By
 						.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a"))));
 				System.out.println("Link text : " + lnk_UpdateCart.getAttribute("title"));
 
-				Thread.sleep(20000);
 				// Click
 				if (lnk_UpdateCart.getAttribute("title").equalsIgnoreCase("Update Cart")) {
 					WebElement btn_UpdatecCart = wait
