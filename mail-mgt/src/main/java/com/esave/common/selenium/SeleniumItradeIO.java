@@ -302,7 +302,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			// Validate/ Submit Order
 			// validateOrder(driver);
-
+			//poNumber maxLengthRestriction OptionalField
 			// Submit ---#s
 			// submitOrder(driver);
 			// validate/ Submit btn
