@@ -1,17 +1,12 @@
 package com.esave.common.selenium;
 
-import java.awt.AWTException;
-import java.awt.HeadlessException;
 import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
@@ -21,12 +16,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -38,8 +31,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 	private static final Logger logger = Logger.getLogger(SeleniumItradeIO.class);
 
-	private WebDriverWait wait;
-	private WebDriver driver;
+	/*
+	 * private WebDriverWait wait; private WebDriver driver;
+	 */
 
 	public void start(OrderDetails orderDetails) {
 
@@ -117,133 +111,51 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			// Thread.sleep(2000);
 			// Upload btn click
-			Actions act = new Actions(driver);
 
-			logger.info(filename);
-			StringSelection ss = new StringSelection(filename);
+			WebElement uploadForm = driver.findElement(By.xpath("//form[@id='uploadForm']/input[@id='fileInput']"));
+			uploadForm.sendKeys(filename);
 
-			act.moveToElement(driver.findElement(
-					By.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[1]")))
-					.click().build().perform();
+			logger.info("OrderFile uploaded :-" + filename);
 
-			// uploadFile(ss);
+			// StringSelection ss = new StringSelection(filename);
+			//
+			// act.moveToElement(driver.findElement(
+			// By.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate
+			// rtbItem'][2]/following-sibling::li[1]")))
+			// .click().build().perform();
+			//
+			// // uploadFile(ss);
+			// try {
+			// Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,
+			// null);
+			// Robot robot = new Robot();
+			// Thread.sleep(2000);
+			// robot.keyPress(KeyEvent.VK_CONTROL);
+			// robot.keyPress(KeyEvent.VK_V);
+			// robot.keyRelease(KeyEvent.VK_CONTROL);
+			// robot.keyRelease(KeyEvent.VK_V);
+			// Thread.sleep(2000);
+			// robot.keyPress(KeyEvent.VK_ENTER);
+			// robot.keyRelease(KeyEvent.VK_ENTER);
+			// } catch (HeadlessException e) {
+			// logger.info("Desktop window upload failed");
+			//
+			// } catch (AWTException e) {
+			// logger.info("Desktop window upload failed");
+			// }
+
 			try {
-				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss, null);
-				Robot robot = new Robot();
-				Thread.sleep(2000);
-				robot.keyPress(KeyEvent.VK_CONTROL);
-				robot.keyPress(KeyEvent.VK_V);
-				robot.keyRelease(KeyEvent.VK_CONTROL);
-				robot.keyRelease(KeyEvent.VK_V);
-				Thread.sleep(2000);
-				robot.keyPress(KeyEvent.VK_ENTER);
-				robot.keyRelease(KeyEvent.VK_ENTER);
-			} catch (HeadlessException e) {
-				logger.info("Desktop window upload failed");
-
-			} catch (AWTException e) {
-				logger.info("Desktop window upload failed");
-			}
-
-			logger.info("OrderFile uploaded");
-
-			// Update cart- Checkout1
-			// updateCart(driver);
-			try {
-				// Click _UpdateCart
-				// clickUpdatecart();
 				// get Link text
 				Thread.sleep(20000);
-				
-				WebElement lnk_UpdateCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By
-						.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a"))));
-				System.out.println("Link text : " + lnk_UpdateCart.getAttribute("title"));
+				verifyUpload(driver);
 
-				// Click
-				if (lnk_UpdateCart.getAttribute("title").equalsIgnoreCase("Update Cart")) {
-					WebElement btn_UpdatecCart = wait
-							.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
-									"//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))));
-					btn_UpdatecCart.click();
-					System.out.println("Clicked on Update Cart");
-				} else {
-					driver.findElement(By
-							.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))
-							.click();
-				}
-
-			} catch (NoSuchElementException ne) {
-				Thread.sleep(5000);
 				// Click _UpdateCart
-				// clickUpdatecart();
-				// get Link text
-				WebElement lnk_UpdateCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By
-						.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a"))));
-				System.out.println("Link text : " + lnk_UpdateCart.getAttribute("title"));
-
-				Thread.sleep(20000);
-				// Click
-				if (lnk_UpdateCart.getAttribute("title").equalsIgnoreCase("Update Cart")) {
-					WebElement btn_UpdatecCart = wait
-							.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
-									"//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))));
-					btn_UpdatecCart.click();
-					System.out.println("Clicked on Update Cart");
-				} else {
-					driver.findElement(By
-							.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))
-							.click();
-				}
-				System.out.println("lnk_UpdateCart not clicked - NoSuchElementException");
-
-			} catch (TimeoutException te) {
-				Thread.sleep(5000);
-				// Click _UpdateCart
-				// clickUpdatecart();
-				// get Link text
-				WebElement lnk_UpdateCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By
-						.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a"))));
-				System.out.println("Link text : " + lnk_UpdateCart.getAttribute("title"));
-
-				Thread.sleep(20000);
-				// Click
-				if (lnk_UpdateCart.getAttribute("title").equalsIgnoreCase("Update Cart")) {
-					WebElement btn_UpdatecCart = wait
-							.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
-									"//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))));
-					btn_UpdatecCart.click();
-					System.out.println("Clicked on Update Cart");
-				} else {
-					driver.findElement(By
-							.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))
-							.click();
-				}
-				System.out.println("lnk_UpdateCart not clicked - TimeoutException");
+				updateCart(driver);
 
 			} catch (WebDriverException e) {
-				Thread.sleep(5000);
-				// Click _UpdateCart
-				// clickUpdatecart();
-				// get Link text
-				WebElement lnk_UpdateCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By
-						.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a"))));
-				System.out.println("Link text : " + lnk_UpdateCart.getAttribute("title"));
 
-				Thread.sleep(20000);
-				// Click
-				if (lnk_UpdateCart.getAttribute("title").equalsIgnoreCase("Update Cart")) {
-					WebElement btn_UpdatecCart = wait
-							.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
-									"//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))));
-					btn_UpdatecCart.click();
-					System.out.println("Clicked on Update Cart");
-				} else {
-					driver.findElement(By
-							.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))
-							.click();
-				}
-				System.out.println("lnk_UpdateCart not clicked - WebDriverException");
-
+				logger.info("Failed !!! at veridyUpload / upDate cart");
+				e.printStackTrace();
 			}
 
 			// Pop Up- confirm - Checkout2
@@ -252,13 +164,13 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				// Check the presence of alert
 				Thread.sleep(2000);
 				Alert alert = driver.switchTo().alert();
-				System.out.println(alert.getText());
+				logger.info(alert.getText());
 				// if present consume the alert
 				if (alert.getText().equalsIgnoreCase("Add all valid products to your cart?")) {
 					alert.accept();
 					Thread.sleep(3000);
 				} else {
-					System.out.println(alert.getText());
+					logger.info(alert.getText());
 				}
 			} catch (NoAlertPresentException ex) {
 				// Alert not present
@@ -266,12 +178,12 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				Thread.sleep(2000);
 				robot.keyPress(KeyEvent.VK_ENTER);
 				robot.keyRelease(KeyEvent.VK_ENTER);
-				
+
 				ex.printStackTrace();
 			}
 
 			Thread.sleep(2000);
-			
+
 			WebElement btn_GoToCart = wait.until(ExpectedConditions
 					.elementToBeClickable(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
 			// div[@id='TitleBar']/*/*/div[@id='TitleBarActionNavButtons']/*
@@ -282,14 +194,6 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]")).click();
 			}
 
-			// if (addProductsToCartPopUp(driver) == true) {
-			// // Go To Cart
-			// //goToCart(driver);
-			//
-			// }
-			// else {
-			//
-			// }
 			// Final- checkout3
 			// checkOut(driver);
 			Thread.sleep(2000);
@@ -300,61 +204,63 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				logger.info("Final Checkout");
 			}
 
-			// Validate/ Submit Order
-			// validateOrder(driver);
-			//poNumber maxLengthRestriction OptionalField
-			// Submit ---#s
-			// submitOrder(driver);
 			// validate/ Submit btn
 			WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
 					driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
 			logger.info(btn_SubmitOrder.getText());
-			btn_SubmitOrder.click();
+			// btn_SubmitOrder.click();
 
 			Thread.sleep(2000);
 
 			// Confirm Order Status
 			// validateOrderStatus(driver);
-//			if (driver
-//					.findElement(By
-//							.xpath("//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable']"))
-//					.isDisplayed()) {
-//				try {
-//					RandomAction.isIframePresent(driver);
-//					driver.switchTo().frame(driver.findElement(By.xpath(
-//							"//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable']/div[1]/iframe")));
-//					logger.info("iFrame captured");
-//					WebElement orderText = driver.findElement(
-//							By.xpath("//div[@id='orderdetails']/div[1]/div[contains(.,'has been processed']"));
-//					logger.info(orderText.getText());
-//
-//					logger.info("#Success");
-//
-//					if (orderDetails != null) {
-//						try {
-//							new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-//									NotificationEvent.SUCCESS);
-//						} catch (IOException e1) {
-//							logger.info("Communication failure occured while sending success notification");
-//							e1.printStackTrace();
-//						}
-//					}
-//				} catch (Exception e) {
-//					if (orderDetails != null) {
-//						try {
-//							new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-//									NotificationEvent.SUCCESS);
-//						} catch (IOException e1) {
-//							logger.info("Communication failure occured while sending success notification");
-//							e1.printStackTrace();
-//						}
-//					}
-//					// TODO Auto-generated catch block
-//
-//					e.printStackTrace();
-//				}
-//
-//			}
+			// if (driver
+			// .findElement(By
+			// .xpath("//div[@class='ui-dialog ui-widget ui-widget-content
+			// ui-corner-all ui-front ui-draggable']"))
+			// .isDisplayed()) {
+			// try {
+			// RandomAction.isIframePresent(driver);
+			// driver.switchTo().frame(driver.findElement(By.xpath(
+			// "//div[@class='ui-dialog ui-widget ui-widget-content
+			// ui-corner-all ui-front ui-draggable']/div[1]/iframe")));
+			// logger.info("iFrame captured");
+			// WebElement orderText = driver.findElement(
+			// By.xpath("//div[@id='orderdetails']/div[1]/div[contains(.,'has
+			// been processed']"));
+			// logger.info(orderText.getText());
+			//
+			// logger.info("#Success");
+			//
+			// if (orderDetails != null) {
+			// try {
+			// new Utils().sendNotification(orderDetails.getOrderId(),
+			// orderDetails.getPurveyorId(),
+			// NotificationEvent.SUCCESS);
+			// } catch (IOException e1) {
+			// logger.info("Communication failure occured while sending success
+			// notification");
+			// e1.printStackTrace();
+			// }
+			// }
+			// } catch (Exception e) {
+			// if (orderDetails != null) {
+			// try {
+			// new Utils().sendNotification(orderDetails.getOrderId(),
+			// orderDetails.getPurveyorId(),
+			// NotificationEvent.SUCCESS);
+			// } catch (IOException e1) {
+			// logger.info("Communication failure occured while sending success
+			// notification");
+			// e1.printStackTrace();
+			// }
+			// }
+			// // TODO Auto-generated catch block
+			//
+			// e.printStackTrace();
+			// }
+			//
+			// }
 
 			if (orderDetails != null) {
 				try {
@@ -378,10 +284,8 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
 				} catch (KeyManagementException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (NoSuchAlgorithmException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -398,10 +302,8 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
 				} catch (KeyManagementException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (NoSuchAlgorithmException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -418,40 +320,30 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				logger.info("Communication failure occured while sending success notification");
 				e1.printStackTrace();
 			} catch (KeyManagementException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		} finally {
-			// driver.switchTo().parentFrame();
 			// Choose Logout option
 			driver.close();
 		}
 	}
-	
-	void errorScreenshot(WebDriver driver, String orderID){
-	// Take screenshot and store as a file format
-	File src= ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-	try {
-	 // now copy the  screenshot to desired location using copyFile //method
-	FileUtils.copyFile(src, new File("C:\\errorScreenshot\\"+ orderID +".png"));
-	}
-	 
-	catch (IOException e)
-	 {
-	  System.out.println(e.getMessage());
-	 
-	 }
+
+	void errorScreenshot(WebDriver driver, String orderID) {
+		// Take screenshot and store as a file format
+		File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		try {
+			// now copy the screenshot to desired location using copyFile
+			// //method
+			FileUtils.copyFile(src, new File("C:\\errorScreenshot\\" + orderID + ".png"));
+		}
+
+		catch (IOException e) {
+			logger.info(e.getMessage());
+
+		}
 	}
 
 }
-
-// Order push Steps
-
-// public void OrderPushSteps(WebDriver driver, String orderNo) throws
-// InterruptedException {
-//
-// }

@@ -6,6 +6,7 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
@@ -21,9 +22,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class CommonCheneyIO {
-	
-	private WebDriverWait wait;
-	private WebDriver driver;
+
+	public WebDriverWait wait;
+	public WebDriver driver;
 
 	public void validateOrderStatus(WebDriver driver) throws InterruptedException {
 		// verification
@@ -127,37 +128,31 @@ public class CommonCheneyIO {
 
 		try {
 			// Click _UpdateCart
-			clickUpdatecart();
+			clickUpdatecart(driver);
 
 		} catch (NoSuchElementException ne) {
-			Thread.sleep(5000);
-			// Click _UpdateCart
-			clickUpdatecart();
 			System.out.println("lnk_UpdateCart not clicked - NoSuchElementException");
+			ne.printStackTrace();
 
 		} catch (TimeoutException te) {
-			Thread.sleep(5000);
-			// Click _UpdateCart
-			clickUpdatecart();
 			System.out.println("lnk_UpdateCart not clicked - TimeoutException");
+			te.printStackTrace();
 
 		} catch (WebDriverException e) {
-			Thread.sleep(5000);
-			// Click _UpdateCart
-			clickUpdatecart();
 			System.out.println("lnk_UpdateCart not clicked - WebDriverException");
+			e.printStackTrace();
 
 		}
 
 	}
 
-	public void clickUpdatecart() throws InterruptedException {
+	public void clickUpdatecart(WebDriver driver) throws InterruptedException {
 		// get Link text
 		WebElement lnk_UpdateCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(
 				By.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a"))));
 		System.out.println("Link text : " + lnk_UpdateCart.getAttribute("title"));
 
-		Thread.sleep(20000);
+		Thread.sleep(3000);
 		// Click
 		if (lnk_UpdateCart.getAttribute("title").equalsIgnoreCase("Update Cart")) {
 			WebElement btn_UpdatecCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
@@ -216,12 +211,12 @@ public class CommonCheneyIO {
 
 		// pass login credentials
 		wait = new WebDriverWait(driver, 15);
-		// enter username  ##
+		// enter username ##
 		WebElement chb_Username = wait.until(
 				ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//input[contains(@id,'username')]"))));
 		chb_Username.sendKeys(User);
 
-		// enter password  ##
+		// enter password ##
 		WebElement chb_Password = wait.until(
 				ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//input[contains(@id,'password')]"))));
 		chb_Password.sendKeys(pwd);
@@ -239,4 +234,15 @@ public class CommonCheneyIO {
 
 	}
 
+	public void verifyUpload(WebDriver driver) {
+		ArrayList<WebElement> importedItems = new ArrayList<>(
+				wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(
+						By.xpath("//div[@id='DataEntryGrid']/div[@class=\"t-grid-content\"]/table/tbody/*")))));
+		if (importedItems.size() == 1) {
+			System.out.println("No items imported");
+		} else {
+			System.out.println("Imported Items :- " + importedItems.size());
+		}
+
+	}
 }
