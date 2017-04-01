@@ -6,13 +6,18 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -193,7 +198,7 @@ public class CommonCheneyIO {
 	public WebDriver Preconditions() {
 
 		System.setProperty("webdriver.chrome.driver",
-				"C:\\Users\\ashsaxen\\Downloads\\chromedriver_win32\\chromedriver.exe");
+				"C:\\Users\\ImportOrder\\Downloads\\chromedriver_win32\\chromedriver.exe");
 		// RandomAction.setDownloadFilePath();
 		driver = new ChromeDriver();
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
@@ -244,5 +249,35 @@ public class CommonCheneyIO {
 			System.out.println("Imported Items :- " + importedItems.size());
 		}
 
+	}
+
+	public void enterPoNumber(WebDriver driver, String poNum) {
+		try {
+			WebElement poNumber = wait.until(ExpectedConditions.visibilityOf(driver
+					.findElement(By.xpath("//input[@class='poNumber maxLengthRestriction OptionalField']"))));
+			poNumber.sendKeys(poNum);
+			//input[@class='poNumber maxLengthRestriction OptionalField']
+		} catch (NoSuchElementException ne) {
+			ne.printStackTrace();
+		} catch (WebDriverException we) {
+			we.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void errorScreenshot(WebDriver driver, String orderID) {
+		// Take screenshot and store as a file format
+		File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		try {
+			// now copy the screenshot to desired location using copyFile
+			// //method
+			FileUtils.copyFile(src, new File("C:\\errorScreenshot\\" + orderID + ".png"));
+		}
+
+		catch (IOException e) {
+			System.out.println("Screenshot failed");
+			e.printStackTrace();
+		}
 	}
 }
