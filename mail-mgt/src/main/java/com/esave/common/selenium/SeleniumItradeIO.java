@@ -200,7 +200,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
 					driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
 			logger.info(btn_SubmitOrder.getText());
-			btn_SubmitOrder.click();
+		//	btn_SubmitOrder.click();
 
 			Thread.sleep(2000);
 
