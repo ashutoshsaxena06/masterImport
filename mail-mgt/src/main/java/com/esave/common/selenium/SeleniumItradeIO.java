@@ -15,6 +15,7 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -44,13 +45,11 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			// Launch setProperty for chrome, Launch, Implicit wait & maximize
 			// Browser
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("start-maximized");
 			System.setProperty("webdriver.chrome.driver",
-					"C:\\Users\\ImportOrder\\Downloads\\chromedriver_win32\\chromedriver.exe");
-			// RandomAction.setDownloadFilePath();
-			driver = new ChromeDriver();
-			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-			// BrowserAction.ClearBrowserCache(driver);
-			driver.manage().window().maximize();
+					"C:\\Users\\ashsaxen\\Downloads\\chromedriver_win32\\chromedriver.exe");
+			driver = new ChromeDriver(options);
 
 			// Enter username, pwd and Return successful
 			// LoginCheney(driver, userName, password);

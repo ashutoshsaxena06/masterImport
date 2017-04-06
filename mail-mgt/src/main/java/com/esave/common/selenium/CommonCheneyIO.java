@@ -23,6 +23,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -197,13 +198,11 @@ public class CommonCheneyIO {
 
 	public WebDriver Preconditions() {
 
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("start-maximized");
 		System.setProperty("webdriver.chrome.driver",
-				"C:\\Users\\ImportOrder\\Downloads\\chromedriver_win32\\chromedriver.exe");
-		// RandomAction.setDownloadFilePath();
-		driver = new ChromeDriver();
-		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		// BrowserAction.ClearBrowserCache(driver);
-		driver.manage().window().maximize();
+				"C:\\Users\\ashsaxen\\Downloads\\chromedriver_win32\\chromedriver.exe");
+		driver = new ChromeDriver(options);
 
 		return driver;
 
@@ -253,10 +252,10 @@ public class CommonCheneyIO {
 
 	public void enterPoNumber(WebDriver driver, String poNum) {
 		try {
-			WebElement poNumber = wait.until(ExpectedConditions.visibilityOf(driver
-					.findElement(By.xpath("//input[@class='poNumber maxLengthRestriction OptionalField']"))));
+			WebElement poNumber = wait.until(ExpectedConditions.visibilityOf(
+					driver.findElement(By.xpath("//input[@class='poNumber maxLengthRestriction OptionalField']"))));
 			poNumber.sendKeys(poNum);
-			//input[@class='poNumber maxLengthRestriction OptionalField']
+			// input[@class='poNumber maxLengthRestriction OptionalField']
 		} catch (NoSuchElementException ne) {
 			ne.printStackTrace();
 		} catch (WebDriverException we) {
