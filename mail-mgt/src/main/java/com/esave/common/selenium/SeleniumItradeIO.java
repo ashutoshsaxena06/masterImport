@@ -83,6 +83,8 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			WebElement lnk_Ordering = wait.until(
 					ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
 			lnk_Ordering.click();
+			
+			Thread.sleep(3000);
 
 			// **** Order Products / Entry ***
 			List<WebElement> allElements = wait.until(ExpectedConditions.visibilityOfAllElements(driver
