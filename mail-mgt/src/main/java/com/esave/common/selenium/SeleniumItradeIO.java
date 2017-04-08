@@ -1,23 +1,15 @@
 package com.esave.common.selenium;
 
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.esave.common.NotificationEvent;
 import com.esave.common.Utils;
@@ -43,41 +35,21 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		logger.info(userName + " : " + password + " and " + filename);
 		try {
 
+
 			// Launch setProperty for chrome, Launch, Implicit wait & maximize
 			// Browser
-			ChromeOptions options = new ChromeOptions();
-			options.addArguments("start-maximized");
-			System.setProperty("webdriver.chrome.driver",
-					"C:\\Users\\ImportOrder\\Downloads\\chromedriver_win32\\chromedriver.exe");
-			driver = new ChromeDriver(options);
-			
+			driver = Preconditions();
+
 			// Enter username, pwd and Return successful
 			// LoginCheney(driver, userName, password);
-			driver.get("http://www.procurement.itradenetwork.com/Platform/Membership/Login");
+			try {
+				System.out.println("Login successful :- " + LoginCheney(driver, userName, password));
+			} catch (WebDriverException e) {
+				System.out.println("Login failed");
+				e.getMessage();
+			}
 
-			Thread.sleep(2000);
-
-			// pass login credentials
-			wait = new WebDriverWait(driver, 15);
-			// enter username ##
-			WebElement chb_Username = wait.until(
-					ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//input[contains(@id,'username')]"))));
-			chb_Username.sendKeys(userName);
-
-			// enter password ##
-			WebElement chb_Password = wait.until(
-					ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//input[contains(@id,'password')]"))));
-			chb_Password.sendKeys(password);
-
-			driver.findElement(By.xpath("//input[contains(@id,'rememberMe')]")).click();
-
-			// click login
-			WebElement btn_Login = wait.until(ExpectedConditions
-					.elementToBeClickable(driver.findElement(By.xpath("//input[contains(@value,'Login')]"))));
-			btn_Login.click();
-
-
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 
 			// ordering
 			WebElement lnk_Ordering = wait.until(
@@ -102,7 +74,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			}
 
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 			// Upload btn click
 
 			WebElement uploadForm = driver.findElement(By.xpath("//form[@id='uploadForm']/input[@id='fileInput']"));
@@ -122,12 +94,12 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,
 			// null);
 			// Robot robot = new Robot();
-			// Thread.sleep(2000);
+			// Thread.sleep(3000);
 			// robot.keyPress(KeyEvent.VK_CONTROL);
 			// robot.keyPress(KeyEvent.VK_V);
 			// robot.keyRelease(KeyEvent.VK_CONTROL);
 			// robot.keyRelease(KeyEvent.VK_V);
-			// Thread.sleep(2000);
+			// Thread.sleep(3000);
 			// robot.keyPress(KeyEvent.VK_ENTER);
 			// robot.keyRelease(KeyEvent.VK_ENTER);
 			// } catch (HeadlessException e) {
@@ -139,7 +111,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			try {
 				// get Link text
-				Thread.sleep(20000);
+				Thread.sleep(3000);
 				verifyUpload(driver);
 
 				// Click _UpdateCart
@@ -153,42 +125,26 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			// Pop Up- confirm - Checkout2
 			try {
-				// Check the presence of alert
-				Thread.sleep(2000);
-				Alert alert = driver.switchTo().alert();
-				logger.info(alert.getText());
-				// if present consume the alert
-				if (alert.getText().equalsIgnoreCase("Add all valid products to your cart?")) {
-					alert.accept();
-					Thread.sleep(3000);
-				} else {
-					logger.info(alert.getText());
+
+				if (addProductsToCartPopUp(driver) == true) {
+					// Go To Cart
+					goToCart(driver);
+					// errorScreenshot(driver, orderID);
 				}
-			} catch (NoAlertPresentException ex) {
-				// Alert not present
-				Robot robot = new Robot();
-				Thread.sleep(2000);
-				robot.keyPress(KeyEvent.VK_ENTER);
-				robot.keyRelease(KeyEvent.VK_ENTER);
-
-				ex.printStackTrace();
-			}
-
-			Thread.sleep(2000);
-			// Go to cart
-			WebElement btn_GoToCart = wait.until(ExpectedConditions
-					.elementToBeClickable(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
-			// div[@id='TitleBar']/*/*/div[@id='TitleBarActionNavButtons']/*
-			if (btn_GoToCart.getText().equalsIgnoreCase("Go to Cart")) {
-				btn_GoToCart.click();
-				logger.info("Gotocart");
-			} else {
-				driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]")).click();
+			} catch (WebDriverException e) {
+				e.printStackTrace();
 			}
 
 			// Final- checkout3
+			checkOut(driver);
+		//	errorScreenshot(driver, orderID);
+			Thread.sleep(3000);
+			
+			enterPoNumber(driver, orderID);
+
+			// Final- checkout3
 			// checkOut(driver);
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 			WebElement btn_CheckOut = wait.until(ExpectedConditions
 					.elementToBeClickable(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
 			if (btn_CheckOut.getText().equalsIgnoreCase("Checkout")) {
@@ -205,11 +161,11 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
 					driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
 			logger.info(btn_SubmitOrder.getText());
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 			
 			btn_SubmitOrder.click();
 
-			Thread.sleep(2000);
+			Thread.sleep(3000);
 
 			// Confirm Order Status
 			// validateOrderStatus(driver);
