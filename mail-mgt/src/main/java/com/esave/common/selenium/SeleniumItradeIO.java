@@ -50,7 +50,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			System.setProperty("webdriver.chrome.driver",
 					"C:\\Users\\ImportOrder\\Downloads\\chromedriver_win32\\chromedriver.exe");
 			driver = new ChromeDriver(options);
-
+			
 			// Enter username, pwd and Return successful
 			// LoginCheney(driver, userName, password);
 			driver.get("http://www.procurement.itradenetwork.com/Platform/Membership/Login");
@@ -196,12 +196,17 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				logger.info("Final Checkout");
 			}
 			
+			Thread.sleep(3000);
 			enterPoNumber(driver, orderID);
 			
+			
+			Thread.sleep(3000);
 			// validate/ Submit btn
 			WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
 					driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
 			logger.info(btn_SubmitOrder.getText());
+			Thread.sleep(2000);
+			
 			btn_SubmitOrder.click();
 
 			Thread.sleep(2000);
