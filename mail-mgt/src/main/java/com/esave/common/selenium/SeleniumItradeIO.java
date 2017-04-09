@@ -141,21 +141,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(3000);
 			
 			enterPoNumber(driver, orderID);
-
-			// Final- checkout3
-			// checkOut(driver);
-			Thread.sleep(3000);
-			WebElement btn_CheckOut = wait.until(ExpectedConditions
-					.elementToBeClickable(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
-			if (btn_CheckOut.getText().equalsIgnoreCase("Checkout")) {
-				btn_CheckOut.click();
-				logger.info("Final Checkout");
-			}
-			
-			Thread.sleep(3000);
-			enterPoNumber(driver, orderID);
-			
-			
+	
 			Thread.sleep(3000);
 			// validate/ Submit btn
 			WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
