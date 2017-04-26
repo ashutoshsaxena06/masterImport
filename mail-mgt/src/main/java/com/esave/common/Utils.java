@@ -20,10 +20,11 @@ public class Utils {
 	private static final String NOTIFICATION_API_URL = "http://user.diningedge.com/confirm-order?orderId=%s&purveyorId=%s&success=%d";
 
 	private static final String USER_AGENT = "Mozilla/5.0";
-	
+
 	private static final Logger logger = Logger.getLogger(Utils.class);
 
-	public void sendNotification(String orderId, String purveyorId, NotificationEvent event) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+	public void sendNotification(String orderId, String purveyorId, NotificationEvent event)
+			throws IOException, NoSuchAlgorithmException, KeyManagementException {
 		String notficationUrl = NOTIFICATION_API_URL;
 
 		if (NotificationEvent.SUCCESS.equals(event)) {
@@ -31,29 +32,29 @@ public class Utils {
 		} else {
 			notficationUrl = String.format(notficationUrl, orderId, purveyorId, 0);
 		}
-		
+
 		logger.info("Notification URL is :" + notficationUrl);
 		URL url = new URL(null, notficationUrl, new sun.net.www.protocol.https.Handler());
-		//do this only if URL is HTTPS
+		// do this only if URL is HTTPS
 		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setDoOutput(true);
 		connection.setDoInput(true);
 		connection.setRequestMethod("GET");
-		//Adding timeout parameters
-		
-		// create context	
+		// Adding timeout parameters
+
+		// create context
 		SSLContext context = SSLContext.getInstance("TLS");
-		// initialize the context with trust, key store 
+		// initialize the context with trust, key store
 		context.init(null, null, new SecureRandom());
-		
+
 		// make connection
 		SSLSocketFactory sockFact = context.getSocketFactory();
 		connection.setSSLSocketFactory(sockFact);
-		
-		//reading output
-		
+
+		// reading output
+
 		connection.connect();
-		
+
 		int responseCode = connection.getResponseCode();
 		if (responseCode == HttpURLConnection.HTTP_OK) { // success
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -66,6 +67,9 @@ public class Utils {
 			in.close();
 			// print result
 			logger.info(response.toString());
+			if (response.toString().equals("1")) {
+				logger.info("Notification Success sent to Customer");
+			}
 		} else {
 			logger.info("Notification Response Code is other than 200_OK so failed to send notification");
 		}
