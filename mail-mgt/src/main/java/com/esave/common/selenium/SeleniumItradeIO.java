@@ -37,11 +37,12 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 
 			// Launch setProperty for chrome, Launch, Implicit wait & maximize
-			// Browser
+			
+			//#Step 1 - // Browser
 			driver = Preconditions();
 
 			// Enter username, pwd and Return successful
-			// LoginCheney(driver, userName, password);
+			//#Step 2 - LoginCheney(driver, userName, password);
 			try {
 				System.out.println("Login successful :- " + LoginCheney(driver, userName, password));
 			} catch (WebDriverException e) {
@@ -51,7 +52,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			Thread.sleep(3000);
 
-			// ordering
+			//#Step 3 - ordering
 			WebElement lnk_Ordering = wait.until(
 					ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
 			lnk_Ordering.click();
@@ -75,7 +76,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			}
 
 			Thread.sleep(3000);
-			// Upload btn click
+			//#Step 4 -   Upload btn click
 
 			WebElement uploadForm = driver.findElement(By.xpath("//form[@id='uploadForm']/input[@id='fileInput']"));
 			uploadForm.sendKeys(filename);

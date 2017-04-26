@@ -257,12 +257,16 @@ public class CommonCheneyIO {
 			WebElement poNumber = wait.until(ExpectedConditions.visibilityOf(
 					driver.findElement(By.xpath("//input[@class='poNumber maxLengthRestriction OptionalField']"))));
 			poNumber.sendKeys(poNum);
+			logger.info("Updated PO# field");
 			// input[@class='poNumber maxLengthRestriction OptionalField']
 		} catch (NoSuchElementException ne) {
+			logger.info("PO# - not Updated");
 			ne.printStackTrace();
 		} catch (WebDriverException we) {
+			logger.info("PO# - not Updated");
 			we.printStackTrace();
 		} catch (Exception e) {
+			logger.info("PO# - not Updated");
 			e.printStackTrace();
 		}
 	}
