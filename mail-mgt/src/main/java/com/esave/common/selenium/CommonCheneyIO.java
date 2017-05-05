@@ -49,7 +49,7 @@ public class CommonCheneyIO {
 			logger.info(orderText.getText());
 
 			logger.info("#Success");
-
+			
 		}
 
 	}
@@ -92,19 +92,24 @@ public class CommonCheneyIO {
 		}
 	}
 
-	public void goToCart(WebDriver driver) {
+	public void goToCart(WebDriver driver) throws InterruptedException {
 
 		try {
+			Thread.sleep(2000);
 			WebElement btn_GoToCart = wait.until(ExpectedConditions
 					.elementToBeClickable(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
 			// div[@id='TitleBar']/*/*/div[@id='TitleBarActionNavButtons']/*
 			if (btn_GoToCart.getText().equalsIgnoreCase("Go to Cart")) {
 				btn_GoToCart.click();
-				logger.info("Gotocart");
+				System.out.println("Gotocart");
 			} else {
 				driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]")).click();
 			}
-		} catch (WebDriverException e) {
+		} catch (Exception e) {
+			Thread.sleep(2000);
+			driver.findElement(By.xpath("//*[@class='cartImage']/*/*")).click();
+
+			System.out.println("clicked Cart image");
 			e.printStackTrace();
 		}
 	}
@@ -138,15 +143,7 @@ public class CommonCheneyIO {
 			// Click _UpdateCart
 			clickUpdatecart(driver);
 
-		} catch (NoSuchElementException ne) {
-			logger.info("lnk_UpdateCart not clicked - NoSuchElementException");
-			ne.printStackTrace();
-
-		} catch (TimeoutException te) {
-			logger.info("lnk_UpdateCart not clicked - TimeoutException");
-			te.printStackTrace();
-
-		} catch (WebDriverException e) {
+		} catch (Exception e) {
 			logger.info("lnk_UpdateCart not clicked - WebDriverException");
 			e.printStackTrace();
 
@@ -259,12 +256,6 @@ public class CommonCheneyIO {
 			poNumber.sendKeys(poNum);
 			logger.info("Updated PO# field");
 			// input[@class='poNumber maxLengthRestriction OptionalField']
-		} catch (NoSuchElementException ne) {
-			logger.info("PO# - not Updated");
-			ne.printStackTrace();
-		} catch (WebDriverException we) {
-			logger.info("PO# - not Updated");
-			we.printStackTrace();
 		} catch (Exception e) {
 			logger.info("PO# - not Updated");
 			e.printStackTrace();
