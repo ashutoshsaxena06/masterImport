@@ -91,13 +91,13 @@ public class SendMailSSL {
 			// Subject of mails
 			message.setSubject("OrderID : " +OrderTD+ "- status :: " + status);
 			// Body of mails 
-		//	message.setContent("GFS OG export- date & time : " + RandomAction.getDate(), "text/html");
+		//	message.setContent("OrderID : " +OrderTD+ "- status :: " + status);
 
 			//message.setText();
 
 			// 4) create new MimeBodyPart object and set DataHandler object to
 			// this object
-			MimeBodyPart messageBodyPart2 = new MimeBodyPart();
+		//	MimeBodyPart messageBodyPart2 = new MimeBodyPart();
 
 		//	DataSource source = new FileDataSource(filename);
 		//	messageBodyPart2.setDataHandler(new DataHandler(source));
@@ -106,7 +106,6 @@ public class SendMailSSL {
 			// 5) create Multipart object and add MimeBodyPart objects to this
 			// object
 			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(messageBodyPart2);
 
 			// 6) set the multiplart object to the message object
 			message.setContent(multipart);
