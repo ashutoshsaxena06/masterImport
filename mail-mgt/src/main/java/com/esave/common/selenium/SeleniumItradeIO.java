@@ -35,14 +35,13 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		logger.info(userName + " : " + password + " and " + filename);
 		try {
 
-
 			// Launch setProperty for chrome, Launch, Implicit wait & maximize
-			
-			//#Step 1 - // Browser
+
+			// #Step 1 - // Browser
 			driver = Preconditions();
 
 			// Enter username, pwd and Return successful
-			//#Step 2 - LoginCheney(driver, userName, password);
+			// #Step 2 - LoginCheney(driver, userName, password);
 			try {
 				System.out.println("Login successful :- " + LoginCheney(driver, userName, password));
 			} catch (WebDriverException e) {
@@ -52,11 +51,11 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			Thread.sleep(3000);
 
-			//#Step 3 - ordering
+			// #Step 3 - ordering
 			WebElement lnk_Ordering = wait.until(
 					ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
 			lnk_Ordering.click();
-			
+
 			Thread.sleep(3000);
 
 			// **** Order Products / Entry ***
@@ -76,7 +75,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			}
 
 			Thread.sleep(3000);
-			//#Step 4 -   Upload btn click
+			// #Step 4 - Upload btn click
 
 			WebElement uploadForm = driver.findElement(By.xpath("//form[@id='uploadForm']/input[@id='fileInput']"));
 			uploadForm.sendKeys(filename);
@@ -138,18 +137,18 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			// Final- checkout3
 			checkOut(driver);
-		//	errorScreenshot(driver, orderID);
+			// errorScreenshot(driver, orderID);
 			Thread.sleep(3000);
-			
+
 			enterPoNumber(driver, orderID);
-	
+
 			Thread.sleep(3000);
 			// validate/ Submit btn
 			WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
 					driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
 			logger.info(btn_SubmitOrder.getText());
 			Thread.sleep(3000);
-			
+
 			btn_SubmitOrder.click();
 
 			Thread.sleep(3000);
@@ -208,6 +207,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				try {
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.SUCCESS);
+					SendMailSSL.sendMailAction(orderID, "Success!");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -221,6 +221,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					// send failure
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
+					SendMailSSL.sendMailAction(orderID, "Failure!");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -238,6 +239,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					// send Failure
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
+					SendMailSSL.sendMailAction(orderID, "Failure!");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -255,6 +257,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				// send failure
 				new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 						NotificationEvent.FAILURE);
+				SendMailSSL.sendMailAction(orderID, "Failure!");
 			} catch (IOException e1) {
 				logger.info("Communication failure occured while sending success notification");
 				e1.printStackTrace();
@@ -266,11 +269,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 		} finally {
 			// Choose Logout option
-			errorScreenshot(driver, orderID);
+			// errorScreenshot(driver, orderID);
 			driver.close();
 		}
 	}
-
-
 
 }
