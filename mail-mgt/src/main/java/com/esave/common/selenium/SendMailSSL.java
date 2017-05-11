@@ -30,7 +30,7 @@ public class SendMailSSL {
 		// while implementation
 		System.out.println("Connecting to gmail...");
 		
-		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication("onlineweekend.diningedge@gmail.com", "edge2016");// change
 																								// accordingly
