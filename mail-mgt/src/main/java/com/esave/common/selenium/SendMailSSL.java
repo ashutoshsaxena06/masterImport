@@ -39,33 +39,6 @@ public class SendMailSSL {
 		return session;
 	}
 
-	/*
-	 * public static IMAPSSLStore createConnection() throws MessagingException {
-	 * // Create IMAPSSLStore object Properties props = System.getProperties();
-	 * props.setProperty("mail.store.protocol", "imaps");
-	 * 
-	 * Session session = Session.getDefaultInstance(props, new
-	 * javax.mail.Authenticator() { protected PasswordAuthentication
-	 * getPasswordAuthentication() { return new
-	 * PasswordAuthentication(Constant.GmailUser, Constant.GmailPassword);//
-	 * change // accordingly } }); URLName urlName = new
-	 * URLName("imap.gmail.com"); IMAPSSLStore store = new IMAPSSLStore(session,
-	 * urlName);
-	 * 
-	 * // All sysout statements are used for testing, have to remove them //
-	 * while implementation System.out.println("Connecting to gmail...");
-	 * 
-	 * // Connect to GMail, enter user name and password here
-	 * store.connect("imap.gmail.com", Constant.GmailUser,
-	 * Constant.GmailPassword);
-	 * 
-	 * System.out.println("Connected to - " + store);
-	 * 
-	 * sendMailAction(session, Constant.GmailUser, Constant.GmailPassword);
-	 * 
-	 * System.out.println("send mail success"); return store; }
-	 */
-
 	public static void sendMailAction(String OrderTD, String status ) {
 		String to = "ashutoshsaxena06@gmail.com";
 		String user = "onlineweekend.diningedge@gmail.com";// change
@@ -77,47 +50,20 @@ public class SendMailSSL {
 		
 			
 			MimeMessage message = new MimeMessage(session);
-		//	message.setFrom(new InternetAddress(user));
-		//	message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-		//	message.setSubject("Message Alert");
-
-			MimeMessage messageBodyPart1 = new MimeMessage(session);
-			messageBodyPart1.setFrom(new InternetAddress(user));// change
+			
+	        message.setFrom(new InternetAddress(user)); 
+	
 			// accordingly
-			messageBodyPart1.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
 			//smessageBodyPart1.addRecipient(Message.RecipientType.CC, new InternetAddress("teamesave@gmail.com"));
 
 			// Subject of mails
 			message.setSubject("OrderID : " +OrderTD+ "- status :: " + status);
 			// Body of mails 
-		//	message.setContent("OrderID : " +OrderTD+ "- status :: " + status);
+	         message.setText("<Auto generated mail notification> 'Order successfully Imported to CheneyItrade'");  
 
-			//message.setText();
-
-			// 4) create new MimeBodyPart object and set DataHandler object to
-			// this object
-		//	MimeBodyPart messageBodyPart2 = new MimeBodyPart();
-
-		//	DataSource source = new FileDataSource(filename);
-		//	messageBodyPart2.setDataHandler(new DataHandler(source));
-		//	messageBodyPart2.setFileName(filename);
-
-			// 5) create Multipart object and add MimeBodyPart objects to this
-			// object
-			Multipart multipart = new MimeMultipart();
-
-			// 6) set the multiplart object to the message object
-			message.setContent(multipart);
-
-			// send message
-			/*
-			 * Transport transport = session.getTransport("smtp");
-			 * transport.connect(Constant.GmailURL,Constant.GmailUser ,
-			 * Constant.GmailPassword); transport.sendMessage(message,
-			 * messageBodyPart1.getAllRecipients());
-			 */
-			Transport.send(message, messageBodyPart1.getAllRecipients());
+			Transport.send(message);
 
 			System.out.println("Message send success");
 
