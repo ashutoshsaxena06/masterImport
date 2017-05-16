@@ -49,7 +49,7 @@ public class CommonCheneyIO {
 			logger.info(orderText.getText());
 
 			logger.info("#Success");
-			
+
 		}
 
 	}
@@ -256,7 +256,14 @@ public class CommonCheneyIO {
 			poNumber.sendKeys(poNum);
 			logger.info("Updated PO# field");
 			// input[@class='poNumber maxLengthRestriction OptionalField']
-		} catch (Exception e) {
+		} catch (org.openqa.selenium.NoSuchElementException Ne) {
+			logger.info("PO# - not Updated");
+			Ne.printStackTrace();
+		} catch (WebDriverException we) {
+			logger.info("PO# - not Updated");
+			we.printStackTrace();
+		}
+		catch (Exception e) {
 			logger.info("PO# - not Updated");
 			e.printStackTrace();
 		}
