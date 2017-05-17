@@ -3,13 +3,9 @@ package com.esave.common.selenium;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import com.esave.common.NotificationEvent;
 import com.esave.common.Utils;
@@ -52,66 +48,16 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(3000);
 
 			// #Step 3 - ordering
-			WebElement lnk_Ordering = wait.until(
-					ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
-			lnk_Ordering.click();
+			OrderEntry();
 
 			Thread.sleep(3000);
-
-			// **** Order Products / Entry ***
-			List<WebElement> allElements = wait.until(ExpectedConditions.visibilityOfAllElements(driver
-					.findElements(By.xpath("//a[contains(.,'Ordering')]/following-sibling::div/ul/li/*/*/div/a"))));
-			logger.info(allElements.size());
-
-			for (WebElement element : allElements) {
-
-				if (element.getText().equalsIgnoreCase("Order Products / Entry")) {
-					String OG_text = element.getText();
-					element.click();
-					logger.info("Clicked on link - " + OG_text);
-					break;
-				}
-
-			}
-
-			Thread.sleep(3000);
+			
 			// #Step 4 - Upload btn click
-
-			WebElement uploadForm = driver.findElement(By.xpath("//form[@id='uploadForm']/input[@id='fileInput']"));
-			uploadForm.sendKeys(filename);
-
-			logger.info("OrderFile uploaded :-" + filename);
-
-			// StringSelection ss = new StringSelection(filename);
-			//
-			// act.moveToElement(driver.findElement(
-			// By.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate
-			// rtbItem'][2]/following-sibling::li[1]")))
-			// .click().build().perform();
-			//
-			// // uploadFile(ss);
-			// try {
-			// Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ss,
-			// null);
-			// Robot robot = new Robot();
-			// Thread.sleep(3000);
-			// robot.keyPress(KeyEvent.VK_CONTROL);
-			// robot.keyPress(KeyEvent.VK_V);
-			// robot.keyRelease(KeyEvent.VK_CONTROL);
-			// robot.keyRelease(KeyEvent.VK_V);
-			// Thread.sleep(3000);
-			// robot.keyPress(KeyEvent.VK_ENTER);
-			// robot.keyRelease(KeyEvent.VK_ENTER);
-			// } catch (HeadlessException e) {
-			// logger.info("Desktop window upload failed");
-			//
-			// } catch (AWTException e) {
-			// logger.info("Desktop window upload failed");
-			// }
+			uploadFile(driver, filename);
 
 			try {
 				// get Link text
-				Thread.sleep(3000);
+				Thread.sleep(20000);
 				verifyUpload(driver);
 
 				// Click _UpdateCart
@@ -119,7 +65,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			} catch (WebDriverException e) {
 
-				logger.info("Failed !!! at verifyUpload / upDate Cart");
+				logger.info("Failed !!! at verifyUpload / UpDate Cart");
 				e.printStackTrace();
 			}
 
@@ -143,65 +89,11 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			enterPoNumber(driver, orderID);
 
 			Thread.sleep(3000);
+			
 			// validate/ Submit btn
-			WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
-					driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
-			logger.info(btn_SubmitOrder.getText());
-			Thread.sleep(3000);
-
-			btn_SubmitOrder.click();
+			submitOrder(driver);
 
 			Thread.sleep(3000);
-
-			// Confirm Order Status
-			// validateOrderStatus(driver);
-			// if (driver
-			// .findElement(By
-			// .xpath("//div[@class='ui-dialog ui-widget ui-widget-content
-			// ui-corner-all ui-front ui-draggable']"))
-			// .isDisplayed()) {
-			// try {
-			// RandomAction.isIframePresent(driver);
-			// driver.switchTo().frame(driver.findElement(By.xpath(
-			// "//div[@class='ui-dialog ui-widget ui-widget-content
-			// ui-corner-all ui-front ui-draggable']/div[1]/iframe")));
-			// logger.info("iFrame captured");
-			// WebElement orderText = driver.findElement(
-			// By.xpath("//div[@id='orderdetails']/div[1]/div[contains(.,'has
-			// been processed']"));
-			// logger.info(orderText.getText());
-			//
-			// logger.info("#Success");
-			//
-			// if (orderDetails != null) {
-			// try {
-			// new Utils().sendNotification(orderDetails.getOrderId(),
-			// orderDetails.getPurveyorId(),
-			// NotificationEvent.SUCCESS);
-			// } catch (IOException e1) {
-			// logger.info("Communication failure occured while sending success
-			// notification");
-			// e1.printStackTrace();
-			// }
-			// }
-			// } catch (Exception e) {
-			// if (orderDetails != null) {
-			// try {
-			// new Utils().sendNotification(orderDetails.getOrderId(),
-			// orderDetails.getPurveyorId(),
-			// NotificationEvent.SUCCESS);
-			// } catch (IOException e1) {
-			// logger.info("Communication failure occured while sending success
-			// notification");
-			// e1.printStackTrace();
-			// }
-			// }
-			// // TODO Auto-generated catch block
-			//
-			// e.printStackTrace();
-			// }
-			//
-			// }
 
 			if (orderDetails != null) {
 				try {

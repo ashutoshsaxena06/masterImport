@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
@@ -16,43 +17,49 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 
 public class CommonCheneyIO {
 
-	public WebDriverWait wait;
 	public WebDriver driver;
 	private static final Logger logger = Logger.getLogger(CommonCheneyIO.class);
 
-	public void validateOrderStatus(WebDriver driver) throws InterruptedException {
-		// verification
-		if (driver
-				.findElement(By
-						.xpath("//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable']"))
-				.isDisplayed()) {
-			RandomAction.isIframePresent(driver);
-			driver.switchTo().frame(driver.findElement(By.xpath(
-					"//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable']/div[1]/iframe")));
-			logger.info("iFrame captured");
-			WebElement orderText = driver
-					.findElement(By.xpath("//div[@id='orderdetails']/div[1]/div[contains(.,'has been processed']"));
-			logger.info(orderText.getText());
-
-			logger.info("#Success");
-
-		}
-
-	}
+	// public void validateOrderStatus(WebDriver driver) throws
+	// InterruptedException {
+	// // verification
+	// if (driver
+	// .findElement(By
+	// .xpath("//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all
+	// ui-front ui-draggable']"))
+	// .isDisplayed()) {
+	// RandomAction.isIframePresent(driver);
+	// driver.switchTo().frame(driver.findElement(By.xpath(
+	// "//div[@class='ui-dialog ui-widget ui-widget-content ui-corner-all
+	// ui-front ui-draggable']/div[1]/iframe")));
+	// logger.info("iFrame captured");
+	// WebElement orderText = driver
+	// .findElement(By.xpath("//div[@id='orderdetails']/div[1]/div[contains(.,'has
+	// been processed']"));
+	// logger.info(orderText.getText());
+	//
+	// logger.info("#Success");
+	//
+	// }
+	//
+	// }
 
 	public void validateOrder(WebDriver driver) throws InterruptedException {
 
@@ -71,8 +78,11 @@ public class CommonCheneyIO {
 	}
 
 	public void submitOrder(WebDriver driver) {
+		// Checkout
+		WaitForPageToLoad(30);
+
 		// validate/ Submit btn
-		WebElement btn_SubmitOrder = wait.until(ExpectedConditions.elementToBeClickable(
+		WebElement btn_SubmitOrder = Wait(30).until(ExpectedConditions.elementToBeClickable(
 				driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
 		logger.info(btn_SubmitOrder.getText());
 		if (btn_SubmitOrder.getText().equalsIgnoreCase("Validate/Submit")) {
@@ -82,26 +92,34 @@ public class CommonCheneyIO {
 
 	// Checkout - btn
 	public void checkOut(WebDriver driver) throws InterruptedException {
-
-		Thread.sleep(2000);
-		WebElement btn_CheckOut = wait.until(ExpectedConditions
-				.elementToBeClickable(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
+		// Shoppingcart
+		WaitForPageToLoad(30);
+		PageExist("Shopping Cart");
+		Thread.sleep(3000);
+		
+		WebElement btn_CheckOut = Wait(30).until(ExpectedConditions
+				.visibilityOf(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
 		if (btn_CheckOut.getText().equalsIgnoreCase("Checkout")) {
+			Thread.sleep(3000);
+			Wait(30).until(ExpectedConditions.elementToBeClickable(btn_CheckOut));
 			btn_CheckOut.click();
-			logger.info("Final Checkout");
+			System.out.println("Final Checkout");
 		}
 	}
 
 	public void goToCart(WebDriver driver) throws InterruptedException {
 
 		try {
-			Thread.sleep(2000);
-			WebElement btn_GoToCart = wait.until(ExpectedConditions
+			// OrderEntry
+			WaitForPageToLoad(30);
+			PageExist("Order Products / Entry");
+
+			WebElement btn_GoToCart = Wait(30).until(ExpectedConditions
 					.elementToBeClickable(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
 			// div[@id='TitleBar']/*/*/div[@id='TitleBarActionNavButtons']/*
 			if (btn_GoToCart.getText().equalsIgnoreCase("Go to Cart")) {
 				btn_GoToCart.click();
-				System.out.println("Gotocart");
+				logger.info("Gotocart");
 			} else {
 				driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]")).click();
 			}
@@ -109,7 +127,7 @@ public class CommonCheneyIO {
 			Thread.sleep(2000);
 			driver.findElement(By.xpath("//*[@class='cartImage']/*/*")).click();
 
-			System.out.println("clicked Cart image");
+			logger.info("clicked Cart image");
 			e.printStackTrace();
 		}
 	}
@@ -124,6 +142,7 @@ public class CommonCheneyIO {
 			// if present consume the alert
 			if (alert.getText().equalsIgnoreCase("Add all valid products to your cart?")) {
 				alert.accept();
+				// OrderEntry
 				Thread.sleep(3000);
 				return true;
 			} else {
@@ -153,15 +172,15 @@ public class CommonCheneyIO {
 
 	public void clickUpdatecart(WebDriver driver) throws InterruptedException {
 		// get Link text
-		WebElement lnk_UpdateCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(
+		WebElement lnk_UpdateCart = Wait(30).until(ExpectedConditions.elementToBeClickable(driver.findElement(
 				By.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a"))));
 		logger.info("Link text : " + lnk_UpdateCart.getAttribute("title"));
 
 		Thread.sleep(3000);
 		// Click
 		if (lnk_UpdateCart.getAttribute("title").equalsIgnoreCase("Update Cart")) {
-			WebElement btn_UpdatecCart = wait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(
-					"//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))));
+			WebElement btn_UpdatecCart = Wait(30).until(ExpectedConditions.elementToBeClickable(driver.findElement(By
+					.xpath("//ul[@class='rtbUL']/li[@class='rtbTemplate rtbItem'][2]/following-sibling::li[7]/a/*/*"))));
 			btn_UpdatecCart.click();
 			logger.info("Clicked on Update Cart");
 		} else {
@@ -209,25 +228,26 @@ public class CommonCheneyIO {
 
 	public boolean LoginCheney(WebDriver driver, String User, String pwd) throws InterruptedException {
 		driver.get("http://www.procurement.itradenetwork.com/Platform/Membership/Login");
-
-		Thread.sleep(2000);
-
+		// Login
+		WaitForPageToLoad(30);
+		PageExist("Login");
 		// pass login credentials
-		wait = new WebDriverWait(driver, 15);
+		// wait = new WebDriverWait(driver, 15);
+		Thread.sleep(3000);
 		// enter username ##
-		WebElement chb_Username = wait.until(
+		WebElement chb_Username = Wait(30).until(
 				ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//input[contains(@id,'username')]"))));
 		chb_Username.sendKeys(User);
 
 		// enter password ##
-		WebElement chb_Password = wait.until(
+		WebElement chb_Password = Wait(30).until(
 				ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//input[contains(@id,'password')]"))));
 		chb_Password.sendKeys(pwd);
 
 		driver.findElement(By.xpath("//input[contains(@id,'rememberMe')]")).click();
 
 		// click login
-		WebElement btn_Login = wait.until(ExpectedConditions
+		WebElement btn_Login = Wait(30).until(ExpectedConditions
 				.elementToBeClickable(driver.findElement(By.xpath("//input[contains(@value,'Login')]"))));
 		btn_Login.click();
 
@@ -237,21 +257,34 @@ public class CommonCheneyIO {
 
 	}
 
-	public void verifyUpload(WebDriver driver) {
-		ArrayList<WebElement> importedItems = new ArrayList<>(
-				wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(
-						By.xpath("//div[@id='DataEntryGrid']/div[@class=\"t-grid-content\"]/table/tbody/*")))));
-		if (importedItems.size() == 1) {
-			logger.info("No items imported");
-		} else {
-			logger.info("Imported Items :- " + importedItems.size());
+	public void verifyUpload(WebDriver driver) throws InterruptedException {
+
+		// OrderEntry
+		WaitForPageToLoad(30);
+		PageExist("Order Products / Entry");
+
+		try {
+			ArrayList<WebElement> importedItems = new ArrayList<>(
+					Wait(30).until(ExpectedConditions.visibilityOfAllElements(driver.findElements(
+							By.xpath("//div[@id='DataEntryGrid']/div[@class='t-grid-content']/table/tbody/*")))));
+			if (importedItems.size() == 1) {
+				logger.info("No items imported");
+			} else {
+				logger.info("Imported Items :- " + importedItems.size());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}
 
 	public void enterPoNumber(WebDriver driver, String poNum) {
 		try {
-			WebElement poNumber = wait.until(ExpectedConditions.visibilityOf(
+			// Checkout
+			WaitForPageToLoad(30);
+			PageExist("Checkout");
+
+			WebElement poNumber = Wait(30).until(ExpectedConditions.visibilityOf(
 					driver.findElement(By.xpath("//input[@class='poNumber maxLengthRestriction OptionalField']"))));
 			poNumber.sendKeys(poNum);
 			logger.info("Updated PO# field");
@@ -262,8 +295,7 @@ public class CommonCheneyIO {
 		} catch (WebDriverException we) {
 			logger.info("PO# - not Updated");
 			we.printStackTrace();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logger.info("PO# - not Updated");
 			e.printStackTrace();
 		}
@@ -271,10 +303,13 @@ public class CommonCheneyIO {
 
 	public void errorScreenshot(WebDriver driver, String orderID) {
 		// Take screenshot and store as a file format
-		File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		WaitForPageToLoad(30);
+
 		try {
 			// now copy the screenshot to desired location using copyFile
 			// //method
+			File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+
 			FileUtils.copyFile(src, new File("C:\\errorScreenshot\\" + orderID + ".png"));
 		}
 
@@ -283,4 +318,106 @@ public class CommonCheneyIO {
 			e.printStackTrace();
 		}
 	}
+
+	public boolean PageExist(String expectedTitle) throws InterruptedException {
+
+		try {
+			for (int i = 0; i < 3; i++) {
+				String act = getDriver().getTitle();
+				if (act.equals(expectedTitle)) {
+					logger.info("current page - " + expectedTitle);
+					return true;
+				} else {
+					Thread.sleep(2000);
+					logger.info("waiting for page.. ");
+				}
+			}
+			logger.info("Not reached page - " + expectedTitle);
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+
+	public void WaitForPageToLoad(int... waitTime) {
+		ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
+			public Boolean apply(WebDriver driver) {
+				return ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
+			}
+		};
+
+		if (waitTime.length > 0) {
+			Wait(waitTime).until(expectation);
+		} else {
+			Wait(30).until(expectation);
+		}
+
+	}
+
+	public Wait<WebDriver> Wait(int... waitTime) {
+		int waitTimeInSeconds;
+		if (waitTime.length > 0) {
+			waitTimeInSeconds = waitTime[0];
+		} else {
+			waitTimeInSeconds = 5;
+		}
+		return new FluentWait<WebDriver>(getDriver()).withTimeout(waitTimeInSeconds, TimeUnit.SECONDS)
+				.pollingEvery(1, TimeUnit.SECONDS).ignoring(NoSuchElementException.class)
+				.ignoring(StaleElementReferenceException.class).ignoring(WebDriverException.class);
+	}
+
+	public WebDriver getDriver() {
+		return driver;
+	}
+
+	public void OrderEntry() throws InterruptedException {
+		// Home
+		WaitForPageToLoad(30);
+		PageExist("Home");
+
+		Thread.sleep(3000);
+		// ordering
+		WebElement lnk_Ordering = Wait(30)
+				.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
+		lnk_Ordering.click();
+
+		Thread.sleep(3000);
+
+		// **** Order Products / Entry ***
+		List<WebElement> allElements = Wait(30).until(ExpectedConditions.visibilityOfAllElements(
+				driver.findElements(By.xpath("//a[contains(.,'Ordering')]/following-sibling::div/ul/li/*/*/div/a"))));
+		logger.info(allElements.size());
+
+		Thread.sleep(3000);
+
+		for (WebElement element : allElements) {
+
+			if (element.getText().equalsIgnoreCase("Order Products / Entry")) {
+				String OG_text = element.getText();
+				element.click();
+				logger.info("Clicked on link - " + OG_text);
+				break;
+			}
+
+		}
+	}
+
+	public void uploadFile(WebDriver driver, String filename) throws InterruptedException {
+		// OrderEntry
+		WaitForPageToLoad(30);
+		PageExist("Order Products / Entry");
+
+		// Thread.sleep(2000);
+		// Upload btn click
+
+		logger.info(filename);
+
+		WebElement uploadForm = driver.findElement(By.xpath("//form[@id='uploadForm']/input[@id='fileInput']"));
+		uploadForm.sendKeys(filename);
+
+		logger.info("OrderFile uploaded");
+	}
+
 }
