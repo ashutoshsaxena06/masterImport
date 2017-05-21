@@ -62,7 +62,6 @@ public class MailProcessor {
 		URLName urlName = new URLName("imap.gmail.com");
 		IMAPSSLStore store = new IMAPSSLStore(session, urlName);
 
-		// TODO: All sysout statements are used for testing, have to remove them
 		// while implementation
 		logger.info("Connecting to gmail...");
 
@@ -95,7 +94,6 @@ public class MailProcessor {
 			try {
 				store = mailProcessor.createConnection();
 			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -194,7 +192,6 @@ public class MailProcessor {
 											try {
 												orderDetails = processOrder(messageContent);
 											} catch (MessagingException e) {
-												// TODO Auto-generated catch
 												// block
 												e.printStackTrace();
 											}
@@ -230,10 +227,8 @@ public class MailProcessor {
 								logger.info("Communication failure occured while sending failure notification");
 								e1.printStackTrace();
 							} catch (KeyManagementException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							} catch (NoSuchAlgorithmException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
 							e.printStackTrace();
@@ -467,10 +462,8 @@ public class MailProcessor {
 				responseBuffer.append(new String(temp, 0, countCurrentRead, "UTF-8"));
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

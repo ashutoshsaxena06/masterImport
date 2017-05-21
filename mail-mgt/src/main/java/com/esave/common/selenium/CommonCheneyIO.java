@@ -35,7 +35,7 @@ import org.openqa.selenium.support.ui.Wait;
 public class CommonCheneyIO {
 
 	public WebDriver driver;
-	private static final Logger logger = Logger.getLogger(CommonCheneyIO.class);
+	private static final Logger logger =	 Logger.getLogger(CommonCheneyIO.class);
 
 	// public void validateOrderStatus(WebDriver driver) throws
 	// InterruptedException {
@@ -96,14 +96,14 @@ public class CommonCheneyIO {
 		WaitForPageToLoad(30);
 		PageExist("Shopping Cart");
 		Thread.sleep(3000);
-		
-		WebElement btn_CheckOut = Wait(30).until(ExpectedConditions
-				.visibilityOf(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
+
+		WebElement btn_CheckOut = Wait(30).until(
+				ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
 		if (btn_CheckOut.getText().equalsIgnoreCase("Checkout")) {
 			Thread.sleep(3000);
 			Wait(30).until(ExpectedConditions.elementToBeClickable(btn_CheckOut));
 			btn_CheckOut.click();
-			System.out.println("Final Checkout");
+			logger.info("Final Checkout");
 		}
 	}
 
@@ -125,7 +125,7 @@ public class CommonCheneyIO {
 			}
 		} catch (Exception e) {
 			Thread.sleep(2000);
-			driver.findElement(By.xpath("//*[@class='cartImage']/*/*")).click();
+			driver.findElement(By.xpath(".//*[@id='cartInfo']/*/*/a/img")).click();
 
 			logger.info("clicked Cart image");
 			e.printStackTrace();
@@ -230,6 +230,9 @@ public class CommonCheneyIO {
 		driver.get("http://www.procurement.itradenetwork.com/Platform/Membership/Login");
 		// Login
 		WaitForPageToLoad(30);
+		
+		Thread.sleep(3000);
+
 		PageExist("Login");
 		// pass login credentials
 		// wait = new WebDriverWait(driver, 15);
@@ -257,13 +260,14 @@ public class CommonCheneyIO {
 
 	}
 
-	public void verifyUpload(WebDriver driver) throws InterruptedException {
-
-		// OrderEntry
-		WaitForPageToLoad(30);
-		PageExist("Order Products / Entry");
+	public int verifyUpload(WebDriver driver) throws InterruptedException {
 
 		try {
+			// OrderEntry
+			WaitForPageToLoad(30);
+			PageExist("Order Products / Entry");
+
+			// On OrderEntry
 			ArrayList<WebElement> importedItems = new ArrayList<>(
 					Wait(30).until(ExpectedConditions.visibilityOfAllElements(driver.findElements(
 							By.xpath("//div[@id='DataEntryGrid']/div[@class='t-grid-content']/table/tbody/*")))));
@@ -272,8 +276,11 @@ public class CommonCheneyIO {
 			} else {
 				logger.info("Imported Items :- " + importedItems.size());
 			}
+			return importedItems.size()-1;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
+			return 1;
 		}
 
 	}
@@ -375,7 +382,7 @@ public class CommonCheneyIO {
 	public void OrderEntry() throws InterruptedException {
 		// Home
 		WaitForPageToLoad(30);
-		PageExist("Home");
+	//	PageExist("Home");
 
 		Thread.sleep(3000);
 		// ordering
@@ -418,6 +425,87 @@ public class CommonCheneyIO {
 		uploadForm.sendKeys(filename);
 
 		logger.info("OrderFile uploaded");
+	}
+
+	public void verifyCartItems(WebDriver driver, Integer importItemQty) throws InterruptedException {
+		try {
+			WaitForPageToLoad(30);
+			PageExist("Shopping Cart");
+			
+			Thread.sleep(3000);
+			ArrayList<WebElement> importedItemsToCart = new ArrayList<>(Wait(30).until(ExpectedConditions
+					.visibilityOfAllElements(driver.findElements(By.xpath(".//*[@id='CartGrid']/*/table/tbody/*")))));
+			if (importedItemsToCart.size() <= 1) {
+				logger.info("No items imported to Cart");
+			} else if (importedItemsToCart.size()-1 == importItemQty) {
+				logger.info("All Items Imported to Cart:- " + importedItemsToCart.size());
+			} else {
+				logger.info("Items uploaded - " + importItemQty + " Imported Items to Cart - "
+						+ importedItemsToCart.size() + " Not Equal !!!");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void checkAndEmptyCart() throws InterruptedException {
+		try {
+			// CartIcon Items Quantity
+			String CartQty = Wait(30)
+					.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(".//*[@id='ItemCountLabel']"))))
+					.getText();
+			int cartQty = Integer.parseInt(CartQty);
+			logger.info(cartQty);
+			// Cart is not Empty
+			if (cartQty != 0) {
+				WebElement img_cartIcon = Wait(30).until(ExpectedConditions
+						.visibilityOf(driver.findElement(By.xpath(".//*[@id='cartInfo']/*/*/a/img"))));
+				img_cartIcon.click();
+
+				// Empty Cart
+				emptyCart(driver);
+
+			} else {
+				logger.info("No Items present in Cart");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void emptyCart(WebDriver driver) {
+		try {
+			// Shoppingcart
+			WaitForPageToLoad(30);
+			PageExist("Shopping Cart");
+			Thread.sleep(3000);
+
+			// Empty Cart
+			WebElement img_RemoveCart = Wait(30).until(ExpectedConditions
+					.visibilityOf(driver.findElement(By.xpath(".//*[@id='RemoveFromCart']/*/*/*/*/*"))));
+			img_RemoveCart.click();
+			WebElement ddl_ClearCart = Wait(30)
+					.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(".//*[@id='ClearCart']/*"))));
+			ddl_ClearCart.click();
+
+			Thread.sleep(3000);
+			// Check the presence of alert
+			Alert alert = driver.switchTo().alert();
+			logger.info(alert.getText());
+			// if present consume the alert
+			if (alert.getText().equalsIgnoreCase("Remove all items from cart?")) {
+				alert.accept();
+			} else {
+				Thread.sleep(3000);
+				alert.accept();
+				logger.info(alert.getText());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

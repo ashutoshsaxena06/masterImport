@@ -5,6 +5,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
 import com.esave.common.NotificationEvent;
@@ -27,6 +28,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		String filepath = "C:\\orders\\";
 		// Actual File path ##
 		String filename = filepath + orderID + ".csv";
+		int importItemQty = 0;
 
 		logger.info(userName + " : " + password + " and " + filename);
 		try {
@@ -46,7 +48,11 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			}
 
 			Thread.sleep(3000);
-
+			// Check and Empty all Items from Cart
+			checkAndEmptyCart();
+			
+			Thread.sleep(3000);
+			
 			// #Step 3 - ordering
 			OrderEntry();
 
@@ -58,7 +64,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			try {
 				// get Link text
 				Thread.sleep(20000);
-				verifyUpload(driver);
+				importItemQty = verifyUpload(driver);
 
 				// Click _UpdateCart
 				updateCart(driver);
@@ -80,7 +86,12 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			} catch (WebDriverException e) {
 				e.printStackTrace();
 			}
+			
+			// Verify Items at Cart page
+			verifyCartItems(driver,  importItemQty);
 
+
+			Thread.sleep(2000);
 			// Final- checkout3
 			checkOut(driver);
 			// errorScreenshot(driver, orderID);
