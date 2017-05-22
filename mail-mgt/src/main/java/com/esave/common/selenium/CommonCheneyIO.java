@@ -271,12 +271,12 @@ public class CommonCheneyIO {
 			ArrayList<WebElement> importedItems = new ArrayList<>(
 					Wait(30).until(ExpectedConditions.visibilityOfAllElements(driver.findElements(
 							By.xpath("//div[@id='DataEntryGrid']/div[@class='t-grid-content']/table/tbody/*")))));
-			if (importedItems.size() == 1) {
+			if (importedItems.size() <= 1) {
 				logger.info("No items imported");
 			} else {
 				logger.info("Imported Items :- " + importedItems.size());
 			}
-			return importedItems.size()-1;
+			return importedItems.size();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -437,11 +437,11 @@ public class CommonCheneyIO {
 					.visibilityOfAllElements(driver.findElements(By.xpath(".//*[@id='CartGrid']/*/table/tbody/*")))));
 			if (importedItemsToCart.size() <= 1) {
 				logger.info("No items imported to Cart");
-			} else if (importedItemsToCart.size()-1 == importItemQty) {
-				logger.info("All Items Imported to Cart:- " + importedItemsToCart.size());
+			} else if ((importedItemsToCart.size()-1) == importItemQty) {
+				logger.info("All Items Imported to Cart:- " + importItemQty);
 			} else {
 				logger.info("Items uploaded - " + importItemQty + " Imported Items to Cart - "
-						+ importedItemsToCart.size() + " Not Equal !!!");
+						+ (importedItemsToCart.size()-1) + " Not Equal !!!");
 			}
 
 		} catch (Exception e) {
@@ -457,9 +457,11 @@ public class CommonCheneyIO {
 					.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(".//*[@id='ItemCountLabel']"))))
 					.getText();
 			int cartQty = Integer.parseInt(CartQty);
-			logger.info(cartQty);
+			//logger.info(cartQty);
 			// Cart is not Empty
 			if (cartQty != 0) {
+				
+				logger.info("Items already in Cart - " +cartQty);
 				WebElement img_cartIcon = Wait(30).until(ExpectedConditions
 						.visibilityOf(driver.findElement(By.xpath(".//*[@id='cartInfo']/*/*/a/img"))));
 				img_cartIcon.click();
@@ -468,7 +470,7 @@ public class CommonCheneyIO {
 				emptyCart(driver);
 
 			} else {
-				logger.info("No Items present in Cart");
+				logger.info("No Items present in Cart - "+ CartQty);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -498,10 +500,11 @@ public class CommonCheneyIO {
 			// if present consume the alert
 			if (alert.getText().equalsIgnoreCase("Remove all items from cart?")) {
 				alert.accept();
+				logger.info("Removed All Items from Cart");
 			} else {
 				Thread.sleep(3000);
 				alert.accept();
-				logger.info(alert.getText());
+				logger.info("Removed All Items from Cart");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
