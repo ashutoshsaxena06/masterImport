@@ -380,8 +380,21 @@ public class CommonCheneyIO {
 	}
 
 	public void OrderEntry() throws InterruptedException {
-		// Home
-		WaitForPageToLoad(30);
+		try {
+			// Home
+			WaitForPageToLoad(30);
+			
+			String ttl= driver.getTitle();
+			
+			if (ttl.equalsIgnoreCase("Home")) {		
+				PageExist("Home");	
+			} else if (ttl.equalsIgnoreCase("Shopping Cart")){
+				PageExist("Shopping Cart");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	//	PageExist("Home");
 
 		Thread.sleep(3000);
