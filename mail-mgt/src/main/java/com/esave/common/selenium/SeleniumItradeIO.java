@@ -89,7 +89,6 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// Verify Items at Cart page
 			verifyCartItems(driver,  importItemQty);
 
-
 			Thread.sleep(2000);
 			// Final- checkout3
 			checkOut(driver);

@@ -444,6 +444,7 @@ public class MailProcessor {
 		} else {
 			throw new PurveyorNotFoundException("Location details does not exist in the system", 102, purveyorId,
 					orderId);
+			
 		}
 
 		return orderDetails;

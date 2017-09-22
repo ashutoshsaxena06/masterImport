@@ -58,7 +58,7 @@ public class SendMailSSL {
 			// Subject of mails
 			message.setSubject("OrderID : " +OrderTD+ "- status :: " + status);
 			// Body of mails 
-	         message.setText("<Auto generated mail notification> 'Order successfully Imported to CheneyItrade'");  
+	         message.setText("<Auto generated mail notification> 'Order Information for CheneyItrade'");  
 
 			Transport.send(message);
 

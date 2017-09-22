@@ -35,7 +35,7 @@ import org.openqa.selenium.support.ui.Wait;
 public class CommonCheneyIO {
 
 	public WebDriver driver;
-	private static final Logger logger =	 Logger.getLogger(CommonCheneyIO.class);
+	private static final Logger logger = Logger.getLogger(CommonCheneyIO.class);
 
 	// public void validateOrderStatus(WebDriver driver) throws
 	// InterruptedException {
@@ -93,17 +93,23 @@ public class CommonCheneyIO {
 	// Checkout - btn
 	public void checkOut(WebDriver driver) throws InterruptedException {
 		// Shoppingcart
-		WaitForPageToLoad(30);
-		PageExist("Shopping Cart");
-		Thread.sleep(3000);
-
-		WebElement btn_CheckOut = Wait(30).until(
-				ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
-		if (btn_CheckOut.getText().equalsIgnoreCase("Checkout")) {
+		try {
+			WaitForPageToLoad(30);
+			PageExist("Shopping Cart");
 			Thread.sleep(3000);
-			Wait(30).until(ExpectedConditions.elementToBeClickable(btn_CheckOut));
-			btn_CheckOut.click();
-			logger.info("Final Checkout");
+
+			WebElement btn_CheckOut = Wait(30).until(ExpectedConditions
+					.visibilityOf(driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]"))));
+			if (btn_CheckOut.getText().equalsIgnoreCase("Checkout")) {
+				Thread.sleep(3000);
+				Wait(30).until(ExpectedConditions.elementToBeClickable(btn_CheckOut));
+				btn_CheckOut.click();
+				logger.info("Final Checkout");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			driver.get("https://www.procurement.itradenetwork.com/Platform/Orders/Checkout/SelectSubmit");
+			Thread.sleep(3000);
 		}
 	}
 
@@ -124,11 +130,10 @@ public class CommonCheneyIO {
 				driver.findElement(By.xpath("//div[@class='right-arrow-text'][1]")).click();
 			}
 		} catch (Exception e) {
-			Thread.sleep(2000);
-			driver.findElement(By.xpath(".//*[@id='cartInfo']/*/*/a/img")).click();
-
-			logger.info("clicked Cart image");
 			e.printStackTrace();
+			Thread.sleep(2000);
+			driver.get("http://www.procurement.itradenetwork.com/Platform/Products/Cart/Details");
+			logger.info("Launched url for cart page");
 		}
 	}
 
@@ -142,11 +147,13 @@ public class CommonCheneyIO {
 			// if present consume the alert
 			if (alert.getText().equalsIgnoreCase("Add all valid products to your cart?")) {
 				alert.accept();
+				logger.info("ALert pop up accepted - Items added to cart");
 				// OrderEntry
 				Thread.sleep(3000);
 				return true;
 			} else {
 				logger.info(alert.getText());
+				alert.accept();
 				return false;
 			}
 		} catch (NoAlertPresentException ex) {
@@ -230,7 +237,7 @@ public class CommonCheneyIO {
 		driver.get("http://www.procurement.itradenetwork.com/Platform/Membership/Login");
 		// Login
 		WaitForPageToLoad(30);
-		
+
 		Thread.sleep(3000);
 
 		PageExist("Login");
@@ -277,7 +284,7 @@ public class CommonCheneyIO {
 				logger.info("Imported Items :- " + importedItems.size());
 			}
 			return importedItems.size();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 1;
@@ -380,35 +387,30 @@ public class CommonCheneyIO {
 	}
 
 	public void OrderEntry() throws InterruptedException {
-		try {
-			// Home
-			WaitForPageToLoad(30);
-			
-			String ttl= driver.getTitle();
-			
-			if (ttl.equalsIgnoreCase("Home")) {		
-				PageExist("Home");	
-			} else if (ttl.equalsIgnoreCase("Shopping Cart")){
-				PageExist("Shopping Cart");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	//	PageExist("Home");
+		// PageExist("Home");
+				// Home
+				WaitForPageToLoad(30);
 
+				String ttl = driver.getTitle();
+
+				if (ttl.equalsIgnoreCase("Home")) {
+					PageExist("Home");
+				} else if (ttl.equalsIgnoreCase("Shopping Cart")) {
+					PageExist(" Cart");
+				}
+		
 		try {
 			Thread.sleep(3000);
 			// ordering
-			WebElement lnk_Ordering = Wait(30)
-					.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
+			WebElement lnk_Ordering = Wait(30).until(
+					ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
 			lnk_Ordering.click();
 
 			Thread.sleep(3000);
 
 			// **** Order Products / Entry ***
-			List<WebElement> allElements = Wait(30).until(ExpectedConditions.visibilityOfAllElements(
-					driver.findElements(By.xpath("//a[contains(.,'Ordering')]/following-sibling::div/ul/li/*/*/div/a"))));
+			List<WebElement> allElements = Wait(30).until(ExpectedConditions.visibilityOfAllElements(driver
+					.findElements(By.xpath("//a[contains(.,'Ordering')]/following-sibling::div/ul/li/*/*/div/a"))));
 			logger.info(allElements.size());
 
 			Thread.sleep(3000);
@@ -427,13 +429,7 @@ public class CommonCheneyIO {
 			logger.info("Attempt 2- Using different locator");
 			try {
 				Thread.sleep(3000);
-				// ordering
-				WebElement lnk_Ordering = Wait(30)
-						.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
-				lnk_Ordering.click();
-				WebElement lnk_OrderEntry = Wait(30)
-						.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[@id='NavigationMenu-2']/div[3]/div/a"))));
-				lnk_OrderEntry.click();
+				driver.get("http://www.procurement.itradenetwork.com/Platform/Products/ProductEntry/Details");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				logger.info("Attempt 3- Using cart to Order");
@@ -443,12 +439,12 @@ public class CommonCheneyIO {
 	}
 
 	public void cartToOrder() throws InterruptedException {
-		WebElement img_cartIcon = Wait(30).until(ExpectedConditions
-				.visibilityOf(driver.findElement(By.xpath("//*[@id='cartInfo']/div[1]/a/img"))));
+		WebElement img_cartIcon = Wait(30).until(
+				ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[@id='cartInfo']/div[1]/a/img"))));
 		img_cartIcon.click();
 		Thread.sleep(2000);
-		WebElement btn_ContinueShopping = Wait(30)
-				.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[@id='TitleBarActionNavButtons']/div[2]"))));
+		WebElement btn_ContinueShopping = Wait(30).until(ExpectedConditions
+				.visibilityOf(driver.findElement(By.xpath("//*[@id='TitleBarActionNavButtons']/div[2]"))));
 		btn_ContinueShopping.click();
 	}
 
@@ -472,17 +468,17 @@ public class CommonCheneyIO {
 		try {
 			WaitForPageToLoad(30);
 			PageExist("Shopping Cart");
-			
+
 			Thread.sleep(3000);
 			ArrayList<WebElement> importedItemsToCart = new ArrayList<>(Wait(30).until(ExpectedConditions
 					.visibilityOfAllElements(driver.findElements(By.xpath(".//*[@id='CartGrid']/*/table/tbody/*")))));
 			if (importedItemsToCart.size() <= 1) {
 				logger.info("No items imported to Cart");
-			} else if ((importedItemsToCart.size()-1) == importItemQty) {
+			} else if ((importedItemsToCart.size() - 1) == importItemQty) {
 				logger.info("All Items Imported to Cart:- " + importItemQty);
 			} else {
 				logger.info("Items uploaded - " + importItemQty + " Imported Items to Cart - "
-						+ (importedItemsToCart.size()-1) + " Not Equal !!!");
+						+ (importedItemsToCart.size() - 1) + " Not Equal !!!");
 			}
 
 		} catch (Exception e) {
@@ -498,22 +494,23 @@ public class CommonCheneyIO {
 					.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(".//*[@id='ItemCountLabel']"))))
 					.getText();
 			int cartQty = Integer.parseInt(CartQty);
-			//logger.info(cartQty);
+			// logger.info(cartQty);
 			// Cart is not Empty
 			if (cartQty != 0) {
-				
-				logger.info("Items already in Cart - " +cartQty);
-				WebElement img_cartIcon = Wait(30).until(ExpectedConditions
-						.visibilityOf(driver.findElement(By.xpath(".//*[@id='cartInfo']/*/*/a/img"))));
-				img_cartIcon.click();
 
-				// Empty Cart
+				logger.info("Items already in Cart - " + cartQty);
+				Thread.sleep(3000);
+				driver.get("http://www.procurement.itradenetwork.com/Platform/Products/Cart/Details");
+				// WebElement img_cartIcon = Wait(30).until(ExpectedConditions
+				// .visibilityOf(driver.findElement(By.xpath(".//*[@id='cartInfo']/*/*/a/img"))));
+				// imghpty Cart
 				emptyCart(driver);
 
 			} else {
-				logger.info("No Items present in Cart - "+ CartQty);
+				logger.info("No Items present in Cart - " + CartQty);
 			}
 		} catch (Exception e) {
+			logger.info("Failed at check and empty cart ");
 			e.printStackTrace();
 		}
 
@@ -549,7 +546,10 @@ public class CommonCheneyIO {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("Failed at Empty cart");
+
 		}
 	}
+
 
 }
