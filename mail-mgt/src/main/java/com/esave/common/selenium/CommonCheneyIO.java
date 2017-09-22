@@ -397,31 +397,59 @@ public class CommonCheneyIO {
 		
 	//	PageExist("Home");
 
-		Thread.sleep(3000);
-		// ordering
-		WebElement lnk_Ordering = Wait(30)
-				.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
-		lnk_Ordering.click();
+		try {
+			Thread.sleep(3000);
+			// ordering
+			WebElement lnk_Ordering = Wait(30)
+					.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
+			lnk_Ordering.click();
 
-		Thread.sleep(3000);
+			Thread.sleep(3000);
 
-		// **** Order Products / Entry ***
-		List<WebElement> allElements = Wait(30).until(ExpectedConditions.visibilityOfAllElements(
-				driver.findElements(By.xpath("//a[contains(.,'Ordering')]/following-sibling::div/ul/li/*/*/div/a"))));
-		logger.info(allElements.size());
+			// **** Order Products / Entry ***
+			List<WebElement> allElements = Wait(30).until(ExpectedConditions.visibilityOfAllElements(
+					driver.findElements(By.xpath("//a[contains(.,'Ordering')]/following-sibling::div/ul/li/*/*/div/a"))));
+			logger.info(allElements.size());
 
-		Thread.sleep(3000);
+			Thread.sleep(3000);
 
-		for (WebElement element : allElements) {
+			for (WebElement element : allElements) {
 
-			if (element.getText().equalsIgnoreCase("Order Products / Entry")) {
-				String OG_text = element.getText();
-				element.click();
-				logger.info("Clicked on link - " + OG_text);
-				break;
+				if (element.getText().equalsIgnoreCase("Order Products / Entry")) {
+					String OG_text = element.getText();
+					element.click();
+					logger.info("Clicked on link - " + OG_text);
+					break;
+				}
 			}
-
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info("Attempt 2- Using different locator");
+			try {
+				Thread.sleep(3000);
+				// ordering
+				WebElement lnk_Ordering = Wait(30)
+						.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//a[contains(.,'Ordering')]"))));
+				lnk_Ordering.click();
+				WebElement lnk_OrderEntry = Wait(30)
+						.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[@id='NavigationMenu-2']/div[3]/div/a"))));
+				lnk_OrderEntry.click();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				logger.info("Attempt 3- Using cart to Order");
+				cartToOrder();
+			}
 		}
+	}
+
+	public void cartToOrder() throws InterruptedException {
+		WebElement img_cartIcon = Wait(30).until(ExpectedConditions
+				.visibilityOf(driver.findElement(By.xpath("//*[@id='cartInfo']/div[1]/a/img"))));
+		img_cartIcon.click();
+		Thread.sleep(2000);
+		WebElement btn_ContinueShopping = Wait(30)
+				.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//*[@id='TitleBarActionNavButtons']/div[2]"))));
+		btn_ContinueShopping.click();
 	}
 
 	public void uploadFile(WebDriver driver, String filename) throws InterruptedException {
