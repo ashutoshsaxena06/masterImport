@@ -36,7 +36,7 @@ public class MailProcessor {
 
 	private static final String DEFAUT_ATTACHMET_DIR = "C:/orders";
 	private static final String DEFAULT_PURVEYOR_PROPERTIES = "purveyor.properties";
-	private static final String DEFAULT_LOCATION_PROPERTIES = "C:\\Users\\ImportOrder\\.jenkins\\jobs\\ImportOrder_V1\\workspace\\mail-mgt\\src\\main\\resources\\location.properties";
+	private static final String DEFAULT_LOCATION_PROPERTIES = "C:\\Users\\ImportOrder\\location.properties";
 	private static final String DEFAULT_PURVEYOR_ID = "1308";
 	private static final String USER_EMAIL = "importorders.diningedge@gmail.com";
 	private static final String USER_PASSWORD = "edge2016";
