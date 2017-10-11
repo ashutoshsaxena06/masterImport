@@ -1,5 +1,6 @@
 package com.esave.common;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -35,9 +36,9 @@ public class PropertiesManager {
 			synchronized (PropertiesManager.class) {
 				if (locationProperties == null) {
 					locationProperties = new Properties();
-					InputStream inputStream = PropertiesManager.class.getClassLoader()
-							.getResourceAsStream(locationPropertiesFile);
-					locationProperties.load(inputStream);
+//					InputStream inputStream = PropertiesManager.class.getClassLoader()
+//							.getResourceAsStream(locationPropertiesFile);
+					locationProperties.load(new FileInputStream(locationPropertiesFile));
 				}
 			}
 		}
