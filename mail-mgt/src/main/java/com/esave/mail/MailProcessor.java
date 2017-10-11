@@ -19,6 +19,7 @@ import javax.mail.Session;
 import javax.mail.URLName;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.search.SearchTerm;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -35,7 +36,7 @@ public class MailProcessor {
 
 	private static final String DEFAUT_ATTACHMET_DIR = "C:/orders";
 	private static final String DEFAULT_PURVEYOR_PROPERTIES = "purveyor.properties";
-	private static final String DEFAULT_LOCATION_PROPERTIES = "location.properties";
+	private static final String DEFAULT_LOCATION_PROPERTIES = "C:\\Users\\ImportOrder\\.jenkins\\jobs\\ImportOrder_V1\\workspace\\mail-mgt\\src\\main\\resources\\location.properties";
 	private static final String DEFAULT_PURVEYOR_ID = "1308";
 	private static final String USER_EMAIL = "importorders.diningedge@gmail.com";
 	private static final String USER_PASSWORD = "edge2016";
@@ -43,7 +44,10 @@ public class MailProcessor {
 	private static final Logger logger = Logger.getLogger(MailProcessor.class);
 
 	private String saveDirectory;
-
+	
+//	String pattern = "yyyy-MM-dd";
+//	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+	
 	/**
 	 * Sets the directory where attached files will be stored.
 	 * 
@@ -371,10 +375,24 @@ public class MailProcessor {
 	// return orderId;
 	// }
 
+//	private boolean updateDeliveryDate(String deDate){
+//		Date date = new Date();
+//		DateFormat estDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		estDate.setTimeZone(TimeZone.getTimeZone("EST"));
+//		String TodaysDate = simpleDateFormat.format(new Date(estDate.format(date)));
+//		String Date = simpleDateFormat.format(new Date(deDate));	
+//		
+//		
+//		
+//		return false;
+//		
+//	}
+	
 	private OrderDetails processOrder(String messageContent) throws MessagingException, PurveyorNotFoundException {
 		String purveyorId = null;
 		String locationId = null;
 		String orderId = null;
+	//	String deliveryDate = "";
 		OrderDetails orderDetails = null;
 		messageContent = messageContent.replace("\n", "").replace("\r", "").replace("=", "");
 		
@@ -389,6 +407,10 @@ public class MailProcessor {
 				messageContent.indexOf("Location:("));
 		orderId = orderId.replaceAll("[^0-9]", "");
 		logger.info(orderId);
+//		deliveryDate = messageContent.substring(messageContent.indexOf("2017-") + "2017-".length(),
+//				messageContent.indexOf("Cheney"));
+//		logger.info(deliveryDate);
+//		updateDeliveryDate(deliveryDate);
 		if (StringUtils.isNotEmpty(purveyorId)) {
 			if (StringUtils.isNotEmpty(locationId)) {
 				if (StringUtils.isNotEmpty(orderId)) {
