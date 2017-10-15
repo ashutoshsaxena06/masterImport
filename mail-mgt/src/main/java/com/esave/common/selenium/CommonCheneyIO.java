@@ -300,6 +300,7 @@ public class CommonCheneyIO {
 
 			WebElement poNumber = Wait(30).until(ExpectedConditions.visibilityOf(
 					driver.findElement(By.xpath("//input[@class='poNumber maxLengthRestriction OptionalField']"))));
+			poNumber.clear();
 			poNumber.sendKeys(poNum);
 			logger.info("Updated PO# field");
 			// input[@class='poNumber maxLengthRestriction OptionalField']
@@ -388,17 +389,17 @@ public class CommonCheneyIO {
 
 	public void OrderEntry() throws InterruptedException {
 		// PageExist("Home");
-				// Home
-				WaitForPageToLoad(30);
+		// Home
+		WaitForPageToLoad(30);
 
-				String ttl = driver.getTitle();
+		String ttl = driver.getTitle();
 
-				if (ttl.equalsIgnoreCase("Home")) {
-					PageExist("Home");
-				} else if (ttl.equalsIgnoreCase("Shopping Cart")) {
-					PageExist(" Cart");
-				}
-		
+		if (ttl.equalsIgnoreCase("Home")) {
+			PageExist("Home");
+		} else if (ttl.equalsIgnoreCase("Shopping Cart")) {
+			PageExist(" Cart");
+		}
+
 		try {
 			Thread.sleep(3000);
 			// ordering
@@ -551,5 +552,25 @@ public class CommonCheneyIO {
 		}
 	}
 
+	public void enterDeliverydate(String date) {
+		try {
+			if (!date.equals(null) || !date.equals("")) {
+				WebElement dd = driver.findElement(By.xpath("//input[@class='deliveryDate']"));
+				String actDate = dd.getAttribute("value");
+				if (actDate.equalsIgnoreCase(date)) {
+					logger.info("Delivery dates are same !");
+				} else {
+					JavascriptExecutor js = (JavascriptExecutor) driver;
+					js.executeScript("arguments[0].removeAttribute('disabled','disabled')", dd);
+
+					dd.clear();
+					dd.sendKeys(date);
+					logger.info("Delivery date is entered : "+ date);
+				}
+			}
+		} catch (Exception e) {
+			logger.info("Not able to input Delivery date in App");
+		}
+	}
 
 }

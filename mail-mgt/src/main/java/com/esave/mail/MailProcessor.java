@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,8 +48,9 @@ public class MailProcessor {
 
 	private String saveDirectory;
 	
-//	String pattern = "yyyy-MM-dd";
-//	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+	static SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd"); 
+	static SimpleDateFormat df1 = new SimpleDateFormat("mm/dd/yyyy");  
+	static Date date;
 	
 	/**
 	 * Sets the directory where attached files will be stored.
@@ -266,7 +270,7 @@ public class MailProcessor {
 				store.close();
 			}
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 
@@ -392,7 +396,7 @@ public class MailProcessor {
 		String purveyorId = null;
 		String locationId = null;
 		String orderId = null;
-	//	String deliveryDate = "";
+		String deliveryDate = "";
 		OrderDetails orderDetails = null;
 		messageContent = messageContent.replace("\n", "").replace("\r", "").replace("=", "");
 		
@@ -407,15 +411,20 @@ public class MailProcessor {
 				messageContent.indexOf("Location:("));
 		orderId = orderId.replaceAll("[^0-9]", "");
 		logger.info(orderId);
-//		deliveryDate = messageContent.substring(messageContent.indexOf("2017-") + "2017-".length(),
-//				messageContent.indexOf("Cheney"));
-//		logger.info(deliveryDate);
-//		updateDeliveryDate(deliveryDate);
+		try {
+			deliveryDate = messageContent.substring(messageContent.indexOf("'201") + "\"".length(),
+					messageContent.indexOf("'Cheney"));
+			logger.info("Deleivery date : "+ deliveryDate);
+			updateDeliveryDate(deliveryDate);
+		} catch (Exception e) {
+			System.out.println("delivery date not fetched : "+e.getMessage());
+		}
+
 		if (StringUtils.isNotEmpty(purveyorId)) {
 			if (StringUtils.isNotEmpty(locationId)) {
 				if (StringUtils.isNotEmpty(orderId)) {
 					try {
-						orderDetails = fetchPurveyorDetailsFromSystem(purveyorId, locationId, orderId);
+						orderDetails = fetchPurveyorDetailsFromSystem(purveyorId, locationId, orderId,deliveryDate);
 						// Send Success Notification
 					} catch (IOException e) {
 						e.printStackTrace();
@@ -436,37 +445,46 @@ public class MailProcessor {
 		return orderDetails;
 	}
 
+	private void updateDeliveryDate(String deliveryDate) {	
+	    try {
+			date = df.parse(deliveryDate);
+		    String dd = df1.format(date);
+		} catch (ParseException e) {
+			logger.info("Failed at delivery date conversion");
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * @param purveyorId
 	 * @param locationId
 	 * @throws IOException
 	 * @throws PurveyorNotFoundException
 	 */
-	private OrderDetails fetchPurveyorDetailsFromSystem(String purveyorId, String locationId, String orderId)
+	private OrderDetails fetchPurveyorDetailsFromSystem(String purveyorId, String locationId, String orderId, String deliverydate)
 			throws IOException, PurveyorNotFoundException {
 		OrderDetails orderDetails = null;
-		Properties purveyorProperties = PropertiesManager.getPurveyorProperties();
-		String purveyorStoreUrl = purveyorProperties.getProperty(purveyorId);
-		logger.info("Purveyor URL is : " + purveyorStoreUrl);
+		//Properties purveyorProperties = PropertiesManager.getPurveyorProperties();
+		//String purveyorStoreUrl = purveyorProperties.getProperty(purveyorId);
+		//logger.info("Purveyor URL is : " + purveyorStoreUrl);
 		Properties locationProperties = PropertiesManager.getLocationProperties();
 		String storeCredentials = locationProperties.getProperty(locationId);
 		if (StringUtils.isNotEmpty(storeCredentials)) {
 			String storeUserName = storeCredentials.split("/")[0];
 			String storePassword = storeCredentials.split("/")[1];
-			if (StringUtils.isEmpty(purveyorStoreUrl)) {
-				if (StringUtils.isEmpty(storeUserName) || StringUtils.isEmpty(storePassword)) {
-					throw new PurveyorNotFoundException("Location details does not exist in the system", 103,
-							purveyorId, orderId);
-				}
-				throw new PurveyorNotFoundException("Location details does not exist in the system", 102, purveyorId,
-						orderId);
-			}
-			orderDetails = new OrderDetails(purveyorStoreUrl, storeUserName, storePassword, orderId, purveyorId);
+//			if (StringUtils.isEmpty(purveyorStoreUrl)) {
+//				if (StringUtils.isEmpty(storeUserName) || StringUtils.isEmpty(storePassword)) {
+//					throw new PurveyorNotFoundException("Location details does not exist in the system", 103,
+//							purveyorId, orderId);
+//				}
+//				throw new PurveyorNotFoundException("Location details does not exist in the system", 102, purveyorId,
+//						orderId);
+//			}
+			orderDetails = new OrderDetails(storeUserName, storePassword, orderId, purveyorId, deliverydate);
 			logger.info(orderDetails);
 		} else {
 			throw new PurveyorNotFoundException("Location details does not exist in the system", 102, purveyorId,
 					orderId);
-			
 		}
 
 		return orderDetails;

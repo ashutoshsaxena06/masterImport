@@ -25,11 +25,13 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		String password = orderDetails.getPassword();
 		String orderID = orderDetails.getOrderId();
 		String filepath = "C:\\orders\\";
+		String date= orderDetails.getDeliverydate();
 		// Actual File path ##
 		String filename = filepath + orderID + ".csv";
 		int importItemQty = 0;
 
 		logger.info(userName + " : " + password + " and " + filename);
+		logger.info("Order delivery date is : " + date);
 		try {
 
 			// Launch setProperty for chrome, Launch, Implicit wait & maximize
@@ -92,12 +94,16 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(2000);
 			// Final- checkout3
 			checkOut(driver);
-			// errorScreenshot(driver, orderID);
+
 			Thread.sleep(3000);
 
+			//PO number
 			enterPoNumber(driver, orderID);
 
 			Thread.sleep(3000);
+			
+			//Delivery date
+			enterDeliverydate(date);
 			
 			// validate/ Submit btn
 			submitOrder(driver);

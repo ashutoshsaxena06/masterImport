@@ -11,12 +11,12 @@ public class OrderDetails {
 	private String orderId;
 	
 	private String purveyorId;
+	
+	private String deliverydate;
 
-	private String purveoyrId;
-
-	public OrderDetails(String purveyorURL, String userName, String password, String orderId, String purveyorId) {
+	public OrderDetails( String userName, String password, String orderId, String purveyorId, String deliverydate) {
 		super();
-		this.purveyorURL = purveyorURL;
+//		this.purveyorURL = purveyorURL;
 		this.userName = userName;
 		this.password = password;
 		this.orderId = orderId;
@@ -59,8 +59,13 @@ public class OrderDetails {
 		return purveyorId;
 	}
 
-	public void setPurveyorId(String purveyorId) {
-		this.purveyorId = purveoyrId;
+	
+	public String getDeliverydate() {
+		return deliverydate;
+	}
+
+	public void setDeliverydate(String deliverydate) {
+		this.deliverydate = deliverydate;
 	}
 
 	@Override
