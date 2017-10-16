@@ -552,9 +552,13 @@ public class CommonCheneyIO {
 		}
 	}
 
-	public void enterDeliverydate(String date) {
+	public void enterDeliverydate(WebDriver driver, String date) {
 		try {
-			if (!date.equals(null) || !date.equals("")) {
+			if (date.equals(null) || date.equals("")) {
+				System.out.println("Deliver on Date is null");
+			}
+			else {
+				Thread.sleep(2000);
 				WebElement dd = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//input[@class='deliveryDate']"))));
 				String actDate = dd.getAttribute("value");
 				if (actDate.equalsIgnoreCase(date)) {
@@ -571,6 +575,7 @@ public class CommonCheneyIO {
 			}
 		} catch (Exception e) {
 			logger.info("Not able to input Delivery date in App");
+			e.printStackTrace();
 		}
 	}
 

@@ -396,6 +396,7 @@ public class MailProcessor {
 		String purveyorId = null;
 		String locationId = null;
 		String orderId = null;
+		String delivery = "";
 		String deliveryDate = "";
 		OrderDetails orderDetails = null;
 		messageContent = messageContent.replace("\n", "").replace("\r", "").replace("=", "");
@@ -412,10 +413,10 @@ public class MailProcessor {
 		orderId = orderId.replaceAll("[^0-9]", "");
 		logger.info(orderId);
 		try {
-			deliveryDate = messageContent.substring(messageContent.indexOf("'201") + "\"".length(),
+			delivery = messageContent.substring(messageContent.indexOf("'201") + "\"".length(),
 					messageContent.indexOf("'Cheney"));
-			logger.info("Deleivery date : "+ deliveryDate);
-			updateDeliveryDate(deliveryDate);
+			logger.info("Delivery date : "+ delivery);
+			deliveryDate = updateDeliveryDate(delivery); 
 		} catch (Exception e) {
 			System.out.println("delivery date not fetched : "+e.getMessage());
 		}
@@ -445,14 +446,18 @@ public class MailProcessor {
 		return orderDetails;
 	}
 
-	private void updateDeliveryDate(String deliveryDate) {	
-	    try {
-			date = df.parse(deliveryDate);
-		    String dd = df1.format(date);
+	private String updateDeliveryDate(String Ddate) {	
+	    String dd;
+		try {
+			date = df.parse(Ddate);
+		    dd = df1.format(date);
+		    logger.info("Delivery date for input : "+dd);
 		} catch (ParseException e) {
 			logger.info("Failed at delivery date conversion");
 			e.printStackTrace();
+			dd="";
 		}
+		return dd;
 	}
 
 	/**
