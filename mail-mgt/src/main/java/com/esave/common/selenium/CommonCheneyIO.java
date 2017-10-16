@@ -555,11 +555,12 @@ public class CommonCheneyIO {
 	public void enterDeliverydate(String date) {
 		try {
 			if (!date.equals(null) || !date.equals("")) {
-				WebElement dd = driver.findElement(By.xpath("//input[@class='deliveryDate']"));
+				WebElement dd = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//input[@class='deliveryDate']"))));
 				String actDate = dd.getAttribute("value");
 				if (actDate.equalsIgnoreCase(date)) {
 					logger.info("Delivery dates are same !");
 				} else {
+					Thread.sleep(2000);
 					JavascriptExecutor js = (JavascriptExecutor) driver;
 					js.executeScript("arguments[0].removeAttribute('disabled','disabled')", dd);
 
