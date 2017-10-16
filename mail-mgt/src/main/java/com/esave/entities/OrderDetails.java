@@ -21,6 +21,7 @@ public class OrderDetails {
 		this.password = password;
 		this.orderId = orderId;
 		this.purveyorId = purveyorId;
+		this.deliverydate = deliverydate;
 	}
 
 	public String getUserName() {

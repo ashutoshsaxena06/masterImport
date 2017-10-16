@@ -416,7 +416,7 @@ public class MailProcessor {
 			delivery = messageContent.substring(messageContent.indexOf("'201") + "\"".length(),
 					messageContent.indexOf("'Cheney"));
 			logger.info("Delivery date : "+ delivery);
-			deliveryDate = updateDeliveryDate(delivery); 
+			deliveryDate = updateDeliveryDate(delivery);
 		} catch (Exception e) {
 			System.out.println("delivery date not fetched : "+e.getMessage());
 		}
