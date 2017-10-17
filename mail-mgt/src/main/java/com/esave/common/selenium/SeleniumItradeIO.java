@@ -106,7 +106,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			enterDeliverydate(driver, date);
 			
 			// validate/ Submit btn
-			submitOrder(driver);
+//			submitOrder(driver);
 
 			Thread.sleep(3000);
 
