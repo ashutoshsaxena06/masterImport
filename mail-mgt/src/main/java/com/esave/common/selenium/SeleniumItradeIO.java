@@ -98,7 +98,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(3000);
 
 			//PO number
-			enterPoNumber(driver, orderID);
+			enterPoNumberandInvoice(driver, orderID);
 
 			Thread.sleep(3000);
 			

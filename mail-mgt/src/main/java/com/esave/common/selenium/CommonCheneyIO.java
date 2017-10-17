@@ -292,11 +292,17 @@ public class CommonCheneyIO {
 
 	}
 
-	public void enterPoNumber(WebDriver driver, String poNum) {
+	public void enterPoNumberandInvoice(WebDriver driver, String poNum) {
 		try {
 			// Checkout
 			WaitForPageToLoad(30);
 			PageExist("Checkout");
+
+			Thread.sleep(2000);
+			WebElement separateInvoice = Wait(30).until(ExpectedConditions
+					.elementToBeClickable(driver.findElement(By.xpath("//input[@class='separateInvoice']"))));
+			separateInvoice.click();
+			logger.info("Separate Invoice Choosen");
 
 			WebElement poNumber = Wait(30).until(ExpectedConditions.visibilityOf(
 					driver.findElement(By.xpath("//input[@class='poNumber maxLengthRestriction OptionalField']"))));
@@ -553,29 +559,62 @@ public class CommonCheneyIO {
 	}
 
 	public void enterDeliverydate(WebDriver driver, String date) {
+		String mm = date.substring(0, 2);
+		String dd = date.substring(3, 5);
+		logger.info("Date : " + dd + "and Month : " + mm);
 		try {
-			if (date.equals(null) || date.equals("")) {
-				System.out.println("Deliver on Date is null");
-			}
-			else {
+			if (!date.equals(null) || !date.equals("")) {
 				Thread.sleep(2000);
-				WebElement dd = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//input[@class='deliveryDate']"))));
-				String actDate = dd.getAttribute("value");
-				if (actDate.equalsIgnoreCase(date)) {
-					logger.info("Delivery dates are same !");
-				} else {
+				WebElement lnk_dd = Wait(30).until(ExpectedConditions
+						.visibilityOf(driver.findElement(By.xpath("//input[@class='deliveryDate']"))));
+				String actDate = lnk_dd.getAttribute("value");
+				if (!actDate.equalsIgnoreCase(date)) {
+					//Calender open
+					WebElement cln = Wait(30).until(
+							ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//img[@title='Choose Date']"))));
+					cln.click();
+					driver.switchTo().frame("editDeliveryDateDialogFrame");
+					String actMM = date.substring(0, 2);
+					// month compare
+					if (!actMM.equalsIgnoreCase(mm)) {
+						Thread.sleep(2000);
+						// Next month
+						WebElement lnk_Month = Wait(30).until(
+								ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//a[@id='NextMonthButton']"))));
+						cln.click();
+					} else {
+						logger.info("Delivery in same month");
+					}
 					Thread.sleep(2000);
-					JavascriptExecutor js = (JavascriptExecutor) driver;
-					js.executeScript("arguments[0].removeAttribute('disabled','disabled')", dd);
-
-					dd.clear();
-					dd.sendKeys(date);
-					logger.info("Delivery date is entered : "+ date);
+					// deliver date entry
+					inputDeliverydate(driver, dd);
+					logger.info("Delivery date is entered : " + date );
+				} else {
+					logger.info("Delivery dates are same !");
 				}
+			} else {
+				logger.info("Delivery date is Null");
 			}
 		} catch (Exception e) {
 			logger.info("Not able to input Delivery date in App");
+			driver.findElement(By.xpath("//span[contains(@class,'closethick')]")).click();
 			e.printStackTrace();
+		}
+	}
+
+	public void inputDeliverydate(WebDriver driver, String dd) {
+		List<WebElement> li = Wait(30).until(ExpectedConditions.visibilityOfAllElements(
+				driver.findElements(By.xpath("//td/a[@class='t-link t-action-link Dates_Selectable']"))));
+		logger.info(li.size());
+		
+		if (!(li.size() == 0)) {
+			for (WebElement wb : li) {
+				logger.info(wb.getText());
+				if (wb.getText().equals(dd)) {
+					wb.click();
+					break;
+				}
+			}
 		}
 	}
 
