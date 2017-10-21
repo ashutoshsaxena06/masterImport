@@ -103,7 +103,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(3000);
 			
 			//Delivery date
-			enterDeliverydate(driver, date);
+			if (orderDetails.getUserName().equalsIgnoreCase("60008181CBI")) {
+				enterDeliverydate(driver, date);
+			}
 			
 			// validate/ Submit btn
 			submitOrder(driver);

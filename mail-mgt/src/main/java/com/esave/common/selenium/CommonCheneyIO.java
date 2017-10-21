@@ -568,6 +568,7 @@ public class CommonCheneyIO {
 				WebElement lnk_dd = Wait(30).until(ExpectedConditions
 						.visibilityOf(driver.findElement(By.xpath("//input[@class='deliveryDate']"))));
 				String actDate = lnk_dd.getAttribute("value");
+				logger.info("date in iTrade : "+ actDate);
 				if (!actDate.equalsIgnoreCase(date)) {
 					//Calender open
 					WebElement cln = Wait(30).until(
