@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -568,11 +569,11 @@ public class CommonCheneyIO {
 				WebElement lnk_dd = Wait(30).until(ExpectedConditions
 						.visibilityOf(driver.findElement(By.xpath("//input[@class='deliveryDate']"))));
 				String actDate = lnk_dd.getAttribute("value");
-				logger.info("date in iTrade : "+ actDate);
+				logger.info("date in iTrade : " + actDate);
 				if (!actDate.equalsIgnoreCase(date)) {
-					//Calender open
-					WebElement cln = Wait(30).until(
-							ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//img[@title='Choose Date']"))));
+					// Calender open
+					WebElement cln = Wait(30).until(ExpectedConditions
+							.elementToBeClickable(driver.findElement(By.xpath("//img[@title='Choose Date']"))));
 					cln.click();
 					driver.switchTo().frame("editDeliveryDateDialogFrame");
 					String actMM = date.substring(0, 2);
@@ -580,8 +581,8 @@ public class CommonCheneyIO {
 					if (!actMM.equalsIgnoreCase(mm)) {
 						Thread.sleep(2000);
 						// Next month
-						WebElement lnk_Month = Wait(30).until(
-								ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath("//a[@id='NextMonthButton']"))));
+						WebElement lnk_Month = Wait(30).until(ExpectedConditions
+								.elementToBeClickable(driver.findElement(By.xpath("//a[@id='NextMonthButton']"))));
 						cln.click();
 					} else {
 						logger.info("Delivery in same month");
@@ -589,7 +590,7 @@ public class CommonCheneyIO {
 					Thread.sleep(2000);
 					// deliver date entry
 					inputDeliverydate(driver, dd);
-					logger.info("Delivery date is entered : " + date );
+					logger.info("Delivery date is entered : " + date);
 				} else {
 					logger.info("Delivery dates are same !");
 				}
@@ -600,14 +601,25 @@ public class CommonCheneyIO {
 			logger.info("Not able to input Delivery date in App");
 			driver.findElement(By.xpath("//span[contains(@class,'closethick')]")).click();
 			e.printStackTrace();
+		} finally {
+			try {
+				Thread.sleep(2000);
+				driver.findElement(By.xpath("//span[contains(@class,'closethick')]")).click();
+				driver.switchTo().defaultContent();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				driver.switchTo().defaultContent();
+			};
 		}
+
 	}
 
 	public void inputDeliverydate(WebDriver driver, String dd) {
 		List<WebElement> li = Wait(30).until(ExpectedConditions.visibilityOfAllElements(
 				driver.findElements(By.xpath("//td/a[@class='t-link t-action-link Dates_Selectable']"))));
 		logger.info(li.size());
-		
+
 		if (!(li.size() == 0)) {
 			for (WebElement wb : li) {
 				logger.info(wb.getText());
