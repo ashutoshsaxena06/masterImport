@@ -560,12 +560,16 @@ public class CommonCheneyIO {
 	}
 
 	public void enterDeliverydate(WebDriver driver, String date) {
-		String mm = date.substring(0, 2);
-		String dd = date.substring(3, 5);
-		logger.info("Date : " + dd + "and Month : " + mm);
 		try {
 			if (!date.equals(null) || !date.equals("")) {
+				String mm = date.substring(0, 2);
+				String dd = date.substring(3, 5);
+				if (dd.charAt(0) == '0') {
+					dd = dd.substring(1);
+				}
+				System.out.println("Date : " + dd + " and Month : " + mm);
 				Thread.sleep(2000);
+
 				WebElement lnk_dd = Wait(30).until(ExpectedConditions
 						.visibilityOf(driver.findElement(By.xpath("//input[@class='deliveryDate']"))));
 				String actDate = lnk_dd.getAttribute("value");
@@ -598,21 +602,20 @@ public class CommonCheneyIO {
 				logger.info("Delivery date is Null");
 			}
 		} catch (Exception e) {
-			logger.info("Not able to input Delivery date in App");
-			driver.findElement(By.xpath("//span[contains(@class,'closethick')]")).click();
+			System.out.println("Not able to input Delivery date in App");
+			driver.findElement(By.xpath("//button[@title='close']")).click();
 			e.printStackTrace();
 		} finally {
 			try {
 				Thread.sleep(2000);
-				driver.findElement(By.xpath("//span[contains(@class,'closethick')]")).click();
 				driver.switchTo().defaultContent();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				driver.switchTo().defaultContent();
-			};
+			}
+			;
 		}
-
 	}
 
 	public void inputDeliverydate(WebDriver driver, String dd) {
