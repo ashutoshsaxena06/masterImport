@@ -585,9 +585,7 @@ public class CommonCheneyIO {
 					if (!actMM.equalsIgnoreCase(mm)) {
 						Thread.sleep(2000);
 						// Next month
-						WebElement lnk_Month = Wait(30).until(ExpectedConditions
-								.elementToBeClickable(driver.findElement(By.xpath("//a[@id='NextMonthButton']"))));
-						cln.click();
+						driver.findElement(By.xpath("//*[@id='NextMonthButton']/span")).click();
 					} else {
 						logger.info("Delivery in same month");
 					}
@@ -603,7 +601,7 @@ public class CommonCheneyIO {
 			}
 		} catch (Exception e) {
 			System.out.println("Not able to input Delivery date in App");
-			driver.findElement(By.xpath("//button[@title='close']")).click();
+			driver.findElement(By.xpath("//button[@title='close']/span")).click();
 			e.printStackTrace();
 		} finally {
 			try {
