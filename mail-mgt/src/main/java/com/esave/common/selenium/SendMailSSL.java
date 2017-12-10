@@ -37,7 +37,7 @@ public class SendMailSSL {
 	}
 
 	public static void sendMailAction(String OrderTD, String status ) {
-		String to = "ashutoshsaxena06@gmail.com";
+		String[] to = {"ashutoshsaxena06@gmail.com","raj.esave@gmail.com","dawn@diningedge.com","paola@diningedge.com"};
 		String user = "onlineweekend.diningedge@gmail.com";// change
 																	// accordingly
 		try {
@@ -49,9 +49,17 @@ public class SendMailSSL {
 			MimeMessage message = new MimeMessage(session);
 			
 	        message.setFrom(new InternetAddress(user)); 
-	
+
+			InternetAddress[] recipientAddress = new InternetAddress[to.length];
+			int counter = 0;
+			for (String recipient : to) {
+				recipientAddress[counter] = new InternetAddress(recipient.trim());
+				counter++;
+			}
+
+			message.addRecipients(Message.RecipientType.TO, recipientAddress);
 			// accordingly
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			// message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
 			//smessageBodyPart1.addRecipient(Message.RecipientType.CC, new InternetAddress("teamesave@gmail.com"));
 
