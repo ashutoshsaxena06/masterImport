@@ -25,7 +25,8 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		String password = orderDetails.getPassword();
 		String orderID = orderDetails.getOrderId();
 		String filepath = "C:\\orders\\";
-		String date= orderDetails.getDeliverydate();
+		String date = orderDetails.getDeliverydate();
+		String locationID = orderDetails.getPurveyorId();
 		// Actual File path ##
 		String filename = filepath + orderID + ".csv";
 		int importItemQty = 0;
@@ -51,14 +52,14 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(3000);
 			// Check and Empty all Items from Cart
 			checkAndEmptyCart();
-			
+
 			Thread.sleep(3000);
-			
+
 			// #Step 3 - ordering
 			OrderEntry();
 
 			Thread.sleep(3000);
-			
+
 			// #Step 4 - Upload btn click
 			uploadFile(driver, filename);
 
@@ -87,9 +88,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			} catch (WebDriverException e) {
 				e.printStackTrace();
 			}
-			
+
 			// Verify Items at Cart page
-			verifyCartItems(driver,  importItemQty);
+			verifyCartItems(driver, importItemQty);
 
 			Thread.sleep(2000);
 			// Final- checkout3
@@ -97,16 +98,16 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			Thread.sleep(3000);
 
-			//PO number
+			// PO number
 			enterPoNumberandInvoice(driver, orderID);
 
 			Thread.sleep(3000);
-			
-			//Delivery date
+
+			// Delivery date
 			if (orderDetails.getUserName().equalsIgnoreCase("60008181CBI")) {
 				enterDeliverydate(driver, date);
 			}
-			
+
 			// validate/ Submit btn
 			submitOrder(driver);
 
@@ -116,7 +117,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				try {
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.SUCCESS);
-					SendMailSSL.sendMailAction(orderID, "Success!");
+					SendMailSSL.sendMailAction(locationID, orderID, "Success!");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -130,7 +131,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					// send failure
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
-					SendMailSSL.sendMailAction(orderID, "Failure!");
+					SendMailSSL.sendMailAction(locationID, orderID, "Failure!");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -148,7 +149,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					// send Failure
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
-					SendMailSSL.sendMailAction(orderID, "Failure!");
+					SendMailSSL.sendMailAction(locationID, orderID, "Failure!");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -166,7 +167,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				// send failure
 				new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 						NotificationEvent.FAILURE);
-				SendMailSSL.sendMailAction(orderID, "Failure!");
+				SendMailSSL.sendMailAction(locationID, orderID, "Failure!");
 			} catch (IOException e1) {
 				logger.info("Communication failure occured while sending success notification");
 				e1.printStackTrace();

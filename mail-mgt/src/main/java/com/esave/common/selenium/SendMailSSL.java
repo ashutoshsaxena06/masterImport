@@ -11,10 +11,9 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-
 public class SendMailSSL {
 
-	public static  Session createConnection() throws MessagingException {
+	public static Session createConnection() throws MessagingException {
 		// Create IMAPSSLStore object
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.gmail.com");
@@ -26,29 +25,29 @@ public class SendMailSSL {
 		// All sysout statements are used for testing, have to remove them
 		// while implementation
 		System.out.println("Connecting to gmail...");
-		
+
 		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication("onlineweekend.diningedge@gmail.com", "edge2016");// change
-																								// accordingly
+				// accordingly
 			}
 		});
 		return session;
 	}
 
-	public static void sendMailAction(String OrderTD, String status ) {
-		String[] to = {"ashutoshsaxena06@gmail.com","raj.esave@gmail.com","dawn@diningedge.com","paola@diningedge.com"};
+	public static void sendMailAction(String location, String OrderTD, String status) {
+		String[] to = { "ashutoshsaxena06@gmail.com", "raj.esave@gmail.com", "dawn@diningedge.com",
+				"paola@diningedge.com" };
 		String user = "onlineweekend.diningedge@gmail.com";// change
-																	// accordingly
+															// accordingly
 		try {
 			// get connection
 			Session session = createConnection();
-			//String filepath = RandomAction.setdownloadDir();
-		
-			
+			// String filepath = RandomAction.setdownloadDir();
+
 			MimeMessage message = new MimeMessage(session);
-			
-	        message.setFrom(new InternetAddress(user)); 
+
+			message.setFrom(new InternetAddress(user));
 
 			InternetAddress[] recipientAddress = new InternetAddress[to.length];
 			int counter = 0;
@@ -59,14 +58,16 @@ public class SendMailSSL {
 
 			message.addRecipients(Message.RecipientType.TO, recipientAddress);
 			// accordingly
-			// message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			// message.addRecipient(Message.RecipientType.TO, new
+			// InternetAddress(to));
 
-			//smessageBodyPart1.addRecipient(Message.RecipientType.CC, new InternetAddress("teamesave@gmail.com"));
+			// smessageBodyPart1.addRecipient(Message.RecipientType.CC, new
+			// InternetAddress("teamesave@gmail.com"));
 
 			// Subject of mails
-			message.setSubject("OrderID : " +OrderTD+ "- status :: " + status);
-			// Body of mails 
-	         message.setText("<Auto generated mail notification> 'Order Information for CheneyItrade'");  
+			message.setSubject("OrderID : " + OrderTD + " and Location : " + location + "- status :: " + status);
+			// Body of mails
+			message.setText("<Auto generated mail notification> 'Order Information for CheneyItrade'");
 
 			Transport.send(message);
 
