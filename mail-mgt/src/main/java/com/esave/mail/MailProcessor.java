@@ -42,7 +42,7 @@ public class MailProcessor {
 	private static final String DEFAULT_LOCATION_PROPERTIES = "C:\\Users\\ImportOrder\\location.properties";
 	private static final String DEFAULT_PURVEYOR_ID = "1308";
 	private static final String USER_EMAIL = "importorders.diningedge@gmail.com";
-	private static final String USER_PASSWORD = "edge2016";
+	private static final String USER_PASSWORD = "edge2017";
 
 	private static final Logger logger = Logger.getLogger(MailProcessor.class);
 
