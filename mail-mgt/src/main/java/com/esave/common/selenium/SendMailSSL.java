@@ -37,7 +37,7 @@ public class SendMailSSL {
 
 	public static void sendMailAction(String location, String OrderTD, String status) {
 		String[] to = { "ashutoshsaxena06@gmail.com", "raj.esave@gmail.com", "dawn@diningedge.com",
-				"paola@diningedge.com" ,"naomi.canning@diningedge.com"};
+				"paola@diningedge.com" ,"naomi.canning@diningedge.com","frank@diningedge.com"};
 		String user = "onlineweekend.diningedge@gmail.com";// change
 															// accordingly
 		try {
