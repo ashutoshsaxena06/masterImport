@@ -183,7 +183,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		} finally {
 			// Choose Logout option
 			// errorScreenshot(driver, orderID);
-			//driver.close();
+			driver.close();
 		}
 	}
 
