@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -266,6 +265,14 @@ public class CommonCheneyIO {
 
 		return true;
 
+	}
+	
+	public void validateOrderImport(WebDriver driver, String orderID) {
+		// home
+		driver.get("https://www.procurement.itradenetwork.com/Platform/Membership/Dashboard/Detail");
+		WebElement orderNumber = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//tr/td/a[contains(.,'"+orderID+"')]"))));
+		String status = orderNumber.getText();
+		logger.info("Order number imported : " + status);
 	}
 
 	public int verifyUpload(WebDriver driver) throws InterruptedException {

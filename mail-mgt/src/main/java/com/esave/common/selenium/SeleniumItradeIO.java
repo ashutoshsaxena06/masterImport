@@ -5,6 +5,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
 import com.esave.common.NotificationEvent;
@@ -111,7 +112,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// validate/ Submit btn
 			submitOrder(driver);
 
-			Thread.sleep(3000);
+			Thread.sleep(10000);
+			
+			validateOrderImport(driver, orderID);
 
 			if (orderDetails != null) {
 				try {
@@ -180,8 +183,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		} finally {
 			// Choose Logout option
 			// errorScreenshot(driver, orderID);
-			driver.close();
+			//driver.close();
 		}
 	}
 
+	
 }
