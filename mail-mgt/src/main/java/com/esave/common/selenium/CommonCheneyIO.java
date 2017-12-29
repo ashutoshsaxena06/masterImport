@@ -311,12 +311,21 @@ public class CommonCheneyIO {
 					.elementToBeClickable(driver.findElement(By.xpath("//input[@class='separateInvoice']"))));
 			separateInvoice.click();
 			logger.info("Separate Invoice Choosen");
-
-			WebElement poNumber = Wait(30).until(ExpectedConditions.visibilityOf(
-					driver.findElement(By.xpath("//input[@class='poNumber maxLengthRestriction OptionalField']"))));
-			poNumber.clear();
-			poNumber.sendKeys(poNum);
-			logger.info("Updated PO# field");
+			
+			int retry=0;
+			while (retry < 3) {
+				WebElement poNumber = Wait(30).until(ExpectedConditions.visibilityOf(
+						driver.findElement(By.className("poNumber maxLengthRestriction OptionalField"))));
+				poNumber.clear();
+				poNumber.sendKeys(poNum);
+				if (!poNumber.getAttribute("value").isEmpty()) {
+					logger.info("PO# not empty : " + poNum);
+					break;
+				}
+				Thread.sleep(1000);
+				retry ++;
+			}
+			logger.info("Updated PO# field : " + poNum);
 			// input[@class='poNumber maxLengthRestriction OptionalField']
 		} catch (org.openqa.selenium.NoSuchElementException Ne) {
 			logger.info("PO# - not Updated");
