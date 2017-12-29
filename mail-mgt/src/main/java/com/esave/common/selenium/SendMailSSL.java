@@ -35,9 +35,10 @@ public class SendMailSSL {
 		return session;
 	}
 
-	public static void sendMailAction(String location, String OrderTD, String status) {
-		String[] to = { "ashutoshsaxena06@gmail.com", "raj.esave@gmail.com", "dawn@diningedge.com",
-				"paola@diningedge.com" ,"naomi.canning@diningedge.com","frank@diningedge.com"};
+	public static void sendMailAction( String OrderTD, String status) {
+		String[] to = { "ashutoshsaxena06@gmail.com"};
+//		"raj.esave@gmail.com", "dawn@diningedge.com",
+//		"paola@diningedge.com" ,"naomi.canning@diningedge.com","frank@diningedge.com"
 		String user = "onlineweekend.diningedge@gmail.com";// change
 															// accordingly
 		try {
@@ -65,7 +66,7 @@ public class SendMailSSL {
 			// InternetAddress("teamesave@gmail.com"));
 
 			// Subject of mails
-			message.setSubject("OrderID : " + OrderTD + " and Location : " + location + "- status :: " + status);
+			message.setSubject("OrderID : " + OrderTD + " - status :: " + status);
 			// Body of mails
 			message.setText("<Auto generated mail notification> 'Order Information for CheneyItrade'");
 

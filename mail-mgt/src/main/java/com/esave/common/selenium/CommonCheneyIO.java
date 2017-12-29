@@ -269,10 +269,16 @@ public class CommonCheneyIO {
 	
 	public void validateOrderImport(WebDriver driver, String orderID) {
 		// home
-		driver.get("https://www.procurement.itradenetwork.com/Platform/Membership/Dashboard/Detail");
-		WebElement orderNumber = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//tr/td/a[contains(.,'"+orderID+"')]"))));
-		String status = orderNumber.getText();
-		logger.info("Order number imported : " + status);
+		try {
+			driver.get("https://www.procurement.itradenetwork.com/Platform/Membership/Dashboard/Detail");
+			WebElement orderNumber = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//tr/td/a[contains(.,'"+orderID+"')]"))));
+			String status = orderNumber.getText();
+			logger.info("Order number imported : " + status);
+		} catch (Exception e) {
+			// 
+			logger.info("Order number not found");
+			e.printStackTrace();
+		}
 	}
 
 	public int verifyUpload(WebDriver driver) throws InterruptedException {
@@ -311,22 +317,28 @@ public class CommonCheneyIO {
 					.elementToBeClickable(driver.findElement(By.xpath("//input[@class='separateInvoice']"))));
 			separateInvoice.click();
 			logger.info("Separate Invoice Choosen");
-			
+			//po#
+			WebElement poNumber = Wait(30).until(ExpectedConditions.visibilityOf(
+					driver.findElement(By.xpath("// input[@class='poNumber maxLengthRestriction OptionalField']"))));
+			poNumber.sendKeys(poNum);
+
 			int retry=0;
 			while (retry < 3) {
-				WebElement poNumber = Wait(30).until(ExpectedConditions.visibilityOf(
-						driver.findElement(By.className("poNumber maxLengthRestriction OptionalField"))));
-				poNumber.clear();
-				poNumber.sendKeys(poNum);
 				if (!poNumber.getAttribute("value").isEmpty()) {
 					logger.info("PO# not empty : " + poNum);
 					break;
+				}else {
+					WebElement poNumber_absolute = Wait(30).until(ExpectedConditions.visibilityOf(
+							driver.findElement(By.xpath("//*[@id='MainContentContainer']/div[1]/ul/li/div/ul/li/div[2]/div[1]/div[1]/div[1]/input"))));
+					poNumber_absolute.sendKeys(poNum);
 				}
+				
 				Thread.sleep(1000);
+				logger.info("PO# is empty, retry -"+retry );
 				retry ++;
 			}
 			logger.info("Updated PO# field : " + poNum);
-			// input[@class='poNumber maxLengthRestriction OptionalField']
+			
 		} catch (org.openqa.selenium.NoSuchElementException Ne) {
 			logger.info("PO# - not Updated");
 			Ne.printStackTrace();

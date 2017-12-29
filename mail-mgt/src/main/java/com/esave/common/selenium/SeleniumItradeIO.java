@@ -27,7 +27,6 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		String orderID = orderDetails.getOrderId();
 		String filepath = "C:\\orders\\";
 		String date = orderDetails.getDeliverydate();
-		String locationID = orderDetails.getPurveyorId();
 		// Actual File path ##
 		String filename = filepath + orderID + ".csv";
 		int importItemQty = 0;
@@ -120,7 +119,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				try {
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.SUCCESS);
-					SendMailSSL.sendMailAction(locationID, orderID, "Success!");
+					SendMailSSL.sendMailAction(orderID, "Success!");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -134,7 +133,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					// send failure
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
-					SendMailSSL.sendMailAction(locationID, orderID, "Failure!");
+					SendMailSSL.sendMailAction( orderID, "Failure!");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -152,7 +151,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					// send Failure
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
-					SendMailSSL.sendMailAction(locationID, orderID, "Failure!");
+					SendMailSSL.sendMailAction( orderID, "Failure!");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -170,7 +169,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				// send failure
 				new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 						NotificationEvent.FAILURE);
-				SendMailSSL.sendMailAction(locationID, orderID, "Failure!");
+				SendMailSSL.sendMailAction(orderID, "Failure!");
 			} catch (IOException e1) {
 				logger.info("Communication failure occured while sending success notification");
 				e1.printStackTrace();
