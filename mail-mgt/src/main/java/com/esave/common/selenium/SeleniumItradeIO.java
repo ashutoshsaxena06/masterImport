@@ -134,6 +134,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
 					SendMailSSL.sendMailAction( orderID, "Failure!");
+					SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -152,6 +153,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 							NotificationEvent.FAILURE);
 					SendMailSSL.sendMailAction( orderID, "Failure!");
+					SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
 				} catch (IOException e1) {
 					logger.info("Communication failure occured while sending success notification");
 					e1.printStackTrace();
@@ -170,6 +172,8 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 				new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
 						NotificationEvent.FAILURE);
 				SendMailSSL.sendMailAction(orderID, "Failure!");
+				SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
+
 			} catch (IOException e1) {
 				logger.info("Communication failure occured while sending success notification");
 				e1.printStackTrace();

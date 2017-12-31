@@ -233,9 +233,9 @@ public class MailProcessor {
 							e.printStackTrace();
 						} catch (PurveyorNotFoundException e) {
 							try {
-								SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
 								new Utils().sendNotification(e.getOrderId(), e.getPurveyorId(),
 										NotificationEvent.FAILURE);
+								SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
 							} catch (IOException e1) {
 								logger.info("Communication failure occured while sending failure notification");
 								e1.printStackTrace();
