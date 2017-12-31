@@ -30,6 +30,7 @@ import com.esave.common.NotificationEvent;
 import com.esave.common.PropertiesManager;
 import com.esave.common.Utils;
 import com.esave.common.selenium.SeleniumItradeIO;
+import com.esave.common.selenium.SendMailSSL;
 import com.esave.entities.OrderDetails;
 import com.esave.exception.PurveyorNotFoundException;
 import com.sun.mail.imap.IMAPFolder;
@@ -198,6 +199,7 @@ public class MailProcessor {
 										messageContent = getTextFromMimeMultipart(part);
 										if (messageContent != null) {
 											try {
+												// pass Failure message
 												orderDetails = processOrder(messageContent);
 											} catch (MessagingException e) {
 												// block
@@ -214,6 +216,8 @@ public class MailProcessor {
 											part.saveFile(saveDirectory + File.separator + orderDetails.getOrderId()
 													+ ".csv");
 											try {
+												// pass Failure message
+												SendMailSSL.setFailureMessage(multiPart);
 												// Call Selenium ##
 												SeleniumItradeIO sel = new SeleniumItradeIO();
 												sel.start(orderDetails);
@@ -229,6 +233,7 @@ public class MailProcessor {
 							e.printStackTrace();
 						} catch (PurveyorNotFoundException e) {
 							try {
+								SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
 								new Utils().sendNotification(e.getOrderId(), e.getPurveyorId(),
 										NotificationEvent.FAILURE);
 							} catch (IOException e1) {

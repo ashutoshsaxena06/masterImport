@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -12,6 +13,21 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class SendMailSSL {
+	
+private static Multipart failureMessage;
+
+	public static Multipart getFailureMessage() {
+	return failureMessage;
+}
+
+public static void setFailureMessage(Multipart failureMessage) {
+	SendMailSSL.failureMessage = failureMessage;
+}
+
+// construct
+//public SendMailSSL(Multipart multiPart){
+//	this.failureMessage = multiPart;
+//}
 
 	public static Session createConnection() throws MessagingException {
 		// Create IMAPSSLStore object
@@ -35,10 +51,60 @@ public class SendMailSSL {
 		return session;
 	}
 
-	public static void sendMailAction( String OrderTD, String status) {
-		String[] to = { "ashutoshsaxena06@gmail.com"};
-//		"raj.esave@gmail.com", "dawn@diningedge.com",
-//		"paola@diningedge.com" ,"naomi.canning@diningedge.com","frank@diningedge.com"
+	public static void sendFailedOrder(String OrderTD, String status) {
+		String[] to = { "ashutoshsaxena06@gmail.com" };
+		String user = "onlineweekend.diningedge@gmail.com";// change
+															// accordingly
+		// , "raj.esave@gmail.com", "dawn@diningedge.com",
+		// "paola@diningedge.com", "naomi.canning@diningedge.com", "frank@diningedge.com"
+		try {
+			// get connection
+			Session session = createConnection();
+			// String filepath = RandomAction.setdownloadDir();
+
+			MimeMessage message = new MimeMessage(session);
+
+			message.setFrom(new InternetAddress(user));
+
+			InternetAddress[] recipientAddress = new InternetAddress[to.length];
+			int counter = 0;
+			for (String recipient : to) {
+				recipientAddress[counter] = new InternetAddress(recipient.trim());
+				counter++;
+			}
+
+			message.addRecipients(Message.RecipientType.TO, recipientAddress);
+			// accordingly
+			// message.addRecipient(Message.RecipientType.TO, new
+			// InternetAddress(to));
+
+			// smessageBodyPart1.addRecipient(Message.RecipientType.CC, new
+			// InternetAddress("teamesave@gmail.com"));
+			
+			// Subject of mails
+			message.setSubject("Fwd: High Priority " + OrderTD + " - status :: " + status);
+			// Body of mails
+			message.setContent(failureMessage);
+
+			Transport.send(message);
+
+			System.out.println("Message send success");
+
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			// TODO: handle exception
+		}
+	}
+
+	public static void sendMailAction(String OrderTD, String status) {
+		String[] to = { "ashutoshsaxena06@gmail.com" };
+
 		String user = "onlineweekend.diningedge@gmail.com";// change
 															// accordingly
 		try {
