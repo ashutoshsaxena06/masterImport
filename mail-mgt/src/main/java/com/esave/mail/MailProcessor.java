@@ -232,7 +232,7 @@ public class MailProcessor {
 						} catch (MessagingException | IndexOutOfBoundsException | IOException e) {
 							e.printStackTrace();
 						} catch (PurveyorNotFoundException e) {
-							SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
+							SendMailSSL.sendFailedOrder( e.getOrderId() , "Failed");
 //
 //							try {
 //								SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
