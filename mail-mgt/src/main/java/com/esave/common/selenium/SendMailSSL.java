@@ -86,17 +86,13 @@ public static void setFailureMessage(Multipart failureMessage) {
 			// Body of mails
 			message.setContent(failureMessage);
 			
-			System.out.println(failureMessage);
-
 			Transport.send(message);
 
 			System.out.println("Message send success");
 
 		} catch (AddressException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();

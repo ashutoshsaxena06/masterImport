@@ -232,21 +232,19 @@ public class MailProcessor {
 						} catch (MessagingException | IndexOutOfBoundsException | IOException e) {
 							e.printStackTrace();
 						} catch (PurveyorNotFoundException e) {
-							SendMailSSL.sendFailedOrder( e.getOrderId() , "Failed");
-//
-//							try {
-//								SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-//
-//								new Utils().sendNotification(e.getOrderId(), e.getPurveyorId(),
-//										NotificationEvent.FAILURE);
-//							} catch (IOException e1) {
-//								logger.info("Communication failure occured while sending failure notification");
-//								e1.printStackTrace();
-//							} catch (KeyManagementException e1) {
-//								e1.printStackTrace();
-//							} catch (NoSuchAlgorithmException e1) {
-//								e1.printStackTrace();
-//							}
+							logger.info(message);
+							try {
+								new Utils().sendNotification(e.getOrderId(), e.getPurveyorId(),
+										NotificationEvent.FAILURE);
+								SendMailSSL.sendMailAction( e.getOrderId(), "Failure!");
+							} catch (IOException e1) {
+								logger.info("Communication failure occured while sending failure notification");
+								e1.printStackTrace();
+							} catch (KeyManagementException e1) {
+								e1.printStackTrace();
+							} catch (NoSuchAlgorithmException e1) {
+								e1.printStackTrace();
+							}
 							e.printStackTrace();
 						}
 						if (isProcessed) {
