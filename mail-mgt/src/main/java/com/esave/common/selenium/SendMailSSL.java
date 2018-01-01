@@ -85,6 +85,8 @@ public static void setFailureMessage(Multipart failureMessage) {
 			message.setSubject("Fwd: High Priority " + OrderTD + " - status :: " + status);
 			// Body of mails
 			message.setContent(failureMessage);
+			
+			System.out.println(failureMessage);
 
 			Transport.send(message);
 
@@ -97,8 +99,7 @@ public static void setFailureMessage(Multipart failureMessage) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -141,14 +142,12 @@ public static void setFailureMessage(Multipart failureMessage) {
 			System.out.println("Message send success");
 
 		} catch (AddressException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			// TODO: handle exception
+			e.printStackTrace();
+
 		}
 
 	}
