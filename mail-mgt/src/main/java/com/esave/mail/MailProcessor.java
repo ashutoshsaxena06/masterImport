@@ -232,21 +232,23 @@ public class MailProcessor {
 						} catch (MessagingException | IndexOutOfBoundsException | IOException e) {
 							e.printStackTrace();
 						} catch (PurveyorNotFoundException e) {
-							try {
-								new Utils().sendNotification(e.getOrderId(), e.getPurveyorId(),
-										NotificationEvent.FAILURE);
-								SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-							} catch (IOException e1) {
-								logger.info("Communication failure occured while sending failure notification");
-								e1.printStackTrace();
-							} catch (KeyManagementException e1) {
-								e1.printStackTrace();
-							} catch (NoSuchAlgorithmException e1) {
-								e1.printStackTrace();
-							}
+							SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
+//
+//							try {
+//								SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
+//
+//								new Utils().sendNotification(e.getOrderId(), e.getPurveyorId(),
+//										NotificationEvent.FAILURE);
+//							} catch (IOException e1) {
+//								logger.info("Communication failure occured while sending failure notification");
+//								e1.printStackTrace();
+//							} catch (KeyManagementException e1) {
+//								e1.printStackTrace();
+//							} catch (NoSuchAlgorithmException e1) {
+//								e1.printStackTrace();
+//							}
 							e.printStackTrace();
 						}
-
 						if (isProcessed) {
 							tempSuccessList.add(message);
 						} else {
