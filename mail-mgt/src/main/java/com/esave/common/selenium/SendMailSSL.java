@@ -13,21 +13,21 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class SendMailSSL {
-	
-private static Multipart failureMessage;
+
+	private static Multipart failureMessage;
 
 	public static Multipart getFailureMessage() {
-	return failureMessage;
-}
+		return failureMessage;
+	}
 
-public static void setFailureMessage(Multipart failureMessage) {
-	SendMailSSL.failureMessage = failureMessage;
-}
+	public static void setFailureMessage(Multipart failureMessage) {
+		SendMailSSL.failureMessage = failureMessage;
+	}
 
-// construct
-//public SendMailSSL(Multipart multiPart){
-//	this.failureMessage = multiPart;
-//}
+	// construct
+	// public SendMailSSL(Multipart multiPart){
+	// this.failureMessage = multiPart;
+	// }
 
 	public static Session createConnection() throws MessagingException {
 		// Create IMAPSSLStore object
@@ -52,11 +52,10 @@ public static void setFailureMessage(Multipart failureMessage) {
 	}
 
 	public static void sendFailedOrder(String OrderTD, String status) {
-		String[] to = { "ashutoshsaxena06@gmail.com" };
+		String[] to = { "ashutoshsaxena06@gmail.com", "dawn@diningedge.com", "paola@diningedge.com",
+				"naomi.canning@diningedge.com", "frank@diningedge.com" };
 		String user = "onlineweekend.diningedge@gmail.com";// change
 															// accordingly
-		// , "raj.esave@gmail.com", "dawn@diningedge.com",
-		// "paola@diningedge.com", "naomi.canning@diningedge.com", "frank@diningedge.com"
 		try {
 			// get connection
 			Session session = createConnection();
@@ -80,12 +79,12 @@ public static void setFailureMessage(Multipart failureMessage) {
 
 			// smessageBodyPart1.addRecipient(Message.RecipientType.CC, new
 			// InternetAddress("teamesave@gmail.com"));
-			
+
 			// Subject of mails
 			message.setSubject("Fwd: High Priority " + OrderTD + " - status :: " + status);
 			// Body of mails
 			message.setContent(failureMessage);
-			
+
 			Transport.send(message);
 
 			System.out.println("Message send success");
