@@ -117,16 +117,15 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			validateOrderImport(driver, orderID);
 
 			if (orderDetails != null) {
-				SendMailSSL.sendMailAction(orderID, "Success!");
 
-//				try {
-//					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-//							NotificationEvent.SUCCESS);
-//					SendMailSSL.sendMailAction(orderID, "Success!");
-//				} catch (IOException e1) {
-//					logger.info("Communication failure occured while sending success notification");
-//					e1.printStackTrace();
-//				}
+				try {
+					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+							NotificationEvent.SUCCESS);
+					SendMailSSL.sendMailAction(orderID, "Success!");
+				} catch (IOException e1) {
+					logger.info("Communication failure occured while sending success notification");
+					e1.printStackTrace();
+				}
 			}
 		} catch(ImportOrderException i){
 			i.printStackTrace();
@@ -140,63 +139,60 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			if (orderDetails != null) {
 				SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
 
-//				try {
-//					// send failure
-//					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-//							NotificationEvent.FAILURE);
-//					SendMailSSL.sendMailAction( orderID, "Failure!");
-//					SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-//				} catch (IOException e1) {
-//					logger.info("Communication failure occured while sending success notification");
-//					e1.printStackTrace();
-//				} catch (KeyManagementException e1) {
-//					e1.printStackTrace();
-//				} catch (NoSuchAlgorithmException e1) {
-//					e1.printStackTrace();
-//				}
+				try {
+					// send failure
+					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+							NotificationEvent.FAILURE);
+					SendMailSSL.sendMailAction( orderID, "Failure!");
+					SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
+				} catch (IOException e1) {
+					logger.info("Communication failure occured while sending success notification");
+					e1.printStackTrace();
+				} catch (KeyManagementException e1) {
+					e1.printStackTrace();
+				} catch (NoSuchAlgorithmException e1) {
+					e1.printStackTrace();
+				}
 			}
 
 		} catch (WebDriverException e) {
 			logger.info("Failed !!!!" + e.getMessage());
 			if (orderDetails != null) {
-				SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-
-//				try {
-//					// send Failure
-//					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-//							NotificationEvent.FAILURE);
-//					SendMailSSL.sendMailAction( orderID, "Failure!");
-//					SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-//				} catch (IOException e1) {
-//					logger.info("Communication failure occured while sending success notification");
-//					e1.printStackTrace();
-//				} catch (KeyManagementException e1) {
-//					e1.printStackTrace();
-//				} catch (NoSuchAlgorithmException e1) {
-//					e1.printStackTrace();
-//				}
+				try {
+					// send Failure
+					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+							NotificationEvent.FAILURE);
+					SendMailSSL.sendMailAction( orderID, "Failure!");
+					SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
+				} catch (IOException e1) {
+					logger.info("Communication failure occured while sending success notification");
+					e1.printStackTrace();
+				} catch (KeyManagementException e1) {
+					e1.printStackTrace();
+				} catch (NoSuchAlgorithmException e1) {
+					e1.printStackTrace();
+				}
 			}
 
 		} catch (Exception ex) {
 			logger.info("Failed !!!!" + ex.getMessage());
 			ex.printStackTrace();
-			SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-//
-//			try {
-//				// send failure
-//				new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-//						NotificationEvent.FAILURE);
-//				SendMailSSL.sendMailAction(orderID, "Failure!");
-//				SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-//
-//			} catch (IOException e1) {
-//				logger.info("Communication failure occured while sending success notification");
-//				e1.printStackTrace();
-//			} catch (KeyManagementException e) {
-//				e.printStackTrace();
-//			} catch (NoSuchAlgorithmException e) {
-//				e.printStackTrace();
-//			}
+
+			try {
+				// send failure
+				new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+						NotificationEvent.FAILURE);
+				SendMailSSL.sendMailAction(orderID, "Failure!");
+				SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
+
+			} catch (IOException e1) {
+				logger.info("Communication failure occured while sending success notification");
+				e1.printStackTrace();
+			} catch (KeyManagementException e) {
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
 
 		} finally {
 			// Choose Logout option
