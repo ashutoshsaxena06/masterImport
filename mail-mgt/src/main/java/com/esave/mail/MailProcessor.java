@@ -232,7 +232,6 @@ public class MailProcessor {
 						} catch (MessagingException | IndexOutOfBoundsException | IOException e) {
 							e.printStackTrace();
 						} catch (PurveyorNotFoundException e) {
-							logger.info(message);
 							try {
 								new Utils().sendNotification(e.getOrderId(), e.getPurveyorId(),
 										NotificationEvent.FAILURE);
