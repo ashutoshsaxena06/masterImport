@@ -1,15 +1,8 @@
 package com.esave.common.selenium;
 
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-
 import org.apache.log4j.Logger;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 
-import com.esave.common.NotificationEvent;
-import com.esave.common.Utils;
 import com.esave.entities.OrderDetails;
 import com.esave.exception.ImportOrderException;
 
@@ -36,7 +29,6 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		logger.info(userName + " : " + password + " and " + filename);
 		logger.info("Order delivery date is : " + date);
 		try {
-
 			// Launch setProperty for chrome, Launch, Implicit wait & maximize
 
 			// #Step 1 - // Browser
@@ -99,15 +91,16 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			Thread.sleep(3000);
 
-			// PO number
-			enterPoNumberandInvoice(driver, orderID);
-
-			Thread.sleep(3000);
-
 			// Delivery date
 			if (orderDetails.getUserName().equalsIgnoreCase("60008181CBI")) {
 				enterDeliverydate(driver, date);
 			}
+			
+			Thread.sleep(3000);
+			separateInvoice(driver);
+			
+			// PO number
+			enterPoNumber(driver, orderID);
 
 			// validate/ Submit btn
 			submitOrder(driver);
@@ -115,88 +108,25 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(10000);
 			
 			validateOrderImport(driver, orderID);
+			
+			//notification
+			sendOrderStatusMail(orderDetails,"Success");
 
-			if (orderDetails != null) {
-
-				try {
-					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-							NotificationEvent.SUCCESS);
-					SendMailSSL.sendMailAction(orderID, "Success!");
-				} catch (IOException e1) {
-					logger.info("Communication failure occured while sending success notification");
-					e1.printStackTrace();
-				}
-			}
 		} catch(ImportOrderException i){
 			i.printStackTrace();
 			if (orderDetails != null) {
 				SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , loginFail );
 			}
+			errorScreenshot(driver, orderID);
 		}
-		catch (InterruptedException e) {
-
-			logger.info("Failed !!!!" + e.getMessage());
-			if (orderDetails != null) {
-				SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-
-				try {
-					// send failure
-					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-							NotificationEvent.FAILURE);
-					SendMailSSL.sendMailAction( orderID, "Failure!");
-					SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-				} catch (IOException e1) {
-					logger.info("Communication failure occured while sending success notification");
-					e1.printStackTrace();
-				} catch (KeyManagementException e1) {
-					e1.printStackTrace();
-				} catch (NoSuchAlgorithmException e1) {
-					e1.printStackTrace();
-				}
-			}
-
-		} catch (WebDriverException e) {
-			logger.info("Failed !!!!" + e.getMessage());
-			if (orderDetails != null) {
-				try {
-					// send Failure
-					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-							NotificationEvent.FAILURE);
-					SendMailSSL.sendMailAction( orderID, "Failure!");
-					SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-				} catch (IOException e1) {
-					logger.info("Communication failure occured while sending success notification");
-					e1.printStackTrace();
-				} catch (KeyManagementException e1) {
-					e1.printStackTrace();
-				} catch (NoSuchAlgorithmException e1) {
-					e1.printStackTrace();
-				}
-			}
-
-		} catch (Exception ex) {
+		 catch (Exception ex) {
 			logger.info("Failed !!!!" + ex.getMessage());
 			ex.printStackTrace();
-
-			try {
-				// send failure
-				new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
-						NotificationEvent.FAILURE);
-				SendMailSSL.sendMailAction(orderID, "Failure!");
-				SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , "Failed");
-
-			} catch (IOException e1) {
-				logger.info("Communication failure occured while sending success notification");
-				e1.printStackTrace();
-			} catch (KeyManagementException e) {
-				e.printStackTrace();
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
-
+			//notification
+			sendOrderStatusMail(orderDetails,"Success");
+			errorScreenshot(driver, orderID);
 		} finally {
 			// Choose Logout option
-			// errorScreenshot(driver, orderID);
 			driver.close();
 		}
 	}

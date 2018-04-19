@@ -32,6 +32,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
+import com.esave.common.NotificationEvent;
+import com.esave.common.Utils;
+import com.esave.entities.OrderDetails;
+
 public class CommonCheneyIO {
 
 	public WebDriver driver;
@@ -266,16 +270,17 @@ public class CommonCheneyIO {
 		return true;
 
 	}
-	
+
 	public void validateOrderImport(WebDriver driver, String orderID) {
 		// home
 		try {
 			driver.get("https://www.procurement.itradenetwork.com/Platform/Membership/Dashboard/Detail");
-			WebElement orderNumber = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath("//tr/td/a[contains(.,'"+orderID+"')]"))));
+			WebElement orderNumber = Wait(30).until(ExpectedConditions
+					.visibilityOf(driver.findElement(By.xpath("//tr/td/a[contains(.,'" + orderID + "')]"))));
 			String status = orderNumber.getText();
 			logger.info("Order number imported : " + status);
 		} catch (Exception e) {
-			// 
+			//
 			logger.info("Order number not found");
 			e.printStackTrace();
 		}
@@ -306,7 +311,7 @@ public class CommonCheneyIO {
 
 	}
 
-	public void enterPoNumberandInvoice(WebDriver driver, String poNum) {
+	public void separateInvoice(WebDriver driver) {
 		try {
 			// Checkout
 			WaitForPageToLoad(30);
@@ -317,53 +322,59 @@ public class CommonCheneyIO {
 					.elementToBeClickable(driver.findElement(By.xpath("//input[@class='separateInvoice']"))));
 			separateInvoice.click();
 			logger.info("Separate Invoice Choosen");
-			//po#
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			logger.info("failed to choose separate invoice");
+		}
+	}
+
+	public void enterPoNumber(WebDriver driver, String poNum) {
+		try {
+			// Checkout
+			WaitForPageToLoad(30);
+			PageExist("Checkout");
+			// po#
 			WebElement poNumber = Wait(30).until(ExpectedConditions.visibilityOf(
-					driver.findElement(By.xpath("// input[@class='poNumber maxLengthRestriction OptionalField']"))));
+					driver.findElement(By.xpath("//input[@class='poNumber maxLengthRestriction OptionalField']"))));
 			poNumber.sendKeys(poNum);
 
-			int retry=0;
+			int retry = 0;
 			while (retry < 3) {
 				if (!poNumber.getAttribute("value").isEmpty()) {
-					logger.info("PO# not empty : " + poNum);
+					logger.info("PO# not empty : " + poNumber.getAttribute("value"));
 					break;
-				}else {
-					WebElement poNumber_absolute = Wait(30).until(ExpectedConditions.visibilityOf(
-							driver.findElement(By.xpath("//*[@id='MainContentContainer']/div[1]/ul/li/div/ul/li/div[2]/div[1]/div[1]/div[1]/input"))));
+				} else {
+					WebElement poNumber_absolute = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By
+							.xpath("//*[@id='MainContentContainer']/div[1]/ul/li/div/ul/li/div[2]/div[1]/div[1]/div[1]/input"))));
 					poNumber_absolute.sendKeys(poNum);
 				}
-				
 				Thread.sleep(1000);
-				logger.info("PO# is empty, retry -"+retry );
-				retry ++;
+				logger.info("PO# is empty, retry -" + retry);
+				retry++;
 			}
 			logger.info("Updated PO# field : " + poNum);
-			
-		} catch (org.openqa.selenium.NoSuchElementException Ne) {
-			logger.info("PO# - not Updated");
-			Ne.printStackTrace();
-		} catch (WebDriverException we) {
-			logger.info("PO# - not Updated");
-			we.printStackTrace();
+
 		} catch (Exception e) {
 			logger.info("PO# - not Updated");
 			e.printStackTrace();
+			errorScreenshot(driver, poNum);
 		}
 	}
 
 	public void errorScreenshot(WebDriver driver, String orderID) {
 		// Take screenshot and store as a file format
-		WaitForPageToLoad(30);
+		// WaitForPageToLoad(30);
 
 		try {
 			// now copy the screenshot to desired location using copyFile
 			// //method
 			File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-			FileUtils.copyFile(src, new File("C:\\errorScreenshot\\" + orderID + ".png"));
+			FileUtils.copyFile(src,
+					new File("C:\\Users\\ImportOrder\\Log\\" + orderID + System.currentTimeMillis() + ".png"));
 		}
 
-		catch (IOException e) {
+		catch (Exception e) {
 			logger.info("Screenshot failed");
 			e.printStackTrace();
 		}
@@ -628,19 +639,24 @@ public class CommonCheneyIO {
 				logger.info("Delivery date is Null");
 			}
 		} catch (Exception e) {
-			System.out.println("Not able to input Delivery date in App");
-			driver.findElement(By.xpath("//button[@title='close']/span")).click();
 			e.printStackTrace();
+			System.out.println("Not able to input Delivery date in App");
+			closeCalender();
 		} finally {
 			try {
 				Thread.sleep(2000);
 				driver.switchTo().defaultContent();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
-				driver.switchTo().defaultContent();
 			}
-			;
+		}
+	}
+	
+	public void closeCalender() {
+		try {
+			driver.findElement(By.xpath("//button[@title='close']/span")).click();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -656,6 +672,25 @@ public class CommonCheneyIO {
 					wb.click();
 					break;
 				}
+			}
+		}
+	}
+
+	public void sendOrderStatusMail(OrderDetails orderDetails, String status) {
+		if (orderDetails != null) {
+			try {
+				if (!status.equalsIgnoreCase("Success")) {
+					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+							NotificationEvent.FAILURE);
+					SendMailSSL.sendFailedOrder(orderDetails.getOrderId(), status);
+				} else {
+					new Utils().sendNotification(orderDetails.getOrderId(), orderDetails.getPurveyorId(),
+							NotificationEvent.SUCCESS);
+					SendMailSSL.sendMailAction(orderDetails.getOrderId(), "Success");
+				}
+			} catch (Exception e1) {
+				logger.info("Communication failure occured while sending " + status + " notification");
+				e1.printStackTrace();
 			}
 		}
 	}
