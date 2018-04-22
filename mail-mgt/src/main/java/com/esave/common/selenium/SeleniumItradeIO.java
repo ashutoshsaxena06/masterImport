@@ -14,7 +14,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 	/*
 	 * private WebDriverWait wait; private WebDriver driver;
 	 */
-	
+
 	public void start(OrderDetails orderDetails) {
 
 		String userName = orderDetails.getUserName();
@@ -38,10 +38,10 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// #Step 2 - LoginCheney(driver, userName, password);
 			if (LoginCheney(driver, userName, password)) {
 				logger.info("Login successful !");
-			}else {
+			} else {
 				throw new ImportOrderException(loginFail, 1001);
 			}
-			
+
 			Thread.sleep(3000);
 
 			// Check and Empty all Items from Cart
@@ -92,13 +92,15 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(3000);
 
 			// Delivery date
-			if (orderDetails.getUserName().equalsIgnoreCase("60008181CBI")) {
-				enterDeliverydate(driver, date);
+			enterDeliverydate(driver, date);
+			// if (orderDetails.getUserName().equalsIgnoreCase("60008181CBI")) {
+			// }
+
+			if (!orderDetails.getUserName().equalsIgnoreCase("60036371CBI")) {
+				Thread.sleep(3000);
+				separateInvoice(driver);
 			}
-			
-			Thread.sleep(3000);
-			separateInvoice(driver);
-			
+
 			// PO number
 			enterPoNumber(driver, orderID);
 
@@ -106,24 +108,23 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			submitOrder(driver);
 
 			Thread.sleep(10000);
-			
-			validateOrderImport(driver, orderID);
-			
-			//notification
-			sendOrderStatusMail(orderDetails,"Success");
 
-		} catch(ImportOrderException i){
+			validateOrderImport(driver, orderID);
+
+			// notification
+			sendOrderStatusMail(orderDetails, "Success");
+
+		} catch (ImportOrderException i) {
 			i.printStackTrace();
 			if (orderDetails != null) {
-				SendMailSSL.sendFailedOrder( orderDetails.getOrderId() , loginFail );
+				SendMailSSL.sendFailedOrder(orderDetails.getOrderId(), loginFail);
 			}
 			errorScreenshot(driver, orderID);
-		}
-		 catch (Exception ex) {
+		} catch (Exception ex) {
 			logger.info("Failed !!!!" + ex.getMessage());
 			ex.printStackTrace();
-			//notification
-			sendOrderStatusMail(orderDetails,"Success");
+			// notification
+			sendOrderStatusMail(orderDetails, "Success");
 			errorScreenshot(driver, orderID);
 		} finally {
 			// Choose Logout option
@@ -131,5 +132,4 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		}
 	}
 
-	
 }
