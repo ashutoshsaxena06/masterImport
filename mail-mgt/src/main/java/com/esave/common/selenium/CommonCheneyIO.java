@@ -357,8 +357,8 @@ public class CommonCheneyIO {
 			logger.info("Updated PO# field : " + poNum);
 
 		} catch (Exception e) {
-			logger.info("PO# - not Updated");
 			e.printStackTrace();
+			logger.info("PO# - not Updated");
 			errorScreenshot(driver, poNum);
 		}
 	}

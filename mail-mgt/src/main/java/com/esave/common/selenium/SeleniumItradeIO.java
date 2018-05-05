@@ -104,7 +104,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// if (orderDetails.getUserName().equalsIgnoreCase("60008181CBI")) {
 			// }
 			Thread.sleep(3000);
-			
+
 			pressEscape();
 			// validate/ Submit btn
 			submitOrder(driver);
@@ -126,7 +126,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			logger.info("Failed !!!!" + ex.getMessage());
 			ex.printStackTrace();
 			// notification
-			sendOrderStatusMail(orderDetails, "Success");
+			if (orderDetails != null) {
+				SendMailSSL.sendFailedOrder(orderDetails.getOrderId(), loginFail);
+			}
 			errorScreenshot(driver, orderID);
 		} finally {
 			// Choose Logout option
