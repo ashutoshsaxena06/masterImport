@@ -91,11 +91,6 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			Thread.sleep(3000);
 
-			// Delivery date
-			enterDeliverydate(driver, date);
-			// if (orderDetails.getUserName().equalsIgnoreCase("60008181CBI")) {
-			// }
-
 			if (!orderDetails.getUserName().equalsIgnoreCase("60036371CBI")) {
 				Thread.sleep(3000);
 				separateInvoice(driver);
@@ -104,6 +99,13 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// PO number
 			enterPoNumber(driver, orderID);
 
+			// Delivery date
+			enterDeliverydate(driver, date);
+			// if (orderDetails.getUserName().equalsIgnoreCase("60008181CBI")) {
+			// }
+			Thread.sleep(3000);
+			
+			pressEscape();
 			// validate/ Submit btn
 			submitOrder(driver);
 
