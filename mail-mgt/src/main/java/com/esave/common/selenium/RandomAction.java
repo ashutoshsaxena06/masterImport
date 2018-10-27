@@ -58,10 +58,15 @@ public class RandomAction {
 //		}
 //	}
 
-	public static boolean isIframePresent(WebDriver driver) throws InterruptedException {
+	public static boolean isIframePresent(WebDriver driver) {
 		//
 		// driver.findElement(By.xpath("//html/body/table/tbody/tr[2]/td[1]/div/div[2]/table/tbody/tr[1]/td/input")).click();
-		Thread.sleep(3000);
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// List to get & store frame
 		List<WebElement> ele = driver.findElements(By.tagName("iframe"));
 		logger.info("Number of frames in a page :" + ele.size()); // ele.size

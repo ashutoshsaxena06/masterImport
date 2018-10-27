@@ -1,7 +1,10 @@
 package com.esave.common.selenium;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import com.esave.entities.OrderDetails;
 import com.esave.exception.ImportOrderException;
@@ -111,7 +114,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			Thread.sleep(10000);
 
-			validateOrderImport(driver, orderID);
+			checkOrderStatus();
+
+			// validateOrderImport(driver, orderID);
 
 			// notification
 			sendOrderStatusMail(orderDetails, "Success");
@@ -134,6 +139,22 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// Choose Logout option
 			driver.close();
 		}
+	}
+
+	public void checkOrderStatus() {
+		logger.info("Checking order status ... ");
+		if (RandomAction.isIframePresent(driver)) {
+			driver.switchTo().frame("openValidationSubmitFrame");
+			WebElement orderStatus = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(
+					"//div[@class='main']/div[@id='MainContentContainer']/div[@id='orderdetails']/div[@class='orderTitle important-bg category-font']/div[@id ='orderSubmitedTitle']"))));
+			logger.info(orderStatus.getText());
+		}else {
+			logger.info("No iframe is present");
+		}
+		// div ValidationSubmitDialog //iframe[id openValidationSubmitFrame]
+		// div[class= main ]/div [id=MainContentContainer]/ div[id= orderdetails]/ div
+		// [class= orderTitle important-bg category-font]/ div [id = orderSubmitedTitle]
+
 	}
 
 }
