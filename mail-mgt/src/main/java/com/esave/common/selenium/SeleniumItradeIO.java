@@ -2,6 +2,7 @@ package com.esave.common.selenium;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -147,9 +148,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 	public void checkOrderStatus() {
 		logger.info("Checking order status ... ");
 		if (RandomAction.isIframePresent(driver)) {
-			driver.switchTo().frame("openValidationSubmitFrame");
+			driver.switchTo().frame("openValidationSubmitFrame");		
 			WebElement orderStatus = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(
-					"//div[@class='main']/div[@id='MainContentContainer']/div[@id='orderdetails']/div[@class='orderTitle important-bg category-font']/div[@id ='orderSubmitedTitle']"))));
+					"/div[@id='MainContentContainer']/div[@id='orderdetails']/div[@class='orderTitle important-bg category-font']/div[@id ='orderSubmitedTitle']"))));
 			logger.info(orderStatus.getText());
 		}else {
 			logger.info("No iframe is present");

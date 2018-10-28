@@ -2,6 +2,9 @@ package com.esave.common.selenium;
 
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -10,6 +13,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 
 public class SendMailSSL {
@@ -84,6 +88,16 @@ public class SendMailSSL {
 			message.setSubject("Fwd: High Priority " + OrderTD + " - status :: " + status);
 			// Body of mails
 			message.setContent(failureMessage);
+			
+			try {
+				MimeBodyPart messageBodyPart2 = new MimeBodyPart();
+				String filename = "C:\\Users\\ImportOrder\\Log"+ OrderTD + ".png";
+				DataSource source = new FileDataSource("C:\\Users\\ImportOrder\\Log"+ OrderTD + ".png");
+				messageBodyPart2.setDataHandler(new DataHandler(source));
+				messageBodyPart2.setFileName(filename);
+				System.out.println("Attached file - " + OrderTD);
+				} catch (Exception e) {
+			}
 
 			Transport.send(message);
 

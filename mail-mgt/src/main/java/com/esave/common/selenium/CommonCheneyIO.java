@@ -373,7 +373,7 @@ public class CommonCheneyIO {
 			File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
 			FileUtils.copyFile(src,
-					new File("C:\\Users\\ImportOrder\\Log\\" + orderID + System.currentTimeMillis() + ".png"));
+					new File("C:\\Users\\ImportOrder\\Log\\" + orderID + ".png")); // System.currentTimeMillis()
 		}
 
 		catch (Exception e) {
