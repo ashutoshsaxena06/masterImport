@@ -135,7 +135,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			ex.printStackTrace();
 			// notification
 			if (orderDetails != null) {
-				SendMailSSL.sendFailedOrder(orderDetails.getOrderId(), loginFail);
+				SendMailSSL.sendFailedOrder(orderDetails.getOrderId(), "Order Import Failed");
 			}
 			errorScreenshot(driver, orderID);
 		} finally {
