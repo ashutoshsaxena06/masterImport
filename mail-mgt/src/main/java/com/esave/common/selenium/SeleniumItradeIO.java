@@ -111,12 +111,15 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			pressEscape();
 			// validate/ Submit btn
 			submitOrder(driver);
+			
+			errorScreenshot(driver, orderID);
+
 
 			Thread.sleep(10000);
 
-			checkOrderStatus();
+//			checkOrderStatus();
 
-			// validateOrderImport(driver, orderID);
+			 validateOrderImport(driver, orderID);
 
 			// notification
 			sendOrderStatusMail(orderDetails, "Success");
