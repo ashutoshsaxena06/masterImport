@@ -134,6 +134,17 @@ public class SendMailSSL {
 			}
 
 			message.addRecipients(Message.RecipientType.TO, recipientAddress);
+			
+			try {
+				MimeBodyPart messageBodyPart2 = new MimeBodyPart();
+				String filename = "C:\\Users\\ImportOrder\\Log"+ OrderTD + ".png";
+				DataSource source = new FileDataSource("C:\\Users\\ImportOrder\\Log"+ OrderTD + ".png");
+				messageBodyPart2.setDataHandler(new DataHandler(source));
+				messageBodyPart2.setFileName(filename);
+				System.out.println("Attached file - " + OrderTD);
+				} catch (Exception e) {
+					e.printStackTrace();
+			}
 			// accordingly
 			// message.addRecipient(Message.RecipientType.TO, new
 			// InternetAddress(to));
