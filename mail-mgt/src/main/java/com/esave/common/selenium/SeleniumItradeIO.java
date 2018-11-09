@@ -151,7 +151,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 		if (RandomAction.isIframePresent(driver)) {
 			driver.switchTo().frame("openValidationSubmitFrame");		
 			WebElement orderStatus = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(
-					"/div[@id='MainContentContainer']/div[@id='orderdetails']/div[@class='orderTitle important-bg category-font']/div[@id ='orderSubmitedTitle']"))));
+					"//div[@id='MainContentContainer']/div[@id='orderdetails']/div[@class='orderTitle important-bg category-font']/div[@id ='orderSubmitedTitle']"))));
 			logger.info(orderStatus.getText());
 		}else {
 			logger.info("No iframe is present");
