@@ -113,6 +113,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// validate/ Submit btn
 			submitOrder(driver);
 			
+			Thread.sleep(5000);
 			errorScreenshot(driver, orderID);
 
 
