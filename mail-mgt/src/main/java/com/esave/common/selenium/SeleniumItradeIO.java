@@ -121,7 +121,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			checkOrderStatus();
 
-			 validateOrderImport(driver, orderID);
+//			 validateOrderImport(driver, orderID);
 
 			// notification
 			sendOrderStatusMail(orderDetails, "Success");
