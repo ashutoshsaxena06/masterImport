@@ -119,7 +119,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 			Thread.sleep(10000);
 
-//			checkOrderStatus();
+			checkOrderStatus();
 
 			 validateOrderImport(driver, orderID);
 
