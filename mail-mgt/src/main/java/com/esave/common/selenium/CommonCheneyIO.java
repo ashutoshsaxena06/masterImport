@@ -7,7 +7,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -88,12 +87,11 @@ public class CommonCheneyIO {
 		WaitForPageToLoad(30);
 
 		// validate/ Submit btn
-		WebElement btn_SubmitOrder = Wait(30).until(ExpectedConditions.elementToBeClickable(
-				driver.findElement(By.xpath("//div[@class='orderInfo category-font']/*/div[7]"))));
+
+		WebElement btn_SubmitOrder = Wait(30).until(ExpectedConditions
+				.elementToBeClickable(driver.findElement(By.xpath("//div[contains(text(),'Validate/Submit')]"))));
 		logger.info(btn_SubmitOrder.getText());
-		if (btn_SubmitOrder.getText().equalsIgnoreCase("Validate/Submit")) {
 			btn_SubmitOrder.click();
-		}
 	}
 
 	// Checkout - btn
@@ -372,8 +370,7 @@ public class CommonCheneyIO {
 			// //method
 			File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-			FileUtils.copyFile(src,
-					new File("C:\\Users\\ImportOrder\\Log\\" + orderID + ".png")); // System.currentTimeMillis()
+			FileUtils.copyFile(src, new File("C:\\Users\\ImportOrder\\Log\\" + orderID + ".png")); // System.currentTimeMillis()
 		}
 
 		catch (Exception e) {
@@ -653,14 +650,14 @@ public class CommonCheneyIO {
 			}
 		}
 	}
-	
+
 	public void pressEscape() {
 		try {
 			Actions action = new Actions(driver);
 			action.sendKeys(Keys.ESCAPE).build().perform();
-//			driver.findElement(By.xpath("//button[@title='close']/span")).click();
+			// driver.findElement(By.xpath("//button[@title='close']/span")).click();
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 		}
 	}
