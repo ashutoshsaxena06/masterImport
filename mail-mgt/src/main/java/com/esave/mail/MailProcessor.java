@@ -3,14 +3,12 @@ package com.esave.mail;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -136,12 +134,12 @@ public class MailProcessor {
 			boolean isProcessed = false;
 			// Get the folder you want to search in e.g. INBOX
 			try {
-				folderInbox = (IMAPFolder) store.getFolder("INBOX");
+				folderInbox = (IMAPFolder) store.getFolder("unprocessed");
 				folderProcessed = (IMAPFolder) store.getFolder("processed");
 				folderUnprocessed = (IMAPFolder) store.getFolder("unprocessed");
 				logger.info("Total mails in inbox are = " + folderInbox.getMessageCount());
 
-				if (folderInbox != null) {
+				if (folderInbox.getMessageCount()>0) {
 
 					logger.info("Searching started....");
 
@@ -174,7 +172,7 @@ public class MailProcessor {
 					// Process the messages found in search
 					logger.info("--------------------------------------------");
 					String contentType;
-					String messageContent = null;
+					String messageContent;
 					for (Message message : messagesFound) {
 						contentType = message.getContentType();
 						logger.info("# " + message.getSubject());
@@ -197,18 +195,16 @@ public class MailProcessor {
 									MimeBodyPart part = (MimeBodyPart) multiPart.getBodyPart(partCount);
 									if (!Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
 										messageContent = getTextFromMimeMultipart(part);
-										if (messageContent != null) {
-											try {
-												// pass Failure message
-												orderDetails = processOrder(messageContent);
-											} catch (MessagingException e) {
-												// block
-												e.printStackTrace();
-											}
-											if (orderDetails != null) {
+										try {
+											// pass Failure message
+											orderDetails = processOrder(messageContent);
+										} catch (MessagingException e) {
+											// block
+											e.printStackTrace();
+										}
+										if (orderDetails != null) {
 
-												logger.info("Id's fetched");
-											}
+											logger.info("Id's fetched");
 										}
 									}
 									if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
@@ -239,9 +235,7 @@ public class MailProcessor {
 							} catch (IOException e1) {
 								logger.info("Communication failure occured while sending failure notification");
 								e1.printStackTrace();
-							} catch (KeyManagementException e1) {
-								e1.printStackTrace();
-							} catch (NoSuchAlgorithmException e1) {
+							} catch (KeyManagementException | NoSuchAlgorithmException e1) {
 								e1.printStackTrace();
 							}
 							e.printStackTrace();
@@ -397,57 +391,103 @@ public class MailProcessor {
 //	}
 	
 	private OrderDetails processOrder(String messageContent) throws MessagingException, PurveyorNotFoundException {
-		String purveyorId = null;
-		String locationId = null;
-		String orderId = null;
-		String delivery = "";
-		String deliveryDate = "";
 		OrderDetails orderDetails = null;
 		messageContent = messageContent.replace("\n", "").replace("\r", "").replace("=", "");
-		
-		logger.info(messageContent);
-		purveyorId = messageContent.substring(messageContent.indexOf("Purveyor:(") + "Purveyor:(".length(),
-				messageContent.indexOf(")", messageContent.indexOf("(")));
-		logger.info(purveyorId);
-		locationId = messageContent.substring(messageContent.indexOf("Location:(") + "Location:(".length(),
-				messageContent.indexOf(")", messageContent.indexOf("Location:(")));
-		logger.info(locationId);
-		orderId = messageContent.substring(messageContent.indexOf("Order #:") + "Order #:".length(),
-				messageContent.indexOf("Location:("));
-		orderId = orderId.replaceAll("[^0-9]", "");
-		logger.info(orderId);
-		try {
-			delivery = messageContent.substring(messageContent.indexOf("'201") + "\"".length(),
-					messageContent.indexOf("'Cheney"));
-			logger.info("Delivery date : "+ delivery);
-			deliveryDate = updateDeliveryDate(delivery);
-		} catch (Exception e) {
-			System.out.println("delivery date not fetched : "+e.getMessage());
-		}
 
-		if (StringUtils.isNotEmpty(purveyorId)) {
-			if (StringUtils.isNotEmpty(locationId)) {
-				if (StringUtils.isNotEmpty(orderId)) {
+		HashMap<String, String > detailsMap;
+		if(messageContent.contains("Purveyor")){
+			detailsMap = parseCurrentVersion(messageContent);
+		}else{
+			detailsMap = parseRebuild(messageContent);
+		}
+		if (StringUtils.isNotEmpty(detailsMap.get("purveyorId"))) {
+			if (StringUtils.isNotEmpty(detailsMap.get("locationId"))) {
+				if (StringUtils.isNotEmpty( detailsMap.get("orderId"))) {
 					try {
-						orderDetails = fetchPurveyorDetailsFromSystem(purveyorId, locationId, orderId,deliveryDate);
+						orderDetails = fetchPurveyorDetailsFromSystem(detailsMap.get("purveyorId"), detailsMap.get("locationId"),  detailsMap.get("orderId"),detailsMap.get("deliveryDate"));
 						// Send Success Notification
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				} else {
-					throw new PurveyorNotFoundException("Order Id not found in the order email", 101, purveyorId, null);
+					throw new PurveyorNotFoundException("Order Id not found in the order email", 101, detailsMap.get("purveyorId"), null);
 				}
 			} else {
-				throw new PurveyorNotFoundException("Location details not found in the order email", 101, purveyorId,
-						orderId);
+				throw new PurveyorNotFoundException("Location details not found in the order email", 101, detailsMap.get("purveyorId"),
+						detailsMap.get("orderId"));
 			}
 		} else {
 			// Need to consult DEFAULT_PURVEYOR_ID
 			throw new PurveyorNotFoundException("Purveyor details not found in the order email", 101,
-					DEFAULT_PURVEYOR_ID, orderId);
+					DEFAULT_PURVEYOR_ID,  detailsMap.get("orderId"));
 		}
 
 		return orderDetails;
+	}
+
+	private HashMap<String, String> parseRebuild(String messageContent) {
+		logger.info(messageContent);
+
+		messageContent = messageContent.substring(messageContent.indexOf("Vendor:") ,messageContent.indexOf("-2020") + "-2020".length());
+		HashMap<String, String> parsedMap = new HashMap<>();
+		String purveyorId = messageContent.substring(messageContent.indexOf("(") + "(".length(),
+				messageContent.indexOf(")"));
+		parsedMap.put("purveyorId", purveyorId);
+		logger.info(purveyorId);
+
+		String locationId = messageContent.substring(messageContent.indexOf("Location:(") + "Location:(".length(),
+				messageContent.indexOf(")", messageContent.indexOf("Location:(")));
+		parsedMap.put("locationId", locationId);
+		logger.info(locationId);
+
+		String orderId = messageContent.substring(messageContent.indexOf("Order #:") + "Order #:".length(),
+				messageContent.indexOf("Restaurant:"));
+		orderId = orderId.replaceAll("[^0-9]", "");
+		parsedMap.put("orderId", orderId);
+		logger.info(orderId);
+
+		try {
+			String delivery = messageContent.substring(messageContent.indexOf("-2020") +10, messageContent.indexOf("-2020")+ "-2020".length());
+			logger.info("Delivery date : "+ delivery);
+			String deliveryDate = updateDeliveryDate(delivery);
+			parsedMap.put("deliveryDate", deliveryDate);
+		} catch (Exception e) {
+			logger.info("delivery date not fetched : "+e.getMessage());
+			parsedMap.put("deliveryDate", "");
+		}
+		return parsedMap;
+	}
+
+	private HashMap<String, String> parseCurrentVersion(String messageContent) {
+		logger.info(messageContent);
+		HashMap<String, String> parsedMap = new HashMap<>();
+		String purveyorId = messageContent.substring(messageContent.indexOf("Purveyor:(") + "Purveyor:(".length(),
+				messageContent.indexOf(")", messageContent.indexOf("(")));
+		parsedMap.put("purveyorId", purveyorId);
+		logger.info(purveyorId);
+
+		String locationId = messageContent.substring(messageContent.indexOf("Location:(") + "Location:(".length(),
+				messageContent.indexOf(")", messageContent.indexOf("Location:(")));
+		parsedMap.put("locationId", locationId);
+		logger.info(locationId);
+
+		String orderId = messageContent.substring(messageContent.indexOf("Order #:") + "Order #:".length(),
+				messageContent.indexOf("Location:("));
+		orderId = orderId.replaceAll("[^0-9]", "");
+		parsedMap.put("orderId", orderId);
+		logger.info(orderId);
+
+		try {
+			String delivery = messageContent.substring(messageContent.indexOf("'202") + "\"".length(),
+					messageContent.indexOf("'Cheney"));
+			logger.info("Delivery date : "+ delivery);
+			String deliveryDate = updateDeliveryDate(delivery);
+			parsedMap.put("deliveryDate", deliveryDate);
+		} catch (Exception e) {
+			logger.info("delivery date not fetched : "+e.getMessage());
+			parsedMap.put("deliveryDate", "");
+		}
+		return parsedMap;
 	}
 
 	private String updateDeliveryDate(String Ddate) {	
@@ -502,18 +542,16 @@ public class MailProcessor {
 	private String getTextFromMimeMultipart(MimeBodyPart bodyPart) throws PurveyorNotFoundException {
 		String messageContent = null;
 		InputStream inputStream;
-		StringBuffer responseBuffer = new StringBuffer();
+		StringBuilder responseBuffer = new StringBuilder();
 		try {
 			inputStream = bodyPart.getInputStream();
 			byte[] temp = new byte[1024];
 
 			int countCurrentRead;
 			while ((countCurrentRead = inputStream.read(temp)) > 0) {
-				responseBuffer.append(new String(temp, 0, countCurrentRead, "UTF-8"));
+				responseBuffer.append(new String(temp, 0, countCurrentRead,"UTF-8"));
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (MessagingException e) {
+		} catch (IOException | MessagingException e) {
 			e.printStackTrace();
 		}
 
