@@ -43,6 +43,7 @@ public class MailProcessor {
 	private static final String USER_EMAIL = "importorders.diningedge@gmail.com";
 	private static final String USER_PASSWORD = "edge2017";
 
+
 	private static final Logger logger = Logger.getLogger(MailProcessor.class);
 
 	private String saveDirectory;
@@ -134,7 +135,7 @@ public class MailProcessor {
 			boolean isProcessed = false;
 			// Get the folder you want to search in e.g. INBOX
 			try {
-				folderInbox = (IMAPFolder) store.getFolder("unprocessed");
+				folderInbox = (IMAPFolder) store.getFolder("INBOX");
 				folderProcessed = (IMAPFolder) store.getFolder("processed");
 				folderUnprocessed = (IMAPFolder) store.getFolder("unprocessed");
 				logger.info("Total mails in inbox are = " + folderInbox.getMessageCount());
