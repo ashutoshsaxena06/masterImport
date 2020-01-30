@@ -120,7 +120,7 @@ public class MailProcessor {
 	 * keyword
 	 * 
 	 * @param store
-	 * @param keywordToSearch
+//	 * @param keywordToSearch
 	 * @throws MessagingException
 	 * @throws PurveyorNotFoundException
 	 * @throws IOException
@@ -141,7 +141,6 @@ public class MailProcessor {
 				logger.info("Total mails in inbox are = " + folderInbox.getMessageCount());
 
 				if (folderInbox.getMessageCount()>0) {
-
 					logger.info("Searching started....");
 
 					// Create GMail raw search term and use it to search in
@@ -313,7 +312,7 @@ public class MailProcessor {
 	/**
 	 * Process order.
 	 *
-	 * @param scanner
+//	 * @param scanner
 	 *            the scanner
 	 * @param messageContent
 	 *            the message content
@@ -550,7 +549,7 @@ public class MailProcessor {
 
 			int countCurrentRead;
 			while ((countCurrentRead = inputStream.read(temp)) > 0) {
-				responseBuffer.append(new String(temp, 0, countCurrentRead,"UTF-8"));
+				responseBuffer.append(new String(temp, 0, countCurrentRead, "UTF-8"));
 			}
 		} catch (IOException | MessagingException e) {
 			e.printStackTrace();
