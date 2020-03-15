@@ -141,30 +141,24 @@ public class CommonCheneyIO {
 		}
 	}
 
-	public boolean addProductsToCartPopUp(WebDriver driver) throws InterruptedException {
-
-		try {
+	public void addProductsToCartPopUp(WebDriver driver) throws InterruptedException {
 
 			// Check the presence of alert
 			Alert alert = driver.switchTo().alert();
 			logger.info(alert.getText());
 			// if present consume the alert
-			if (alert.getText().equalsIgnoreCase("Add all valid products to your cart?")) {
-				alert.accept();
-				logger.info("ALert pop up accepted - Items added to cart");
-				// OrderEntry
-				Thread.sleep(3000);
-				return true;
-			} else {
-				logger.info(alert.getText());
-				alert.accept();
-				return false;
-			}
-		} catch (NoAlertPresentException ex) {
-			// Alert not present
-			ex.printStackTrace();
-			return false;
-		}
+//			if (alert.getText().equalsIgnoreCase("Add all valid products to your cart?")) {
+//				alert.accept();
+//				logger.info("ALert pop up accepted - Items added to cart");
+//				// OrderEntry
+//				Thread.sleep(3000);
+//				return true;
+//			} else {
+//				logger.info(alert.getText());
+//				alert.accept();
+//				return false;
+			alert.accept();
+			logger.info("Alert pop up accepted - Items added to cart");
 	}
 
 	public void updateCart(WebDriver driver) throws InterruptedException {

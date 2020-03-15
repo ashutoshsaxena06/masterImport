@@ -76,11 +76,10 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// Pop Up- confirm - Checkout2
 			try {
 
-				if (addProductsToCartPopUp(driver) == true) {
+				addProductsToCartPopUp(driver);
+
 					// Go To Cart
 					goToCart(driver);
-					// errorScreenshot(driver, orderID);
-				}
 			} catch (WebDriverException e) {
 				e.printStackTrace();
 			}
