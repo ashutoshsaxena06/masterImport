@@ -19,7 +19,7 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 	 */
 //	public static void main(String[] args) {
 //		SeleniumItradeIO sel = new SeleniumItradeIO();
-//		sel.start(new OrderDetails("092022-00CBI","Password1","258219","","03/16/2020"));
+//		sel.start(new OrderDetails("092022-00CBI","Password1","258219","","03/25/2020"));
 //	}
 
 	public void start(OrderDetails orderDetails) {
@@ -79,8 +79,8 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// Pop Up- confirm - Checkout2
 			try {
 
-				if (!addProductsAlert(driver)){
-					acceptHtmlAlert();
+				if (browserAlert()){
+					handleHtmlAlert("Yes");
 				}
 					// Go To Cart
 					goToCart(driver);

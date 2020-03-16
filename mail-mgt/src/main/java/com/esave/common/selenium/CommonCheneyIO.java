@@ -19,7 +19,6 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
@@ -142,29 +141,30 @@ public class CommonCheneyIO {
 		}
 	}
 
-	public void acceptHtmlAlert(){
-		if(driver.findElement(By.id("ui-id-4")).isDisplayed()){
-			driver.findElement(By.xpath("//button[text()='Yes']")).click();
-		}else {
-			throw new ImportOrderException("HTML Alert to add items not present",222);
+	public void handleHtmlAlert(String action) {
+		WebElement alert = driver.findElement(By.xpath("//span[text()='Alert Notification']"));
+		if (alert.isDisplayed()) {
+			logger.info(alert.getText());
+			driver.findElement(By.xpath("//button[text()='" + action + "']")).click();
+		} else {
+			throw new ImportOrderException("HTML Alert to add items not present", 222);
 		}
 	}
 
-	public boolean addProductsAlert(WebDriver driver) throws InterruptedException {
+	public boolean browserAlert() throws InterruptedException {
 
-			// Check the presence of alert
-			try {
-				Alert alert = driver.switchTo().alert();
-				logger.info(alert.getText());
-				alert.accept();
-				logger.info("Alert pop up accepted - Items added to cart");
-				return true;
-			}
-			catch (Exception e){
-				e.printStackTrace();
-				logger.error("Alert not present");
-				return false;
-			}
+		// Check the presence of alert
+		try {
+			Alert alert = driver.switchTo().alert();
+			logger.info(alert.getText());
+			alert.accept();
+			logger.info("Alert pop up accepted - Items added to cart");
+			return false;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Browser Alert not present");
+			return true;
+		}
 	}
 
 	public void updateCart(WebDriver driver) throws InterruptedException {
@@ -230,6 +230,7 @@ public class CommonCheneyIO {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("start-maximized");
 		System.setProperty("webdriver.chrome.driver",
+//				"C:\\Users\\ASHUTOSH\\Downloads\\chromedriver_win32 (1)\\chromedriver.exe");
 				"C:\\Users\\ImportOrder\\Downloads\\chromedriver_win32\\chromedriver.exe");
 		driver = new ChromeDriver(options);
 
@@ -576,18 +577,9 @@ public class CommonCheneyIO {
 			WebElement ddl_ClearCart = Wait(30)
 					.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(".//*[@id='ClearCart']/*"))));
 			ddl_ClearCart.click();
-
 			Thread.sleep(3000);
-			// Check the presence of alert
-			Alert alert = driver.switchTo().alert();
-			logger.info(alert.getText());
-			// if present consume the alert
-			if (alert.getText().equalsIgnoreCase("Remove all items from cart?")) {
-				alert.accept();
-				logger.info("Removed All Items from Cart");
-			} else {
-				Thread.sleep(3000);
-				alert.accept();
+			if (browserAlert()) {
+				handleHtmlAlert("Yes");
 				logger.info("Removed All Items from Cart");
 			}
 		} catch (Exception e) {
@@ -617,7 +609,8 @@ public class CommonCheneyIO {
 					WebElement cln = Wait(30).until(ExpectedConditions
 							.elementToBeClickable(driver.findElement(By.xpath("//img[@title='Choose Date']"))));
 					cln.click();
-					driver.switchTo().frame("editDeliveryDateDialogFrame");
+//					driver.switchTo().frame("editDeliveryDateDialogFrame");
+					driver.switchTo().frame(0);//id="iframeId_1584378704192"
 					String actMM = date.substring(0, 2);
 					// month compare
 					if (!actMM.equalsIgnoreCase(mm)) {
