@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
+import com.esave.exception.ImportOrderException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.Alert;
@@ -141,24 +142,29 @@ public class CommonCheneyIO {
 		}
 	}
 
-	public void addProductsToCartPopUp(WebDriver driver) throws InterruptedException {
+	public void acceptHtmlAlert(){
+		if(driver.findElement(By.id("ui-id-4")).isDisplayed()){
+			driver.findElement(By.xpath("//button[text()='Yes']")).click();
+		}else {
+			throw new ImportOrderException("HTML Alert to add items not present",222);
+		}
+	}
+
+	public boolean addProductsAlert(WebDriver driver) throws InterruptedException {
 
 			// Check the presence of alert
-			Alert alert = driver.switchTo().alert();
-			logger.info(alert.getText());
-			// if present consume the alert
-//			if (alert.getText().equalsIgnoreCase("Add all valid products to your cart?")) {
-//				alert.accept();
-//				logger.info("ALert pop up accepted - Items added to cart");
-//				// OrderEntry
-//				Thread.sleep(3000);
-//				return true;
-//			} else {
-//				logger.info(alert.getText());
-//				alert.accept();
-//				return false;
-			alert.accept();
-			logger.info("Alert pop up accepted - Items added to cart");
+			try {
+				Alert alert = driver.switchTo().alert();
+				logger.info(alert.getText());
+				alert.accept();
+				logger.info("Alert pop up accepted - Items added to cart");
+				return true;
+			}
+			catch (Exception e){
+				e.printStackTrace();
+				logger.error("Alert not present");
+				return false;
+			}
 	}
 
 	public void updateCart(WebDriver driver) throws InterruptedException {

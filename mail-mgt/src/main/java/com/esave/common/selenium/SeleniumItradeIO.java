@@ -17,9 +17,12 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 	/*
 	 * private WebDriverWait wait; private WebDriver driver;
 	 */
+//	public static void main(String[] args) {
+//		SeleniumItradeIO sel = new SeleniumItradeIO();
+//		sel.start(new OrderDetails("092022-00CBI","Password1","258219","","03/16/2020"));
+//	}
 
 	public void start(OrderDetails orderDetails) {
-
 		String userName = orderDetails.getUserName();
 		String password = orderDetails.getPassword();
 		String orderID = orderDetails.getOrderId();
@@ -76,8 +79,9 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			// Pop Up- confirm - Checkout2
 			try {
 
-				addProductsToCartPopUp(driver);
-
+				if (!addProductsAlert(driver)){
+					acceptHtmlAlert();
+				}
 					// Go To Cart
 					goToCart(driver);
 			} catch (WebDriverException e) {
@@ -94,7 +98,6 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(3000);
 
 			if (!orderDetails.getUserName().equalsIgnoreCase("60036371CBI")) {
-				Thread.sleep(3000);
 				separateInvoice(driver);
 			}
 
@@ -126,17 +129,13 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 
 		} catch (ImportOrderException i) {
 			i.printStackTrace();
-			if (orderDetails != null) {
-				SendMailSSL.sendFailedOrder(orderDetails.getOrderId(), loginFail);
-			}
+			SendMailSSL.sendFailedOrder(orderDetails.getOrderId(), loginFail);
 			errorScreenshot(driver, orderID);
 		} catch (Exception ex) {
 			logger.info("Failed !!!!" + ex.getMessage());
 			ex.printStackTrace();
 			// notification
-			if (orderDetails != null) {
-				SendMailSSL.sendFailedOrder(orderDetails.getOrderId(), "Order Import Failed");
-			}
+			SendMailSSL.sendFailedOrder(orderDetails.getOrderId(), "Order Import Failed");
 			errorScreenshot(driver, orderID);
 		} finally {
 			// Choose Logout option
