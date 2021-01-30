@@ -549,7 +549,7 @@ public class MailProcessor {
 
 			int countCurrentRead;
 			while ((countCurrentRead = inputStream.read(temp)) > 0) {
-				responseBuffer.append(new String(temp, 0, countCurrentRead, "UTF-8"));
+				responseBuffer.append(new String(temp, 0, countCurrentRead, StandardCharsets.UTF_8));
 			}
 		} catch (IOException | MessagingException e) {
 			e.printStackTrace();

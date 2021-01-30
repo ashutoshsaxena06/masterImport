@@ -93,6 +93,14 @@ public class RandomAction {
 
 	}
 
+	public static String getIframeID(WebDriver driver){
+		String id ="";
+		List<WebElement> ele = driver.findElements(By.tagName("iframe"));
+		if (ele!=null && ele.size()==1){
+			id= ele.get(0).getAttribute("id");
+		}
+		return id;
+	}
 
 	public void checkAllCheckBoxes(WebDriver driver) {
 

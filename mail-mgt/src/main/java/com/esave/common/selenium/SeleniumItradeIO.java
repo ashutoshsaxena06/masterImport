@@ -117,9 +117,6 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 			Thread.sleep(5000);
 			errorScreenshot(driver, orderID);
 
-
-			Thread.sleep(10000);
-
 			checkOrderStatus();
 
 //			 validateOrderImport(driver, orderID);
@@ -146,12 +143,15 @@ public class SeleniumItradeIO extends CommonCheneyIO {
 	public void checkOrderStatus() {
 		logger.info("Checking order status ... ");
 		if (RandomAction.isIframePresent(driver)) {
-			driver.switchTo().frame(0);
+			String frameID = RandomAction.getIframeID(driver);
+			if (!frameID.equals("")){
+				driver.switchTo().frame(frameID);
+			}else {
+				driver.switchTo().frame(0);
+			}
 			WebElement orderStatus = Wait(30).until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(
 					"//div[@id='MainContentContainer']/div[@id='orderdetails']/div[@class='orderTitle important-bg category-font']/div[@id ='orderSubmitedTitle']"))));
 			logger.info(orderStatus.getText());
-		}else {
-			logger.info("No iframe is present");
 		}
 		// div ValidationSubmitDialog //iframe[id openValidationSubmitFrame]
 		// div[class= main ]/div [id=MainContentContainer]/ div[id= orderdetails]/ div

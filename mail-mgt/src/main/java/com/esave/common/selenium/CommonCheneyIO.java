@@ -1,30 +1,12 @@
 package com.esave.common.selenium;
 
-import java.awt.AWTException;
-import java.awt.HeadlessException;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
-
+import com.esave.common.NotificationEvent;
+import com.esave.common.Utils;
+import com.esave.entities.OrderDetails;
 import com.esave.exception.ImportOrderException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
@@ -33,9 +15,16 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
-import com.esave.common.NotificationEvent;
-import com.esave.common.Utils;
-import com.esave.entities.OrderDetails;
+import java.awt.*;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.TimeUnit;
 
 public class CommonCheneyIO {
 
@@ -87,11 +76,11 @@ public class CommonCheneyIO {
 		WaitForPageToLoad(30);
 
 		// validate/ Submit btn
-
 		WebElement btn_SubmitOrder = Wait(30).until(ExpectedConditions
 				.elementToBeClickable(driver.findElement(By.xpath("//div[contains(text(),'Validate/Submit')]"))));
-		logger.info(btn_SubmitOrder.getText());
-			btn_SubmitOrder.click();
+		btn_SubmitOrder.click();
+		logger.info("clicked on submit order");
+
 	}
 
 	// Checkout - btn
@@ -369,13 +358,13 @@ public class CommonCheneyIO {
 		try {
 			// now copy the screenshot to desired location using copyFile
 			// //method
+			orderID = orderID != null ? orderID : new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 			File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
 			FileUtils.copyFile(src, new File("C:\\Users\\ImportOrder\\Log\\" + orderID + ".png")); // System.currentTimeMillis()
 		}
-
 		catch (Exception e) {
-			logger.info("Screenshot failed");
+			logger.info("Screenshot failed " + e.getLocalizedMessage());
 			e.printStackTrace();
 		}
 	}
@@ -610,7 +599,12 @@ public class CommonCheneyIO {
 							.elementToBeClickable(driver.findElement(By.xpath("//img[@title='Choose Date']"))));
 					cln.click();
 //					driver.switchTo().frame("editDeliveryDateDialogFrame");
-					driver.switchTo().frame(0);//id="iframeId_1584378704192"
+					String frameID = RandomAction.getIframeID(driver);
+					if (!frameID.equals("")) {
+						driver.switchTo().frame(frameID);
+					} else {
+						driver.switchTo().frame(0);
+					}
 					String actMM = date.substring(0, 2);
 					// month compare
 					if (!actMM.equalsIgnoreCase(mm)) {
